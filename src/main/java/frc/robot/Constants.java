@@ -17,6 +17,15 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+
+  public static class DriveConstants{
+    public static final int FRONTLEFT = 10;
+    public static final int FRONTRIGHT = 11;
+    public static final int BACKLEFT = 12;
+    public static final int BACKRIGHT = 13;
+
+  }
+
   public static class IOConstants {
     public static final int JOYSTICK_ONE = 0;
     public static final int JOYSTICK_TWO = 1;
