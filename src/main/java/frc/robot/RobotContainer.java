@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.commands.Cartesian;
+import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.Joystick;
