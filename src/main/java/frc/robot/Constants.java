@@ -14,20 +14,12 @@ package frc.robot;
  */
 public final class Constants {
 
-  public final class DriveConstants {
-    // TODO idk what these numbers are supposed to be
-    public static final int FRONT_LEFT = 0;
-    public static final int FRONT_RIGHT = 0;
-    public static final int BACK_LEFT = 0;
-    public static final int BACK_RIGHT = 0;
-  }
-
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
 
-
   public static class DriveConstants{
+
     public static final int FRONTLEFT = 10;
     public static final int FRONTRIGHT = 11;
     public static final int BACKLEFT = 12;
@@ -36,15 +28,19 @@ public final class Constants {
   }
 
   public static class IOConstants {
+
     public static final int JOYSTICK_ONE = 0;
     public static final int JOYSTICK_TWO = 1;
     public static final int CONTROLLER = 2;
     public static final int DDR_PORT = 0;
+
   }
 
   public static class LimeLightConstants {
+
     public static final double MOUNTING_ANGLE = 0.0; // in degrees
     public static final double MOUNTING_HEIGHT = 16; // in inches
     public static final double TAG_HEIGHT = 19.5; // in inches
+    
   }
 }
