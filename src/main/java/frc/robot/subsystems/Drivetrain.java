@@ -74,6 +74,22 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * Main method to drive the robot
+   * @param xSpeed The robot speed in the x axis (left/right) values from -1 to 1
+   * @param ySpeed The robot speed in the y axis (forward/backward) values from -1 to 1
+   * @param zRotation The robot rotation speed values from -1 to 1
+   */
+  public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
+    //Deadband
+    double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : zRotation;
+    double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : ySpeed;
+    double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : xSpeed;
+
+
+    _drive.driveCartesian(xSpd, ySpd, zRot);
+  }
+
+  /**
    * Example command factory method.
    *
    * @return a command
@@ -87,6 +103,9 @@ public class Drivetrain extends SubsystemBase {
         });
   }
 
+  /**
+   * Resets the encoders to currently read a position of 0.
+   */
   public void resetEncoders() {
     _front_left_encoder.setPosition(0);
     _front_right_encoder.setPosition(0);
