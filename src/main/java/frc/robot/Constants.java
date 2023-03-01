@@ -72,4 +72,9 @@ public final class Constants {
       _FRONT_LEFT_LOCATION, _FRONT_RIGHT_LOCATION, _BACK_LEFT_LOCATION, _BACK_RIGHT_LOCATION
     );
   }
+
+  public static class AutoConstants {
+    public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kMaxAccelerationMetersPerSecond = 1.5;
+  }
 }
