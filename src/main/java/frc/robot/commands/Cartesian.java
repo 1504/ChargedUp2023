@@ -33,13 +33,13 @@ public class Cartesian extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    _drivetrain.cDrive(_xSpeed.getAsDouble(), _ySpeed.getAsDouble(), _zRot.getAsDouble());
+    _drivetrain.cartesianDrive(_xSpeed.getAsDouble(), _ySpeed.getAsDouble(), _zRot.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    _drivetrain.cDrive(0,0,0);
+    _drivetrain.cartesianDrive(0,0,0);
   }
 
   // Returns true when the command should end.

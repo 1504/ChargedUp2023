@@ -29,10 +29,10 @@ public class Drivetrain extends SubsystemBase {
 
 
   public Drivetrain() {
-    _front_left_motor = new CANSparkMax(DriveConstants.FRONTLEFT, MotorType.kBrushless);
-    _front_right_motor = new CANSparkMax(DriveConstants.FRONTRIGHT, MotorType.kBrushless);
-    _back_right_motor = new CANSparkMax(DriveConstants.BACKRIGHT, MotorType.kBrushless);
-    _back_left_motor = new CANSparkMax(DriveConstants.BACKLEFT, MotorType.kBrushless);
+    _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
+    _front_right_motor = new CANSparkMax(DriveConstants.FRONT_RIGHT, MotorType.kBrushless);
+    _back_right_motor = new CANSparkMax(DriveConstants.BACK_RIGHT, MotorType.kBrushless);
+    _back_left_motor = new CANSparkMax(DriveConstants.BACK_LEFT, MotorType.kBrushless);
 
     _front_left_motor.setInverted(true);
     _back_left_motor.setInverted(true);
@@ -72,11 +72,6 @@ public class Drivetrain extends SubsystemBase {
     _front_right_encoder.setPosition(0);
     _back_left_encoder.setPosition(0);
     _back_right_encoder.setPosition(0);
-
-  public void cDrive(double xSpeed, double ySpeed, double zRot) {
-    // Drive method
-    _drive.driveCartesian(xSpeed, ySpeed, zRot);
-
   }
 
   @Override 
