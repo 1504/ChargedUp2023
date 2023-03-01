@@ -17,7 +17,11 @@ import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
  */
 public final class Constants {
 
-  public final class DriveConstants {
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+  }
+
+  public static class DriveConstants{
     //Motor Controller IDs
     public static final int FRONT_LEFT = 10;
     public static final int FRONT_RIGHT = 13;
@@ -26,23 +30,24 @@ public final class Constants {
     public static final int ARM = 20;
     //Drive input deadband
     public static final double DEADBAND = 0.1;
-  }
 
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
   }
 
   public static class IOConstants {
+
     public static final int JOYSTICK_ONE = 0;
     public static final int JOYSTICK_TWO = 1;
     public static final int CONTROLLER = 2;
     public static final int DDR_PORT = 0;
+
   }
 
   public static class LimeLightConstants {
+
     public static final double MOUNTING_ANGLE = 0.0; // in degrees
     public static final double MOUNTING_HEIGHT = 16; // in inches
     public static final double TAG_HEIGHT = 19.5; // in inches
+    
   }
 
   public static class BuildConstants {
