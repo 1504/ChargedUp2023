@@ -13,13 +13,20 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.networktables.GenericEntry;
+
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class Drivetrain extends SubsystemBase {
    /* Motor Controllers */
@@ -34,6 +41,7 @@ public class Drivetrain extends SubsystemBase {
    private final RelativeEncoder _back_right_encoder;
    private final RelativeEncoder _back_left_encoder;
 
+   //drive
    private final MecanumDrive _drive;
    
    private final MecanumDriveOdometry _odometry;
@@ -44,6 +52,13 @@ public class Drivetrain extends SubsystemBase {
 
    Pose2d m_pose;
 
+   //shuffle board
+   ShuffleboardTab telemetry = Shuffleboard.getTab("Telemetry");
+
+   private GenericEntry frontLeftEncoder;
+   private GenericEntry frontRightEncoder;
+   private GenericEntry backRightEncoder;
+   private GenericEntry backLeftEncoder;
 
   public Drivetrain() {
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
@@ -99,6 +114,7 @@ public class Drivetrain extends SubsystemBase {
     _back_right_encoder.setPosition(0);
   }
 
+
   /**
    * Gets the current velocity of the front left wheel
    * @return The current velocity of the front left wheel in meters per second
@@ -127,13 +143,45 @@ public class Drivetrain extends SubsystemBase {
    * Gets the current velocity of the back left wheel
    * @return The current velocity of the back left wheel in meters per second
    */
-  public double getBackRightMeters() {
-    return _back_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
+
+
+  //shuffle board stuff
+  public void shuffleboardInit() {
+    frontLeftEncoder = telemetry.add("Front Left Encoder", 0)
+        .withPosition(0, 0)
+        .withSize(2, 2)
+        .withWidget(BuiltInWidgets.kTextView)
+        .getEntry();
+    frontRightEncoder = telemetry.add("Front Right Encoder", 0)
+        .withPosition(2, 0)
+        .withSize(2, 2)
+        .withWidget(BuiltInWidgets.kTextView)
+        .getEntry();
+    backRightEncoder = telemetry.add("Back Right Encoder", 0)
+        .withPosition(0, 2)
+        .withSize(2, 2)
+        .withWidget(BuiltInWidgets.kTextView)
+        .getEntry();
+    backLeftEncoder = telemetry.add("Back Left Encoder", 0)
+        .withPosition(2, 2)
+        .withSize(2, 2)
+        .withWidget(BuiltInWidgets.kTextView)
+        .getEntry();
+  }
+
+  public void shuffleboardUpdate() {
+/* 
+    frontLeftEncoder.setDouble(getFrontLeftDistance());
+    frontRightEncoder.setDouble(getFrontRightDistance());
+    backRightEncoder.setDouble(getBackRightDistance());
+    backLeftEncoder.setDouble(getBackLeftDistance());
+*/
   }
 
 
   @Override 
   public void periodic() {
     // This method will be called once per scheduler run
+    shuffleboardUpdate();
   }
 }
