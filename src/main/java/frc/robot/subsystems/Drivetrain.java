@@ -4,12 +4,21 @@
 
 package frc.robot.subsystems;
 
+import java.util.HashMap;
+
+import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -26,6 +35,14 @@ public class Drivetrain extends SubsystemBase {
    private final RelativeEncoder _back_left_encoder;
 
    private final MecanumDrive _drive;
+   
+   private final MecanumDriveOdometry _odometry;
+
+   private MecanumAutoBuilder _autoBuilder;
+
+   private final HashMap<String, Command> m_eventMap = new HashMap<String, Command>();
+
+   Pose2d m_pose;
 
 
   public Drivetrain() {
@@ -45,6 +62,14 @@ public class Drivetrain extends SubsystemBase {
     _back_left_encoder = _back_left_motor.getEncoder();
 
     _drive = new MecanumDrive(_front_left_motor, _back_left_motor, _front_right_motor, _back_right_motor);
+
+    _odometry = new MecanumDriveOdometry(
+      BuildConstants._KINEMATICS, 
+      new Rotation2d(),
+      new MecanumDriveWheelPositions(
+        _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
+        _back_left_encoder.getPosition(), _back_right_encoder.getPosition()
+      ));
 
   }
   
@@ -73,6 +98,39 @@ public class Drivetrain extends SubsystemBase {
     _back_left_encoder.setPosition(0);
     _back_right_encoder.setPosition(0);
   }
+
+  /**
+   * Gets the current velocity of the front left wheel
+   * @return The current velocity of the front left wheel in meters per second
+   */
+  public double getFrontLeftMeters() {
+    return _front_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
+  }
+
+  /**
+   * Gets the current velocity of the front right wheel
+   * @return The current velocity of the front right wheel in meters per second
+   */
+  public double getFrontRightMeters() {
+    return _front_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
+  }
+
+  /**
+   * Gets the current velocity of the back right wheel
+   * @return The current velocity of the back right wheel in meters per second
+   */
+  public double getBackLeftMeters() {
+    return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
+  }
+
+  /**
+   * Gets the current velocity of the back left wheel
+   * @return The current velocity of the back left wheel in meters per second
+   */
+  public double getBackRightMeters() {
+    return _back_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
+  }
+
 
   @Override 
   public void periodic() {

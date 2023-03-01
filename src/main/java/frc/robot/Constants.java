@@ -17,10 +17,6 @@ import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
  */
 public final class Constants {
 
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
-
   public static class DriveConstants{
     //Motor Controller IDs
     public static final int FRONT_LEFT = 10;
@@ -58,6 +54,7 @@ public final class Constants {
     public static final double WHEEL_TO_CENTER_FRONT_INCHES = 9.75;
     public static final double GR = 12;
 
+    //Wheel positions
     public static final Translation2d _FRONT_LEFT_LOCATION = new Translation2d(
       WHEEL_TO_CENTER_SIDE_INCHES * INCHES_TO_METERS, WHEEL_TO_CENTER_FRONT_INCHES * INCHES_TO_METERS
     );

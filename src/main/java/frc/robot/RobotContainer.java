@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Cartesian;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Drivetrain;
@@ -30,7 +29,8 @@ public class RobotContainer {
       m_drivetrain,
       () -> m_controlBoard.getRight(),
       () -> m_controlBoard.getThrottle(), 
-      () -> m_controlBoard.getRot()));
+      () -> m_controlBoard.getRot())
+    );
 
     // Configure the trigger bindings
     configureBindings();
