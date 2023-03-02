@@ -98,19 +98,18 @@ public class ControlBoard {
         }
     }
 
-    public GenericHID getDriveController() {
-        return dboard.getDriveController();
-    }
-
-    public GenericHID getCommandController() {
-        return dboard.getCommandController();
-    }
-
+    /**
+     * Updates the drive profile
+     */
     public void updateProfile() {
         dboard = getProfile();
         System.out.println(getProfile());
     }
 
+    /**
+     * Updates the drive profile based on given profile on shuffleboard
+     * @return the selected profile
+     */
     public IDriveProfile getProfile() {
         return mProfileChooser.getSelected();
     }
@@ -146,5 +145,18 @@ public class ControlBoard {
     public void shuffleboardUpdate() {
         dboard.shuffleboardUpdate();
     }
+
+    /**
+     * Gets the controller used for arm related functions
+     * @return the arm controller
+     */
+    public GenericHID getArmController() {
+        return dboard.getArmController();
+    }
+/*
+    public int getExtendButton() {
+
+    }
+*/
 
 }
