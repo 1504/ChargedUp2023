@@ -54,13 +54,7 @@ public class XBoxControllerProfile implements IDriveProfile {
     }
 
     @Override
-    public GenericHID getDriveController() {
-        return controller;
-    }
-
-    @Override
-    public GenericHID getCommandController() {
-        // TODO Auto-generated method stub
+    public GenericHID getArmController() {
         return controller;
     }
 

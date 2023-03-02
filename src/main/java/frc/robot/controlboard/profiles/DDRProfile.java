@@ -55,15 +55,9 @@ public class DDRProfile implements IDriveProfile {
     }
 
     @Override
-    public GenericHID getDriveController() {
-        // TODO Auto-generated method stub
+    public GenericHID getArmController() {
         return ddr;
     }
 
-    @Override
-    public GenericHID getCommandController() {
-        // TODO Auto-generated method stub
-        return ddr;
-    } 
 
 }

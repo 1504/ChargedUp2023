@@ -15,7 +15,5 @@ public interface IDriveProfile {
 
     void shuffleboardUpdate();
 
-    GenericHID getDriveController();
-
-    GenericHID getCommandController();
+    GenericHID getArmController();
 }
