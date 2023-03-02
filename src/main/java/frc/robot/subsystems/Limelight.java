@@ -5,7 +5,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants.LimeLightConstants;
+import frc.robot.Constants.LimelightConstants;
+
+import java.util.ArrayList;
 
 public class Limelight extends SubsystemBase {
 
@@ -30,9 +32,9 @@ public class Limelight extends SubsystemBase {
     NetworkTableEntry botPose = table.getEntry("botpose"); // TODO: Verify this
 
     private double getDistance(double tagAngleOffset) {
-        double mountingAngle = LimeLightConstants.MOUNTING_ANGLE;
-        double mountingHeight = LimeLightConstants.MOUNTING_HEIGHT;
-        double tagHeight = LimeLightConstants.TAG_HEIGHT;
+        double mountingAngle = LimelightConstants.MOUNTING_ANGLE;
+        double mountingHeight = LimelightConstants.MOUNTING_HEIGHT;
+        double tagHeight = LimelightConstants.TAG_HEIGHT;
         double totalAngleDegrees = mountingAngle + tagAngleOffset;
         if (totalAngleDegrees == 0.0) {
             return -1;
@@ -44,8 +46,8 @@ public class Limelight extends SubsystemBase {
     }
     
     private double getDistanceCube(double cubeAngleOffset) {
-        double mountingAngle = LimeLightConstants.MOUNTING_ANGLE;
-        double mountingHeight = LimeLightConstants.MOUNTING_HEIGHT;
+        double mountingAngle = LimelightConstants.MOUNTING_ANGLE;
+        double mountingHeight = LimelightConstants.MOUNTING_HEIGHT;
         double totalAngleDegrees = mountingAngle + cubeAngleOffset;
         if (totalAngleDegrees == 0.0) {
             return -1;
@@ -56,8 +58,8 @@ public class Limelight extends SubsystemBase {
     }
 
     private double getDistanceCone(double coneAngleOffset) {
-        double mountingAngle = LimeLightConstants.MOUNTING_ANGLE;
-        double mountingHeight = LimeLightConstants.MOUNTING_HEIGHT;
+        double mountingAngle = LimelightConstants.MOUNTING_ANGLE;
+        double mountingHeight = LimelightConstants.MOUNTING_HEIGHT;
         double totalAngleDegrees = mountingAngle + coneAngleOffset;
         if (totalAngleDegrees == 0.0) {
             return -1;
@@ -68,10 +70,28 @@ public class Limelight extends SubsystemBase {
     }
 
     private double getDistanceCubeArea(double cubeArea) {
-        double cubeSize = LimeLightConstants.CUBE_AREA;
+        double cubeSize = LimelightConstants.CUBE_AREA;
         // check pixel size
         // compare pixel size to cube pixel at some distance where area is known
         // multiply or something uhhh
+        return 0;
+    }
+
+    private double getDistanceConeWizardry(ArrayList <Double> corners) {
+        double coneArea = LimelightConstants.CONE_AREA;
+        double coneHeight = LimelightConstants.CONE_HEIGHT;
+        double coneWidth = LimelightConstants.CONE_WIDTH;
+
+        double h1 = corners.get(1) - corners.get(5);
+        double h2 = corners.get(3) - corners.get(7);
+        double w1 = corners.get(0) - corners.get(4);
+        double w2 = corners.get(2) - corners.get(6);
+        double ha = (h1 + h2) / 2;
+        double wa = (w1 + w2) / 2;
+        
+        double something = (coneHeight + coneWidth) / (ha + wa);
+        // bro i'm just retarded or smn
+
         return 0;
     }
 
@@ -103,7 +123,7 @@ public class Limelight extends SubsystemBase {
     }
 
     public static void setConfig(String varName, int value) {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry(varName).setNumber(value);
+        NetworkTableInstance.getDefault().getTable("Limelight").getEntry(varName).setNumber(value);
         // System.out.println("Set " + varName + " to " + value);
     }
 
