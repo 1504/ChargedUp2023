@@ -44,6 +44,8 @@ public final class Constants {
     public static final double MOUNTING_ANGLE = 0.0; // in degrees
     public static final double MOUNTING_HEIGHT = 16; // in inches
     public static final double TAG_HEIGHT = 19.5; // in inches
+    public static final double CUBE_AREA = 0; // placeholder probably in inches sqd
+    public static final double CONE_AREA = 0; // ^
 
   }
 
