@@ -77,6 +77,33 @@ public final class Constants {
     );
   }
 
+  public static class ArmConstants {
+    //TODO: idk any of these numbers
+    public static final int kMotorPort = 0;
+    public static final int kEncoderAChannel = 0;
+    public static final int kEncoderBChannel = 1;
+    public static final int kJoystickPort = 0;
+
+    //for ArmFeedForward
+    public static final int ks = 0;
+    public static final int kg = 0;
+    public static final int kv = 0;
+
+    public static final double kDefaultArmKp = 0;
+    public static final double kDefaultArmSetpointDegrees = 0;
+    public static final double kArmOffsetRads = 0;
+
+    public static final double kArmLength = 0;
+    public static final double kMinAngleRads = 0;
+    public static final double kMaxAngleRads = 0;
+
+    public static final double kArmEncoderDistPerPulse = 2.0 * Math.PI / 4096;
+
+    public static final double kMaxVelocity = 0; //units = rad/s
+    public static final double kMaxAccel = 0; //units = rad/s^2
+
+  }
+
   public static class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 1.5;
     public static final double kMaxAccelerationMetersPerSecond = 1.5;
