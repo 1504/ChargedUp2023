@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import java.util.HashMap;
 
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort;
+
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -41,7 +44,6 @@ public class Drivetrain extends SubsystemBase {
    private final RelativeEncoder _back_right_encoder;
    private final RelativeEncoder _back_left_encoder;
 
-   //drive
    private final MecanumDrive _drive;
    
    private final MecanumDriveOdometry _odometry;
@@ -49,6 +51,8 @@ public class Drivetrain extends SubsystemBase {
    private MecanumAutoBuilder _autoBuilder;
 
    private final HashMap<String, Command> m_eventMap = new HashMap<String, Command>();
+
+   private static final AHRS _gyro = new AHRS(SerialPort.Port.kMXP);
 
    Pose2d m_pose;
 
@@ -59,6 +63,11 @@ public class Drivetrain extends SubsystemBase {
    private GenericEntry frontRightEncoder;
    private GenericEntry backRightEncoder;
    private GenericEntry backLeftEncoder;
+
+   private GenericEntry gyroPitch;
+   private GenericEntry gyroYaw;
+   private GenericEntry gyroRoll;
+   private GenericEntry resetGyro;
 
   public Drivetrain() {
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
@@ -135,14 +144,17 @@ public class Drivetrain extends SubsystemBase {
    * Gets the current velocity of the back right wheel
    * @return The current velocity of the back right wheel in meters per second
    */
-  public double getBackLeftMeters() {
-    return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
+  public double getBackRightMeters() {
+    return _back_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
    * Gets the current velocity of the back left wheel
    * @return The current velocity of the back left wheel in meters per second
    */
+  public double getBackLeftMeters() {
+    return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
+  }
 
 
   //shuffle board stuff
@@ -167,15 +179,68 @@ public class Drivetrain extends SubsystemBase {
         .withSize(2, 2)
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();
+
+
+    gyroPitch = telemetry.add("Gyro Pitch", 0)
+        .withPosition(5, 0)
+        .withSize(1, 1)
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .getEntry();
+    gyroYaw = telemetry.add("Gyro Yaw", 0)
+        .withPosition(6, 0)
+        .withSize(1, 1)
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .getEntry();
+    gyroRoll = telemetry.add("Gyro Roll", 0)
+        .withPosition(7, 0)
+        .withSize(1, 1)
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .getEntry();
+
+    //create button on shuffleboard to reset gyro
+    resetGyro = telemetry.add("Reset Gyro", false)
+        .withWidget(BuiltInWidgets.kToggleButton)
+        .withPosition(8, 0)
+        .withSize(1, 1)
+        .getEntry();
   }
 
+public static double getPitch() {
+    return _gyro.getPitch();
+}
+
+public static double getRoll() {
+    return _gyro.getRoll();
+}
+
+public static double getYaw() {
+    return _gyro.getYaw();
+}
+
+public static Rotation2d getRotation2d() {
+    return _gyro.getRotation2d();
+}
+
+public static void reset() {
+    _gyro.reset();
+    System.out.println("Gyro Reset");
+}
+
   public void shuffleboardUpdate() {
-/* 
-    frontLeftEncoder.setDouble(getFrontLeftDistance());
-    frontRightEncoder.setDouble(getFrontRightDistance());
-    backRightEncoder.setDouble(getBackRightDistance());
-    backLeftEncoder.setDouble(getBackLeftDistance());
-*/
+
+    frontLeftEncoder.setDouble(getFrontLeftMeters());
+    frontRightEncoder.setDouble(getFrontRightMeters());
+    backRightEncoder.setDouble(getBackRightMeters());
+    backLeftEncoder.setDouble(getBackLeftMeters());
+
+    gyroPitch.setDouble(getPitch());
+    gyroYaw.setDouble(getYaw());
+    gyroRoll.setDouble(getRoll());
+    // if gyro reset button is pressed, reset gyro
+    if (resetGyro.getBoolean(true)) {
+        _gyro.reset();
+    }
+
   }
 
 
