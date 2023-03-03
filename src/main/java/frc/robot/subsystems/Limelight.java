@@ -77,22 +77,24 @@ public class Limelight extends SubsystemBase {
         return 0;
     }
 
-    private double getDistanceConeWizardry(ArrayList <Double> corners) {
+    private double getDistanceConeWizardry(double[] corners) { // this assumes width is constant (which it probably is)
         double coneArea = LimelightConstants.CONE_AREA;
         double coneHeight = LimelightConstants.CONE_HEIGHT;
-        double coneWidth = LimelightConstants.CONE_WIDTH;
 
-        double h1 = corners.get(1) - corners.get(5);
-        double h2 = corners.get(3) - corners.get(7);
-        double w1 = corners.get(0) - corners.get(4);
-        double w2 = corners.get(2) - corners.get(6);
+        double h1 = corners[1]- corners[5];
+        double h2 = corners[3] - corners[7];
+        double w1 = corners[0] - corners[4];
+        double w2 = corners[2] - corners[6];
         double ha = (h1 + h2) / 2;
         double wa = (w1 + w2) / 2;
         
-        double something = (coneHeight + coneWidth) / (ha + wa);
-        // bro i'm just retarded or smn
+        double scalingConstant = coneHeight / h1;
+        double unscaledArea = ha * wa;
+        double scaledArea = scalingConstant * unscaledArea;
+        double distance = scaledArea; // placeholder
+        return scaledArea;
+        // not final return, have to use the cube method above to find something something
 
-        return 0;
     }
 
     @Override
