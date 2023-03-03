@@ -6,7 +6,9 @@ package frc.robot;
 
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -22,6 +24,8 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
 
   private final ControlBoard m_controlBoard = ControlBoard.getInstance();
+
+  private final Arm m_arm = new Arm();
 
   public RobotContainer() {
 
@@ -47,6 +51,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
+    //new JoystickButton( m_controlBoard.getArmController(), 0).whileTrue(m_arm.setGoal(2));
+    //man idk how to do this
   }
 
   /**

@@ -17,20 +17,20 @@ import edu.wpi.first.wpilibj.Encoder;
 
 public class Arm extends ProfiledPIDSubsystem {
   private final PWMSparkMax m_motor = new PWMSparkMax(ArmConstants.kMotorPort);
-  private final Encoder m_encoder = new Encoder(ArmConstants.kEncoderAChannel,ArmConstants.kEncoderBChannel);
-  private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv);
+  private final Encoder m_encoder = new Encoder(ArmConstants.kEncoderPorts[0],ArmConstants.kEncoderPorts[1]);
+  private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts, ArmConstants.kVVolt, ArmConstants.kAVolt);
 
   /** Creates a new Arm. */
   public Arm() {
     super(
         // The ProfiledPIDController used by the subsystem
         new ProfiledPIDController(
-            ArmConstants.kDefaultArmKp, //proportional term
+            ArmConstants.kP, //proportional term
             0,
             0,
             // The motion profile constraints
             new TrapezoidProfile.Constraints(ArmConstants.kMaxVelocity, ArmConstants.kMaxAccel)));
-    m_encoder.setDistancePerPulse(ArmConstants.kArmEncoderDistPerPulse);
+    m_encoder.setDistancePerPulse(ArmConstants.kEncoderDistancePerPulse);
 
     setGoal(ArmConstants.kArmOffsetRads);
   }
