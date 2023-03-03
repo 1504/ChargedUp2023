@@ -35,6 +35,9 @@ public class Arm extends ProfiledPIDSubsystem {
     setGoal(ArmConstants.kArmOffsetRads);
   }
 
+  /**
+   * Sets the motor to the desired output
+   */
   @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
     // Use the output (and optionally the setpoint) here
@@ -42,6 +45,9 @@ public class Arm extends ProfiledPIDSubsystem {
     m_motor.setVoltage(output+feedforward);
   }
 
+  /**
+   * Returns the measurement of the encoder distance
+   */
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
