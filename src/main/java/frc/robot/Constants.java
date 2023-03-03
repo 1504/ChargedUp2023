@@ -26,6 +26,7 @@ public final class Constants {
     public static final int BACK_RIGHT = 12;
     public static final int ARM = 20;
     //Drive input deadband
+
     public static final double DEADBAND = 0.1;
 
   }
@@ -75,6 +76,35 @@ public final class Constants {
     public static final MecanumDriveKinematics _KINEMATICS = new MecanumDriveKinematics(
       _FRONT_LEFT_LOCATION, _FRONT_RIGHT_LOCATION, _BACK_LEFT_LOCATION, _BACK_RIGHT_LOCATION
     );
+  }
+
+  public static class ArmConstants {
+    //TODO: idk any of these numbers
+    public static final int kMotorPort = 0;
+
+    public static final double kP = 0;
+
+    //ArmFeedforward
+    public static final double kSVolts = 1;
+    public static final double kGVolts = 1;
+    public static final double kVVolt = 0.5; //rad/s
+    public static final double kAVolt = 0.1; //rad/s^2
+
+    public static final double kMaxVelocity = 0; //units = rad/s
+    public static final double kMaxAccel = 0; //units = rad/s^2
+
+    public static final int[] kEncoderPorts = new int[] {4, 5};
+    public static final int kEncoderPPR = 256;
+    public static final double kEncoderDistancePerPulse = 2.0 * Math.PI / kEncoderPPR;
+
+
+    // The offset of the arm from the horizontal in its neutral position,
+    // measured from the horizontal
+    public static final double kArmOffsetRads = 0;
+
+    //public static final double kArmLength = 0;
+    //public static final double kMinAngleRads = 0;
+    //public static final double kMaxAngleRads = 0;
   }
 
   public static class AutoConstants {
