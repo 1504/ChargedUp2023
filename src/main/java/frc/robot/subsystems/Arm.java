@@ -4,19 +4,21 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 
 //import java.beans.Encoder;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class Arm extends ProfiledPIDSubsystem {
-  private final PWMSparkMax m_motor = new PWMSparkMax(ArmConstants.kMotorPort);
+  private final CANSparkMax m_motor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
   private final Encoder m_encoder = new Encoder(ArmConstants.kEncoderPorts[0],ArmConstants.kEncoderPorts[1]);
   private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts, ArmConstants.kVVolt, ArmConstants.kAVolt);
 
