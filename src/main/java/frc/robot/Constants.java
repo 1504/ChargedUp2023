@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -28,6 +31,12 @@ public final class Constants {
     //Drive input deadband
 
     public static final double DEADBAND = 0.1;
+
+    //AUTON CONSTANTS
+    //TODO: these numbers
+    public static final int AUTO_MAX_SPEED_METERS_PER_SECOND = 0;
+    public static final int AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 0;
+    public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
 
   }
 
@@ -84,7 +93,7 @@ public final class Constants {
 
     public static final double kP = 0;
 
-    //ArmFeedforward
+    //ArmFeedforward // https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/characterizing-drive.html
     public static final double kSVolts = 1;
     public static final double kGVolts = 1;
     public static final double kVVolt = 0.5; //rad/s

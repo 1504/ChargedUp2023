@@ -4,12 +4,22 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+
+import java.util.List;
+
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;import com.pathplanner.lib.commands.FollowPathWithEvents;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -61,6 +71,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    List<PathPlannerTrajectory> autoPaths = PathPlanner.loadPathGroup(
+      "testPath", 
+      DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
+      DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED );
+
+    Command autoTest = new SequentialCommandGroup(
+      new FollowPathWithEvents(autoPaths.get(0), m_drivetrain, autoPaths.get(0).getMarkers(), DriveConstants.AUTO_EVENT_MAP)
+      );
+
+
+      autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
     // An example command will be run in autonomous
     return null;
   }
