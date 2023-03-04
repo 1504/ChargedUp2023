@@ -42,7 +42,7 @@ public class Limelight extends SubsystemBase {
         double totalAngleRadians = (Math.PI / 180.0) * totalAngleDegrees;
         // distance calculation
         double tagDistance = (tagHeight - mountingHeight) / Math.tan(totalAngleRadians);
-        return tagDistance;
+        return tagDistance*0.0254; //returns meters
     }
     
     private double getDistanceCube(double cubeAngleOffset) {

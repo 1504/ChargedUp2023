@@ -9,6 +9,7 @@ import java.util.HashMap;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -156,6 +157,28 @@ public class Drivetrain extends SubsystemBase {
     return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
 
+  public double getFrontRightDistance() {
+    return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
+  }
+  public double getFrontLeftDistance() {
+    return _front_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
+  }
+  public double getBackRightDistance() {
+    return _back_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
+  }
+  public double getBackLeftDistance() {
+    return _back_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
+  }
+
+
+  public void resetOdometry(Pose2d pose) {
+    MecanumDriveWheelPositions positions = new MecanumDriveWheelPositions(
+      getFrontLeftDistance(), getFrontRightDistance(),
+      getBackLeftDistance(), getBackRightDistance()
+    );
+    _odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
+  }
+
 
   //shuffle board stuff
   public void shuffleboardInit() {
@@ -221,6 +244,10 @@ public static Rotation2d getRotation2d() {
     return _gyro.getRotation2d();
 }
 
+//public static PathPlannerTrajectory(){
+  //return null;
+//}
+
 public static void reset() {
     _gyro.reset();
     System.out.println("Gyro Reset");
@@ -242,7 +269,6 @@ public static void reset() {
     }
 
   }
-
 
   @Override 
   public void periodic() {

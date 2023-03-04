@@ -67,15 +67,15 @@ public class RobotContainer {
     //man idk how to do this
   }
 
-
-  /** 
+  /*
   // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
 public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
   return new SequentialCommandGroup(
        new InstantCommand(() -> {
          // Reset odometry for the first path you run during auto
          if(isFirstPath){
-             this.resetOdometry(traj.getInitialHolonomicPose());
+             m_drivetrain.resetOdometry(traj.getInitialHolonomicPose());
+             //i think i did this wrong
          }
        }),
        new PPSwerveControllerCommand(
@@ -91,8 +91,8 @@ public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFir
        )
    );
       }
+*/
 
-      */
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
