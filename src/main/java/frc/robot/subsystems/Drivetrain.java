@@ -159,7 +159,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
 
-  //shuffle board stuff
+  /**
+   * Initiallizes shuffleboard
+   */
   public void shuffleboardInit() {
     frontLeftEncoder = telemetry.add("Front Left Encoder", 0)
         .withPosition(0, 0)
@@ -206,15 +208,24 @@ public class Drivetrain extends SubsystemBase {
         .withSize(1, 1)
         .getEntry();
   }
-
+  /**
+   * Gets the current pitch of the gyro
+   * @return The current pitch of the gyro
+   */
 public static double getPitch() {
     return _gyro.getPitch();
 }
-
+  /**
+   * Gets the current roll of the gyro
+   * @return The current roll of the gyro
+   */
 public static double getRoll() {
     return _gyro.getRoll();
 }
-
+  /**
+   * Gets the current yaw of the gyro
+   * @return The current yaw of the gyro
+   */
 public static double getYaw() {
     return _gyro.getYaw();
 }
@@ -222,12 +233,13 @@ public static double getYaw() {
 public static Rotation2d getRotation2d() {
     return _gyro.getRotation2d();
 }
-
 public static void reset() {
     _gyro.reset();
     System.out.println("Gyro Reset");
 }
-
+  /**
+   * Updates the values in shuffleboard
+   */
   public void shuffleboardUpdate() {
 
     frontLeftEncoder.setDouble(getFrontLeftMeters());
