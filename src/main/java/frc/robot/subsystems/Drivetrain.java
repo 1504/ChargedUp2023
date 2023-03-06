@@ -96,6 +96,8 @@ public class Drivetrain extends SubsystemBase {
         _back_left_encoder.getPosition(), _back_right_encoder.getPosition()
       ));
 
+      shuffleboardInit();
+
   }
   
     /**
