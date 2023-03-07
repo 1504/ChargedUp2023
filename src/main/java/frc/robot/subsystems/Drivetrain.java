@@ -9,19 +9,25 @@ import java.util.HashMap;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.RobotContainer;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
-
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.networktables.GenericEntry;
 
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -244,9 +250,34 @@ public static Rotation2d getRotation2d() {
     return _gyro.getRotation2d();
 }
 
-//public static PathPlannerTrajectory(){
-  //return null;
-//}
+public void goToAprilTag(double tagAngleOffset) {
+  //PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
+}
+
+/**
+public static Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+  return new SequentialCommandGroup(
+       new InstantCommand(() -> {
+         // Reset odometry for the first path you run during auto
+         if(isFirstPath){
+             m_drivetrain.resetOdometry(traj.getInitialHolonomicPose());
+             //i think i did this wrong
+         }
+       }),
+       new PPSwerveControllerCommand(
+           traj, 
+           this::getPose, // Pose supplier
+           this.kinematics, // SwerveDriveKinematics
+           new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+           new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+           new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+           this::setModuleStates, // Module states consumer
+           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+           this // Requires this drive subsystem
+       )
+   );
+  }
+   */
 
 public static void reset() {
     _gyro.reset();
