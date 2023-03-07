@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -28,8 +29,8 @@ public final class Constants {
     public static final int BACK_LEFT = 11;
     public static final int BACK_RIGHT = 12;
     public static final int ARM = 20;
-    //Drive input deadband
 
+    //Drive input deadband
     public static final double DEADBAND = 0.1;
 
     //AUTON CONSTANTS
@@ -37,6 +38,15 @@ public final class Constants {
     public static final int AUTO_MAX_SPEED_METERS_PER_SECOND = 0;
     public static final int AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 0;
     public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+
+    //Voltage Constraints
+    public static final double ksVolts = 0;
+    public static final double kvVoltSecondsPerMeter = 0;
+    public static final double kaVoltSecondsSquaredPerMeter = 0;
+
+
+//TODO: i did this wrong
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
 
   }
 
@@ -118,6 +128,6 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 1.5;
-    public static final double kMaxAccelerationMetersPerSecond = 1.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
   }
 }
