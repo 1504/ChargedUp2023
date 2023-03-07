@@ -30,40 +30,6 @@ public final class Constants {
 
   }
 
-  public static class PIDConstants {
-    public static final double FRONT_LEFT_kPa = -1.85;
-    public static final double FRONT_LEFT_kIa = 0.0;
-    public static final double FRONT_LEFT_kDa = 0.0;
-
-    public static final double FRONT_RIGHT_kPa = -1.85;
-    public static final double FRONT_RIGHT_kIa = 0.0;
-    public static final double FRONT_RIGHT_kDa = 0.0;
-
-    public static final double BACK_LEFT_kPa = -1.85;
-    public static final double BACK_LEFT_kIa = 0.0;
-    public static final double BACK_LEFT_kDa = 0.0;
-
-    public static final double BACK_RIGHT_kPa = -1.85;
-    public static final double BACK_RIGHT_kIa = 0.0;
-    public static final double BACK_RIGHT_kDa = 0.0;
-
-    public static final double X_kPa = -1.85;
-    public static final double X_kIa = 0.0;
-    public static final double X_kDa = 0.0;
-    public static final double Y_kPa = -1.22;
-    public static final double Y_kIa = 0.0;
-    public static final double Y_kDa = 0.0;
-
-    public static final double THETA_kPa = -1.85;
-    public static final double THETA_kIa = 0.0;
-    public static final double THETA_kDa = 0.0;
-    public static final double THETA_kAv = 0.0;
-    public static final double THETA_kIv = 0.0;
-
-    public static final double kMaxVelocity = 1.0;
-    public static final double kMaxAcceleration = 3.0;
-  }
-
   public static class IOConstants {
 
     public static final int JOYSTICK_ONE = 0;
