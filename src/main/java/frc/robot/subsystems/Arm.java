@@ -35,15 +35,6 @@ public class Arm extends ProfiledPIDSubsystem {
     setGoal(ArmConstants.kArmOffsetRads);
   }
 
-  /**
-   * Reverse the arm, puts the piston back ?
-   * TODO: fix
-   */
-  public void reverse() {
-    m_Feedforward.calculate(0, 0);
-    m_motor.set(0);
-    m_motor.setVoltage(0);
-  }
 
   /**
    * Sets the motor to the desired output

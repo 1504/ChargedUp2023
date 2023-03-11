@@ -13,7 +13,6 @@ public class Limelight extends SubsystemBase {
 
     private static Limelight _instance = null;
 
-
     public static Limelight getInstance() {
 
         if (_instance == null) {

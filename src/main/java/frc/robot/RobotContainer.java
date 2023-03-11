@@ -42,6 +42,8 @@ public class RobotContainer {
 
   private final Arm m_arm = new Arm();
 
+  //private final MecanumDrivetrin _drive = new
+
   public RobotContainer() {
 
     m_drivetrain.setDefaultCommand(new Cartesian(
@@ -92,17 +94,15 @@ public class RobotContainer {
       DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
       DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED
       );
-
-    //Command autoTest = new SequentialCommandGroup(
-      //new FollowPathWithEvents(
-        //new followTrajectoryCommand( autoPaths.get(0), true),
-        //autoPaths.get(0).getMarkers(),
-        //DriveConstants.AUTO_EVENT_MAP)
-    //);
-
-
-      //autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
-    // An example command will be run in autonomous
+    /*
+    Command autoTest = new SequentialCommandGroup(
+      new FollowPathWithEvents(
+        new FollowTrajectory( autoPaths.get(0), true),
+        autoPaths.get(0).getMarkers(),
+        DriveConstants.AUTO_EVENT_MAP)
+    );
+    */
     return null;
+    //return new FollowTrajectory( _drive, );
   }
 }
