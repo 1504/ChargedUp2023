@@ -9,8 +9,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 
-//import java.beans.Encoder;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
@@ -35,6 +33,16 @@ public class Arm extends ProfiledPIDSubsystem {
     m_encoder.setDistancePerPulse(ArmConstants.kEncoderDistancePerPulse);
 
     setGoal(ArmConstants.kArmOffsetRads);
+  }
+
+  /**
+   * Reverse the arm, puts the piston back ?
+   * TODO: fix
+   */
+  public void reverse() {
+    m_Feedforward.calculate(0, 0);
+    m_motor.set(0);
+    m_motor.setVoltage(0);
   }
 
   /**
