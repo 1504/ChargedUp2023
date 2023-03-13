@@ -8,12 +8,17 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+
+//import java.beans.Encoder;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class Arm extends ProfiledPIDSubsystem {
   private final CANSparkMax m_motor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
@@ -21,6 +26,9 @@ public class Arm extends ProfiledPIDSubsystem {
   private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts, ArmConstants.kVVolt, ArmConstants.kAVolt);
 
   private final double MAXSPEED = 0.5;
+
+  ShuffleboardTab PIDArm = Shuffleboard.getTab("Arm PID tuning");
+  PIDController arm_pid;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -35,9 +43,14 @@ public class Arm extends ProfiledPIDSubsystem {
     m_encoder.setDistancePerPulse(ArmConstants.kEncoderDistancePerPulse);
 
     setGoal(ArmConstants.kArmOffsetRads);
+
+    arm_pid = new PIDController(ArmConstants.kP, 0, 0);
+
+    PIDArm.add("arm pid", arm_pid)
+        .withPosition(0, 0);
+    
+
   }
-
-
   /**
    * Sets the motor to the desired output
    */
