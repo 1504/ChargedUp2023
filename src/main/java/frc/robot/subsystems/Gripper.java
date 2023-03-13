@@ -17,11 +17,11 @@ public class Gripper extends SubsystemBase {
     m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
   }
 
-  public static void open() {
+  public void open() {
     m_solenoid.set(true);
   }
 
-  public static void close() {
+  public void close() {
     m_solenoid.set(false);
   }
 
