@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.arm.Extend;
+import frc.robot.commands.arm.Retract;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Arm;
@@ -67,7 +69,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
+    new JoystickButton(m_controlBoard.getArmController(), 1).whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
+    new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Extend(m_arm));
+    new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new Retract(m_arm));
     //new JoystickButton( m_controlBoard.getArmController(), 0).whileTrue(m_arm.setGoal(2));
     //man idk how to do this
   }
