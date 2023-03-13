@@ -10,6 +10,7 @@ import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Limelight;
 
 import java.util.List;
@@ -42,6 +43,8 @@ public class RobotContainer {
 
   private final Arm m_arm = new Arm();
 
+  private final Gripper m_gripper = new Gripper();
+
   public RobotContainer() {
 
     m_drivetrain.setDefaultCommand(new Cartesian(
@@ -67,7 +70,12 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
     //new JoystickButton( m_controlBoard.getArmController(), 0).whileTrue(m_arm.setGoal(2));
+    //TODO: idk how to bind gripper buttons !!!
+    //new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue(new Command(Gripper.open()));
+    //new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue( new Command(Gripper.close()));
+
     //man idk how to do this
+    
   }
 
   /*
