@@ -346,7 +346,7 @@ public static void reset() {
 }
 
   public void shuffleboardUpdate() {
-
+    /*
     frontLeftEncoder.setDouble(getFrontLeftMeters());
     frontRightEncoder.setDouble(getFrontRightMeters());
     backRightEncoder.setDouble(getBackRightMeters());
@@ -359,6 +359,7 @@ public static void reset() {
     if (resetGyro.getBoolean(true)) {
         _gyro.reset();
     }
+    */
 
   }
 

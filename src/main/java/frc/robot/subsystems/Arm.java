@@ -25,8 +25,11 @@ public class Arm extends ProfiledPIDSubsystem {
   private final Encoder m_encoder = new Encoder(ArmConstants.kEncoderPorts[0],ArmConstants.kEncoderPorts[1]);
   private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts, ArmConstants.kVVolt, ArmConstants.kAVolt);
 
+  private final double MAXSPEED = 0.5;
+
   ShuffleboardTab PIDArm = Shuffleboard.getTab("Arm PID tuning");
   PIDController arm_pid;
+
   /** Creates a new Arm. */
   public Arm() {
     super(
@@ -65,5 +68,17 @@ public class Arm extends ProfiledPIDSubsystem {
   public double getMeasurement() {
     // Return the process variable measurement here
     return m_encoder.getDistance() + ArmConstants.kArmOffsetRads;
+  }
+
+  public void rawExtend() {
+    m_motor.set(MAXSPEED);
+  }
+
+  public void rawRetract() {
+    m_motor.set(MAXSPEED);
+  }
+
+  public void stopMotor() {
+    m_motor.set(0);
   }
 }
