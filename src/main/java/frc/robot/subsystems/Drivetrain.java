@@ -9,19 +9,27 @@ import java.util.HashMap;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.RobotContainer;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.networktables.GenericEntry;
 
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -196,9 +204,6 @@ public class Drivetrain extends SubsystemBase {
   public double getBackLeftMeters() {
     return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
-
-<<<<<<< Updated upstream
-=======
   public double getFrontRightDistance() {
     return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
   }
@@ -219,9 +224,9 @@ public class Drivetrain extends SubsystemBase {
       getBackLeftDistance(), getBackRightDistance()
     );
     _odometry.resetPosition(new Rotation2d(_gyro.getYaw()), positions, pose);
+    //_odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
   }
 
->>>>>>> Stashed changes
 
   //shuffle board stuff
   public void shuffleboardInit() {
@@ -304,6 +309,35 @@ public static Rotation2d getRotation2d() {
     return _gyro.getRotation2d();
 }
 
+public void goToAprilTag(double tagAngleOffset) {
+  //PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
+}
+
+/**
+public static Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+  return new SequentialCommandGroup(
+       new InstantCommand(() -> {
+         // Reset odometry for the first path you run during auto
+         if(isFirstPath){
+             m_drivetrain.resetOdometry(traj.getInitialHolonomicPose());
+             //i think i did this wrong
+         }
+       }),
+       new PPSwerveControllerCommand(
+           traj, 
+           this::getPose, // Pose supplier
+           this.kinematics, // SwerveDriveKinematics
+           new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+           new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+           new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+           this::setModuleStates, // Module states consumer
+           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+           this // Requires this drive subsystem
+       )
+   );
+  }
+   */
+
 public static void reset() {
     _gyro.reset();
     System.out.println("Gyro Reset");
@@ -325,7 +359,6 @@ public static void reset() {
     }
 
   }
-
 
   @Override 
   public void periodic() {

@@ -4,12 +4,29 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.subsystems.Limelight;
+
+import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -22,6 +39,10 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
 
   private final ControlBoard m_controlBoard = ControlBoard.getInstance();
+
+  private final Arm m_arm = new Arm();
+
+  //private final MecanumDrivetrin _drive = new
 
   public RobotContainer() {
 
@@ -46,11 +67,21 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
+    new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
+    //new JoystickButton( m_controlBoard.getArmController(), 0).whileTrue(m_arm.setGoal(2));
+    //man idk how to do this
   }
+
+  /*
+  public static PathPlannerTrajectory getTrajectory( double tagAngleOffset ) {
+
+    PathConstraints pathConstraints = new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+  
+    //PathPlannerTrajectory trajectory = new PathPlannerTrajectory(List<Waypoint> pathPoints, List<EventMarker> markers, pathConstraints, false, false );
+    double distance = Limelight.getDistance(tagAngleOffset);
+    //return trajectory;
+  }
+ */
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -58,7 +89,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
+    List<PathPlannerTrajectory> autoPaths = PathPlanner.loadPathGroup(
+      "testPath", 
+      DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
+      DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED
+      );
+    /*
+    Command autoTest = new SequentialCommandGroup(
+      new FollowPathWithEvents(
+        new FollowTrajectory( autoPaths.get(0), true),
+        autoPaths.get(0).getMarkers(),
+        DriveConstants.AUTO_EVENT_MAP)
+    );
+    */
     return null;
+    //return new FollowTrajectory( _drive, );
   }
 }

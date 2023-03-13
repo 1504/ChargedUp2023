@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -25,8 +29,24 @@ public final class Constants {
     public static final int BACK_LEFT = 11;
     public static final int BACK_RIGHT = 12;
     public static final int ARM = 20;
+
     //Drive input deadband
     public static final double DEADBAND = 0.1;
+
+    //AUTON CONSTANTS
+    //TODO: these numbers
+    public static final int AUTO_MAX_SPEED_METERS_PER_SECOND = 0;
+    public static final int AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 0;
+    public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+
+    //Voltage Constraints
+    public static final double ksVolts = 0;
+    public static final double kvVoltSecondsPerMeter = 0;
+    public static final double kaVoltSecondsSquaredPerMeter = 0;
+
+
+//TODO: i did this wrong
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
 
   }
 
@@ -73,12 +93,15 @@ public final class Constants {
 
   }
 
-  public static class LimeLightConstants {
+  public static class LimelightConstants {
 
     public static final double MOUNTING_ANGLE = 0.0; // in degrees
     public static final double MOUNTING_HEIGHT = 16; // in inches
     public static final double TAG_HEIGHT = 19.5; // in inches
-
+    public static final double CUBE_AREA = 0; // placeholder probably in inches sqd
+    public static final double CONE_AREA = 0; // ^
+    public static final double CONE_WIDTH = 0; // used for wizardry
+    public static final double CONE_HEIGHT = 0; // ^
   }
 
   public static class BuildConstants {
@@ -108,8 +131,37 @@ public final class Constants {
     );
   }
 
+  public static class ArmConstants {
+    //TODO: idk any of these numbers
+    public static final int kMotorPort = 0;
+
+    public static final double kP = 0;
+
+    //ArmFeedforward // https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/characterizing-drive.html
+    public static final double kSVolts = 1;
+    public static final double kGVolts = 1;
+    public static final double kVVolt = 0.5; //rad/s
+    public static final double kAVolt = 0.1; //rad/s^2
+
+    public static final double kMaxVelocity = 0; //units = rad/s
+    public static final double kMaxAccel = 0; //units = rad/s^2
+
+    public static final int[] kEncoderPorts = new int[] {4, 5};
+    public static final int kEncoderPPR = 256;
+    public static final double kEncoderDistancePerPulse = 2.0 * Math.PI / kEncoderPPR;
+
+
+    // The offset of the arm from the horizontal in its neutral position,
+    // measured from the horizontal
+    public static final double kArmOffsetRads = 0;
+
+    //public static final double kArmLength = 0;
+    //public static final double kMinAngleRads = 0;
+    //public static final double kMaxAngleRads = 0;
+  }
+
   public static class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 1.5;
-    public static final double kMaxAccelerationMetersPerSecond = 1.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
   }
 }

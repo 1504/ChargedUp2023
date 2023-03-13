@@ -27,7 +27,6 @@ public class Arm extends ProfiledPIDSubsystem {
 
   ShuffleboardTab PIDArm = Shuffleboard.getTab("Arm PID tuning");
   PIDController arm_pid;
-  
   /** Creates a new Arm. */
   public Arm() {
     super(
@@ -49,7 +48,6 @@ public class Arm extends ProfiledPIDSubsystem {
     
 
   }
-
   /**
    * Sets the motor to the desired output
    */
