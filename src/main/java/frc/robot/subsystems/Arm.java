@@ -15,15 +15,16 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.Encoder;
 
-public class Arm extends ProfiledPIDSubsystem {
+public class Arm {
   private final CANSparkMax m_motor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
   private final Encoder m_encoder = new Encoder(ArmConstants.kEncoderPorts[0],ArmConstants.kEncoderPorts[1]);
   private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts, ArmConstants.kVVolt, ArmConstants.kAVolt);
 
-  private final double MAXSPEED = 0.5;
+  private final double MAXSPEED = 0.1;
 
   /** Creates a new Arm. */
   public Arm() {
+    /*
     super(
         // The ProfiledPIDController used by the subsystem
         new ProfiledPIDController(
@@ -35,34 +36,37 @@ public class Arm extends ProfiledPIDSubsystem {
     m_encoder.setDistancePerPulse(ArmConstants.kEncoderDistancePerPulse);
 
     setGoal(ArmConstants.kArmOffsetRads);
+    */
   }
 
 
   /**
    * Sets the motor to the desired output
-   */
+   
   @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
     // Use the output (and optionally the setpoint) here
     double feedforward = m_Feedforward.calculate(setpoint.position, setpoint.velocity);
-    m_motor.setVoltage(output+feedforward);
+    //m_motor.setVoltage(output+feedforward);
   }
 
   /**
    * Returns the measurement of the encoder distance
    */
+  /* 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
     return m_encoder.getDistance() + ArmConstants.kArmOffsetRads;
   }
+  */
 
   public void rawExtend() {
     m_motor.set(MAXSPEED);
   }
 
   public void rawRetract() {
-    m_motor.set(MAXSPEED);
+    m_motor.set(-MAXSPEED);
   }
 
   public void stopMotor() {
