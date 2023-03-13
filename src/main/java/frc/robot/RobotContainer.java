@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.arm.Extend;
+import frc.robot.commands.arm.Retract;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Arm;
@@ -68,7 +70,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
+    new JoystickButton(m_controlBoard.getArmController(), 1).whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
+    new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Extend(m_arm));
+    new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new Retract(m_arm));
     //new JoystickButton( m_controlBoard.getArmController(), 0).whileTrue(m_arm.setGoal(2));
     //TODO: idk how to bind gripper buttons !!!
     //new JoystickButton(m_controlBoard.getArmController(), 0).whileTrue(new Command(Gripper.open()));
@@ -100,17 +104,15 @@ public class RobotContainer {
       DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
       DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED
       );
-
-    //Command autoTest = new SequentialCommandGroup(
-      //new FollowPathWithEvents(
-        //new followTrajectoryCommand( autoPaths.get(0), true),
-        //autoPaths.get(0).getMarkers(),
-        //DriveConstants.AUTO_EVENT_MAP)
-    //);
-
-
-      //autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
-    // An example command will be run in autonomous
+    /*
+    Command autoTest = new SequentialCommandGroup(
+      new FollowPathWithEvents(
+        new FollowTrajectory( autoPaths.get(0), true),
+        autoPaths.get(0).getMarkers(),
+        DriveConstants.AUTO_EVENT_MAP)
+    );
+    */
     return null;
+    //return new FollowTrajectory( _drive, );
   }
 }
