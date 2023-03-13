@@ -9,19 +9,27 @@ import java.util.HashMap;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.RobotContainer;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
-
+import frc.robot.Constants.PIDConstants;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.networktables.GenericEntry;
 
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -31,6 +39,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 
 public class Drivetrain extends SubsystemBase {
    /* Motor Controllers */
@@ -59,6 +70,7 @@ public class Drivetrain extends SubsystemBase {
 
    //shuffle board
    ShuffleboardTab telemetry = Shuffleboard.getTab("Telemetry");
+   ShuffleboardTab PIDdrive;
 
    private GenericEntry frontLeftEncoder;
    private GenericEntry frontRightEncoder;
@@ -69,6 +81,14 @@ public class Drivetrain extends SubsystemBase {
    private GenericEntry gyroYaw;
    private GenericEntry gyroRoll;
    private GenericEntry resetGyro;
+
+   PIDController wheel_pid;
+   PIDController _front_left_pid;
+   PIDController _front_right_pid;
+   PIDController _back_right_pid;
+   PIDController _back_left_pid;
+   PIDController _x_pid;
+   PIDController _y_pid;
 
   public Drivetrain() {
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
@@ -87,6 +107,14 @@ public class Drivetrain extends SubsystemBase {
     _back_left_encoder = _back_left_motor.getEncoder();
 
     _drive = new MecanumDrive(_front_left_motor, _back_left_motor, _front_right_motor, _back_right_motor);
+
+    wheel_pid = new PIDController(-1.85, 0, 0);
+    _front_left_pid = new PIDController(-1.85, 0, 0);
+    _front_right_pid = new PIDController(-1.85, 0, 0);
+    _back_right_pid = new PIDController(-1.85, 0, 0);
+    _back_left_pid = new PIDController(-1.85, 0, 0);
+    _x_pid = new PIDController(-1.85, 0, 0);
+    _y_pid = new PIDController(-1.85, 0, 0);
 
     _odometry = new MecanumDriveOdometry(
       BuildConstants._KINEMATICS, 
@@ -115,6 +143,26 @@ public class Drivetrain extends SubsystemBase {
 
     _drive.driveCartesian(xSpd, ySpd, zRot);
   }
+
+  public void drivePID(double xSpeed, double ySpeed, double zRotation) {
+    WheelSpeeds wheelSpeeds = MecanumDrive.driveCartesianIK(xSpeed, ySpeed, zRotation);
+    double frontLeft = wheelSpeeds.frontLeft * PIDConstants.kMaxVelocity;
+    double frontRight = wheelSpeeds.frontRight * PIDConstants.kMaxVelocity;
+    double backLeft = wheelSpeeds.rearLeft * PIDConstants.kMaxVelocity;
+    double backRight = wheelSpeeds.rearRight * PIDConstants.kMaxVelocity;
+
+    _front_left_pid.setSetpoint(frontLeft);
+    _front_right_pid.setSetpoint(frontRight);
+    _back_left_pid.setSetpoint(backLeft);
+    _back_right_pid.setSetpoint(backRight);
+
+    _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftMeters()));
+    _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightMeters()));
+    _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftMeters()));
+    _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightMeters()));
+
+  }
+
 
   /**
    * Resets the encoders to currently read a position of 0.
@@ -158,7 +206,6 @@ public class Drivetrain extends SubsystemBase {
   public double getBackLeftMeters() {
     return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
-
   public double getFrontRightDistance() {
     return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
   }
@@ -178,7 +225,8 @@ public class Drivetrain extends SubsystemBase {
       getFrontLeftDistance(), getFrontRightDistance(),
       getBackLeftDistance(), getBackRightDistance()
     );
-    _odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
+    _odometry.resetPosition(new Rotation2d(_gyro.getYaw()), positions, pose);
+    //_odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
   }
 
 
@@ -228,6 +276,23 @@ public class Drivetrain extends SubsystemBase {
         .withPosition(8, 0)
         .withSize(1, 1)
         .getEntry();
+
+    PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
+    
+    PIDdrive.add("PID", wheel_pid)
+        .withPosition(2, 0);
+    PIDdrive.add("front left pid", _front_left_pid)
+        .withPosition(0, 0);
+    PIDdrive.add("front right pid", _front_right_pid)
+        .withPosition(1, 0);
+    PIDdrive.add("back left pid", _back_left_pid)
+        .withPosition(0, 2);
+    PIDdrive.add("back right pid", _back_right_pid)
+        .withPosition(1, 2);
+    PIDdrive.add("x pid", _x_pid)
+        .withPosition(3, 0);
+    PIDdrive.add("y pid", _y_pid)
+        .withPosition(4, 0);  
   }
 
 public static double getPitch() {
@@ -246,9 +311,34 @@ public static Rotation2d getRotation2d() {
     return _gyro.getRotation2d();
 }
 
-//public static PathPlannerTrajectory(){
-  //return null;
-//}
+public void goToAprilTag(double tagAngleOffset) {
+  //PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
+}
+
+/**
+public static Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+  return new SequentialCommandGroup(
+       new InstantCommand(() -> {
+         // Reset odometry for the first path you run during auto
+         if(isFirstPath){
+             m_drivetrain.resetOdometry(traj.getInitialHolonomicPose());
+             //i think i did this wrong
+         }
+       }),
+       new PPSwerveControllerCommand(
+           traj, 
+           this::getPose, // Pose supplier
+           this.kinematics, // SwerveDriveKinematics
+           new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+           new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+           new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+           this::setModuleStates, // Module states consumer
+           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+           this // Requires this drive subsystem
+       )
+   );
+  }
+   */
 
 public static void reset() {
     _gyro.reset();

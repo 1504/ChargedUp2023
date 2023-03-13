@@ -13,7 +13,6 @@ public class Limelight extends SubsystemBase {
 
     private static Limelight _instance = null;
 
-
     public static Limelight getInstance() {
 
         if (_instance == null) {
@@ -31,7 +30,7 @@ public class Limelight extends SubsystemBase {
     NetworkTableEntry tid = table.getEntry("tid");
     NetworkTableEntry botPose = table.getEntry("botpose"); // TODO: Verify this
 
-    private double getDistance(double tagAngleOffset) {
+    public static double getDistance(double tagAngleOffset) {
         double mountingAngle = LimelightConstants.MOUNTING_ANGLE;
         double mountingHeight = LimelightConstants.MOUNTING_HEIGHT;
         double tagHeight = LimelightConstants.TAG_HEIGHT;

@@ -4,14 +4,17 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 
 import java.util.List;
 
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
@@ -38,6 +41,8 @@ public class RobotContainer {
   private final ControlBoard m_controlBoard = ControlBoard.getInstance();
 
   private final Arm m_arm = new Arm();
+
+  //private final MecanumDrivetrin _drive = new
 
   public RobotContainer() {
 
@@ -68,30 +73,15 @@ public class RobotContainer {
   }
 
   /*
-  // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
-public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-  return new SequentialCommandGroup(
-       new InstantCommand(() -> {
-         // Reset odometry for the first path you run during auto
-         if(isFirstPath){
-             m_drivetrain.resetOdometry(traj.getInitialHolonomicPose());
-             //i think i did this wrong
-         }
-       }),
-       new PPSwerveControllerCommand(
-           traj, 
-           this::getPose, // Pose supplier
-           this.kinematics, // SwerveDriveKinematics
-           new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-           new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-           new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-           this::setModuleStates, // Module states consumer
-           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-           this // Requires this drive subsystem
-       )
-   );
-      }
-*/
+  public static PathPlannerTrajectory getTrajectory( double tagAngleOffset ) {
+
+    PathConstraints pathConstraints = new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+  
+    //PathPlannerTrajectory trajectory = new PathPlannerTrajectory(List<Waypoint> pathPoints, List<EventMarker> markers, pathConstraints, false, false );
+    double distance = Limelight.getDistance(tagAngleOffset);
+    //return trajectory;
+  }
+ */
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -104,17 +94,15 @@ public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFir
       DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
       DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED
       );
-
-    //Command autoTest = new SequentialCommandGroup(
-      //new FollowPathWithEvents(
-        //new followTrajectoryCommand( autoPaths.get(0), true),
-        //autoPaths.get(0).getMarkers(),
-        //DriveConstants.AUTO_EVENT_MAP)
-    //);
-
-
-      //autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
-    // An example command will be run in autonomous
+    /*
+    Command autoTest = new SequentialCommandGroup(
+      new FollowPathWithEvents(
+        new FollowTrajectory( autoPaths.get(0), true),
+        autoPaths.get(0).getMarkers(),
+        DriveConstants.AUTO_EVENT_MAP)
+    );
+    */
     return null;
+    //return new FollowTrajectory( _drive, );
   }
 }

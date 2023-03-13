@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -28,8 +29,8 @@ public final class Constants {
     public static final int BACK_LEFT = 11;
     public static final int BACK_RIGHT = 12;
     public static final int ARM = 20;
-    //Drive input deadband
 
+    //Drive input deadband
     public static final double DEADBAND = 0.1;
 
     //AUTON CONSTANTS
@@ -38,6 +39,49 @@ public final class Constants {
     public static final int AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 0;
     public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
 
+    //Voltage Constraints
+    public static final double ksVolts = 0;
+    public static final double kvVoltSecondsPerMeter = 0;
+    public static final double kaVoltSecondsSquaredPerMeter = 0;
+
+
+//TODO: i did this wrong
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
+
+  }
+
+  public static class PIDConstants {
+    public static final double FRONT_LEFT_kPa = -1.85;
+    public static final double FRONT_LEFT_kIa = 0.0;
+    public static final double FRONT_LEFT_kDa = 0.0;
+
+    public static final double FRONT_RIGHT_kPa = -1.85;
+    public static final double FRONT_RIGHT_kIa = 0.0;
+    public static final double FRONT_RIGHT_kDa = 0.0;
+
+    public static final double BACK_LEFT_kPa = -1.85;
+    public static final double BACK_LEFT_kIa = 0.0;
+    public static final double BACK_LEFT_kDa = 0.0;
+
+    public static final double BACK_RIGHT_kPa = -1.85;
+    public static final double BACK_RIGHT_kIa = 0.0;
+    public static final double BACK_RIGHT_kDa = 0.0;
+
+    public static final double X_kPa = -1.85;
+    public static final double X_kIa = 0.0;
+    public static final double X_kDa = 0.0;
+    public static final double Y_kPa = -1.22;
+    public static final double Y_kIa = 0.0;
+    public static final double Y_kDa = 0.0;
+
+    public static final double THETA_kPa = -1.85;
+    public static final double THETA_kIa = 0.0;
+    public static final double THETA_kDa = 0.0;
+    public static final double THETA_kAv = 0.0;
+    public static final double THETA_kIv = 0.0;
+
+    public static final double kMaxVelocity = 1.0;
+    public static final double kMaxAcceleration = 3.0;
   }
 
   public static class IOConstants {
@@ -118,6 +162,6 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 1.5;
-    public static final double kMaxAccelerationMetersPerSecond = 1.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
   }
 }
