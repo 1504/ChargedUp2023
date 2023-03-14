@@ -5,6 +5,13 @@
       "/Shuffleboard/Arm PID tuning/arm pid": "PIDController",
       "/Shuffleboard/LimeLight/LimeLight Control Scheme": "String Chooser",
       "/Shuffleboard/LimeLight/LimeLight Pipeline": "String Chooser",
+      "/Shuffleboard/PID Drive Tuning/PID": "PIDController",
+      "/Shuffleboard/PID Drive Tuning/back left pid": "PIDController",
+      "/Shuffleboard/PID Drive Tuning/back right pid": "PIDController",
+      "/Shuffleboard/PID Drive Tuning/front left pid": "PIDController",
+      "/Shuffleboard/PID Drive Tuning/front right pid": "PIDController",
+      "/Shuffleboard/PID Drive Tuning/x pid": "PIDController",
+      "/Shuffleboard/PID Drive Tuning/y pid": "PIDController",
       "/Shuffleboard/Pregame/Profile": "String Chooser"
     }
   }

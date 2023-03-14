@@ -121,6 +121,9 @@ public class Drivetrain extends SubsystemBase {
             _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
             _back_left_encoder.getPosition(), _back_right_encoder.getPosition()),
         m_pose);
+
+    // Initialize shuffleboard
+    shuffleboardInit();
   }
 
   /**
@@ -272,29 +275,6 @@ public class Drivetrain extends SubsystemBase {
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();
 
-    gyroPitch = telemetry.add("Gyro Pitch", 0)
-        .withPosition(5, 0)
-        .withSize(1, 1)
-        .withWidget(BuiltInWidgets.kNumberBar)
-        .getEntry();
-    gyroYaw = telemetry.add("Gyro Yaw", 0)
-        .withPosition(6, 0)
-        .withSize(1, 1)
-        .withWidget(BuiltInWidgets.kNumberBar)
-        .getEntry();
-    gyroRoll = telemetry.add("Gyro Roll", 0)
-        .withPosition(7, 0)
-        .withSize(1, 1)
-        .withWidget(BuiltInWidgets.kNumberBar)
-        .getEntry();
-
-    // create button on shuffleboard to reset gyro
-    resetGyro = telemetry.add("Reset Gyro", false)
-        .withWidget(BuiltInWidgets.kToggleButton)
-        .withPosition(8, 0)
-        .withSize(1, 1)
-        .getEntry();
-
     PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
 
     PIDdrive.add("PID", wheel_pid)
@@ -312,23 +292,7 @@ public class Drivetrain extends SubsystemBase {
     PIDdrive.add("y pid", _y_pid)
         .withPosition(4, 0);
   }
-  /*
-   * public static double getPitch() {
-   * return _gyro.getPitch();
-   * }
-   * 
-   * public static double getRoll() {
-   * return _gyro.getRoll();
-   * }
-   * 
-   * public static double getYaw() {
-   * return _gyro.getYaw();
-   * }
-   * 
-   * public static Rotation2d getRotation2d() {
-   * return _gyro.getRotation2d();
-   * }
-   */
+
 
   public void goToAprilTag(double tagAngleOffset) {
     // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
@@ -369,14 +333,6 @@ public class Drivetrain extends SubsystemBase {
     frontRightEncoder.setDouble(getFrontRightMeters());
     backRightEncoder.setDouble(getBackRightMeters());
     backLeftEncoder.setDouble(getBackLeftMeters());
-
-    gyroPitch.setDouble(gyro.getPitch());
-    gyroYaw.setDouble(gyro.getYaw());
-    gyroRoll.setDouble(gyro.getRoll());
-    // if gyro reset button is pressed, reset gyro
-    if (resetGyro.getBoolean(true)) {
-      gyro.reset();
-    }
 
   }
 

@@ -2,7 +2,6 @@ package frc.robot.controlboard.profiles;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.IOConstants;
 import frc.robot.controlboard.IDriveProfile;

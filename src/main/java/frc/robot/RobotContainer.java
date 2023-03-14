@@ -68,15 +68,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // TODO: Verify if whileTrue should be used instead of onTrue
-    // whileTrue executes the command and pauses when button is released
-    // onTrue executes the command until completion when button is pressed 
+    // whileTrue stops command when button is released
     new JoystickButton(m_controlBoard.getArmController(), 1)
         .whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
     new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Extend(m_arm));
     new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new Retract(m_arm));
     new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Open(m_gripper));
-    new JoystickButton(m_controlBoard.getGripperController(), 0).onTrue(new Close(m_gripper));
+    new JoystickButton(m_controlBoard.getGripperController(), 1).onTrue(new Close(m_gripper));
   }
 
   /*
