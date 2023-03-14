@@ -6,42 +6,26 @@ package frc.robot.subsystems;
 
 import java.util.HashMap;
 
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SerialPort;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import frc.robot.RobotContainer;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class Drivetrain extends SubsystemBase {
   /* Motor Controllers */
@@ -359,29 +343,20 @@ public class Drivetrain extends SubsystemBase {
    * );
    * }
    */
-
-  /*
-   * public static void reset() {
-   * _gyro.reset();
-   * System.out.println("Gyro Reset");
-   * }
-   */
-
   public void shuffleboardUpdate() {
-    /*
-     * frontLeftEncoder.setDouble(getFrontLeftMeters());
-     * frontRightEncoder.setDouble(getFrontRightMeters());
-     * backRightEncoder.setDouble(getBackRightMeters());
-     * backLeftEncoder.setDouble(getBackLeftMeters());
-     * 
-     * gyroPitch.setDouble(getPitch());
-     * gyroYaw.setDouble(getYaw());
-     * gyroRoll.setDouble(getRoll());
-     * // if gyro reset button is pressed, reset gyro
-     * if (resetGyro.getBoolean(true)) {
-     * _gyro.reset();
-     * }
-     */
+
+    frontLeftEncoder.setDouble(getFrontLeftMeters());
+    frontRightEncoder.setDouble(getFrontRightMeters());
+    backRightEncoder.setDouble(getBackRightMeters());
+    backLeftEncoder.setDouble(getBackLeftMeters());
+
+    gyroPitch.setDouble(gyro.getPitch());
+    gyroYaw.setDouble(gyro.getYaw());
+    gyroRoll.setDouble(gyro.getRoll());
+    // if gyro reset button is pressed, reset gyro
+    if (resetGyro.getBoolean(true)) {
+      gyro.reset();
+    }
 
   }
 
