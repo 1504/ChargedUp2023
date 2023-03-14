@@ -63,11 +63,6 @@ public class Drivetrain extends SubsystemBase {
   private GenericEntry backRightEncoder;
   private GenericEntry backLeftEncoder;
 
-  private GenericEntry gyroPitch;
-  private GenericEntry gyroYaw;
-  private GenericEntry gyroRoll;
-  private GenericEntry resetGyro;
-
   PIDController wheel_pid;
   PIDController _front_left_pid;
   PIDController _front_right_pid;
