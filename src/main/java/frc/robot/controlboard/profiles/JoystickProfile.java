@@ -2,7 +2,6 @@ package frc.robot.controlboard.profiles;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.IOConstants;
 import frc.robot.controlboard.IDriveProfile;
@@ -95,8 +94,13 @@ public class JoystickProfile implements IDriveProfile{
     }
 
     @Override
-    public GenericHID getArmController() {
+    public GenericHID getArmController() { // Use Joystick #1 for arm control
         return j1;
+    }
+
+    @Override
+    public GenericHID getGripperController() { // Use Joystick #2 for gripper control
+        return j2;
     }
 
 

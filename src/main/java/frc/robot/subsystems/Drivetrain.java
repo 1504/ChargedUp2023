@@ -14,9 +14,10 @@ import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
+// import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -42,7 +43,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final MecanumDrive _drive;
 
-  private final MecanumDriveOdometry _odometry;
+  // private final MecanumDriveOdometry _odometry;
+  private final MecanumDrivePoseEstimator _poseEstimator;
 
   private MecanumAutoBuilder _autoBuilder;
 
@@ -60,11 +62,6 @@ public class Drivetrain extends SubsystemBase {
   private GenericEntry frontRightEncoder;
   private GenericEntry backRightEncoder;
   private GenericEntry backLeftEncoder;
-
-  private GenericEntry gyroPitch;
-  private GenericEntry gyroYaw;
-  private GenericEntry gyroRoll;
-  private GenericEntry resetGyro;
 
   PIDController wheel_pid;
   PIDController _front_left_pid;
@@ -104,14 +101,24 @@ public class Drivetrain extends SubsystemBase {
     _back_left_pid = new PIDController(-1.85, 0, 0);
     _x_pid = new PIDController(-1.85, 0, 0);
     _y_pid = new PIDController(-1.85, 0, 0);
-
-    _odometry = new MecanumDriveOdometry(
-        BuildConstants._KINEMATICS,
+    /*
+     * _odometry = new MecanumDriveOdometry(
+     * BuildConstants._KINEMATICS,
+     * new Rotation2d(),
+     * new MecanumDriveWheelPositions(
+     * _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
+     * _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
+     */
+    Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
+    _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
         new Rotation2d(),
         new MecanumDriveWheelPositions(
             _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
-            _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
+            _back_left_encoder.getPosition(), _back_right_encoder.getPosition()),
+        m_pose);
 
+    // Initialize shuffleboard
+    shuffleboardInit();
   }
 
   /**
@@ -225,8 +232,19 @@ public class Drivetrain extends SubsystemBase {
     MecanumDriveWheelPositions positions = new MecanumDriveWheelPositions(
         getFrontLeftDistance(), getFrontRightDistance(),
         getBackLeftDistance(), getBackRightDistance());
-    _odometry.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
+    _poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
     // _odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
+  }
+
+  public void updateOdometry() {
+    // update should be called every scheduler run
+    _poseEstimator.update(gyro.getRotation2d(), new MecanumDriveWheelPositions( // TODO: Verify _gyro.getRotation2d()
+        _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
+        _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
+
+    // addVisionMeasurement should be called every time a new vision measurement is
+    // available
+    _poseEstimator.addVisionMeasurement(Limelight.getPose(), Limelight.getLatency());
   }
 
   // shuffle board stuff
@@ -252,29 +270,6 @@ public class Drivetrain extends SubsystemBase {
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();
 
-    gyroPitch = telemetry.add("Gyro Pitch", 0)
-        .withPosition(5, 0)
-        .withSize(1, 1)
-        .withWidget(BuiltInWidgets.kNumberBar)
-        .getEntry();
-    gyroYaw = telemetry.add("Gyro Yaw", 0)
-        .withPosition(6, 0)
-        .withSize(1, 1)
-        .withWidget(BuiltInWidgets.kNumberBar)
-        .getEntry();
-    gyroRoll = telemetry.add("Gyro Roll", 0)
-        .withPosition(7, 0)
-        .withSize(1, 1)
-        .withWidget(BuiltInWidgets.kNumberBar)
-        .getEntry();
-
-    // create button on shuffleboard to reset gyro
-    resetGyro = telemetry.add("Reset Gyro", false)
-        .withWidget(BuiltInWidgets.kToggleButton)
-        .withPosition(8, 0)
-        .withSize(1, 1)
-        .getEntry();
-
     PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
 
     PIDdrive.add("PID", wheel_pid)
@@ -292,23 +287,7 @@ public class Drivetrain extends SubsystemBase {
     PIDdrive.add("y pid", _y_pid)
         .withPosition(4, 0);
   }
-  /*
-   * public static double getPitch() {
-   * return _gyro.getPitch();
-   * }
-   * 
-   * public static double getRoll() {
-   * return _gyro.getRoll();
-   * }
-   * 
-   * public static double getYaw() {
-   * return _gyro.getYaw();
-   * }
-   * 
-   * public static Rotation2d getRotation2d() {
-   * return _gyro.getRotation2d();
-   * }
-   */
+
 
   public void goToAprilTag(double tagAngleOffset) {
     // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
@@ -349,14 +328,6 @@ public class Drivetrain extends SubsystemBase {
     frontRightEncoder.setDouble(getFrontRightMeters());
     backRightEncoder.setDouble(getBackRightMeters());
     backLeftEncoder.setDouble(getBackLeftMeters());
-
-    gyroPitch.setDouble(gyro.getPitch());
-    gyroYaw.setDouble(gyro.getYaw());
-    gyroRoll.setDouble(gyro.getRoll());
-    // if gyro reset button is pressed, reset gyro
-    if (resetGyro.getBoolean(true)) {
-      gyro.reset();
-    }
 
   }
 
