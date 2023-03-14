@@ -58,4 +58,9 @@ public class XBoxControllerProfile implements IDriveProfile {
         return controller;
     }
 
+    @Override
+    public GenericHID getGripperController() {
+        return controller;
+    }
+
 }

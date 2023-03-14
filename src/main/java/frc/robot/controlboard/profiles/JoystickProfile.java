@@ -95,8 +95,13 @@ public class JoystickProfile implements IDriveProfile{
     }
 
     @Override
-    public GenericHID getArmController() {
+    public GenericHID getArmController() { // Use Joystick #1 for arm control
         return j1;
+    }
+
+    @Override
+    public GenericHID getGripperController() { // Use Joystick #2 for gripper control
+        return j2;
     }
 
 
