@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// dio pins 0,1,2 are used for the lidar, we read their values to determine the zone
+// dio pins 0,1,2 are used for the lidar, we read their values as bits to determine the zone
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Lidar extends SubsystemBase {
@@ -15,7 +15,9 @@ public class Lidar extends SubsystemBase {
 
     private Action currentAction;
 
-    // current action enum
+    /**
+     * @brief Current action to be taken by the robot
+     */
     public enum Action {
         NONE, FORWARD, BACKWARD, LEFT, RIGHT, GRIP, FORWARD_LEFT, FORWARD_RIGHT
     }
@@ -29,6 +31,10 @@ public class Lidar extends SubsystemBase {
         currentAction = Action.NONE;
     }
 
+    /**
+     * @brief Called periodically to get the current action
+     * @return The current action
+     */
     public Action getAction() {
         return currentAction;
     }
@@ -39,31 +45,33 @@ public class Lidar extends SubsystemBase {
         // based on the zone
         switch (calculateZone()) {
             case 0:
-                currentAction = Action.NONE;
+                currentAction = Action.NONE; // not detecting anything
                 break;
             case 1:
-                currentAction = Action.FORWARD_LEFT;
+                currentAction = Action.FORWARD_LEFT; // robot action should be to move left first, until object in zone
+                                                     // 2, then move forward
                 break;
             case 2:
-                currentAction = Action.FORWARD;
+                currentAction = Action.FORWARD; // move forward until object in zone 5, then grip
                 break;
             case 3:
-                currentAction = Action.FORWARD_RIGHT;
+                currentAction = Action.FORWARD_RIGHT; // robot action should be to move right first, until object in
+                                                      // zone 2, then move forward
                 break;
             case 4:
-                currentAction = Action.LEFT;
+                currentAction = Action.LEFT; // move left until object in zone 5, then grip
                 break;
             case 5:
-                currentAction = Action.GRIP;
+                currentAction = Action.GRIP; // grip the object
                 break;
             case 6:
-                currentAction = Action.RIGHT;
+                currentAction = Action.RIGHT; // move right until object in zone 5, then grip
                 break;
             case 7:
-                currentAction = Action.BACKWARD;
+                currentAction = Action.BACKWARD; // move backward until object in zone 5, then grip
                 break;
             default:
-                currentAction = Action.NONE;
+                currentAction = Action.NONE; // although this should never happen, if it does, set the action to none
                 break;
         }
     }
@@ -78,13 +86,13 @@ public class Lidar extends SubsystemBase {
         boolean[] bits = getBits();
         int zone = 0;
         if (bits[0]) {
-            zone += 1;
+            zone += 1; // 1<<0
         }
         if (bits[1]) {
-            zone += 2;
+            zone += 2; // 1<<1
         }
         if (bits[2]) {
-            zone += 4;
+            zone += 4; // 1<<2
         }
         return zone;
     }

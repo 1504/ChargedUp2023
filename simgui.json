@@ -1,7 +1,11 @@
 {
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Arm PID tuning/arm pid": "PIDController",
+      "/Shuffleboard/LimeLight/LimeLight Control Scheme": "String Chooser",
+      "/Shuffleboard/LimeLight/LimeLight Pipeline": "String Chooser",
+      "/Shuffleboard/Pregame/Profile": "String Chooser"
     }
   }
 }
