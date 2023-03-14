@@ -29,15 +29,6 @@ public class Gyroscope extends SubsystemBase {
             .withPosition(8, 0)
             .withSize(1, 1)
             .getEntry();
-        
-
-    /**
-     * Creates a new Gyroscope.
-     */
-    public Gyroscope() {
-        // _gyro = new AHRS(); // SerialPort.Port.kMXP
-        _gyro.reset();
-    }
 
     @Override
     public void periodic() {
@@ -49,6 +40,10 @@ public class Gyroscope extends SubsystemBase {
             _gyro.reset();
         }
 
+    }
+
+    public Gyroscope() {
+        // _gyro.reset();
     }
 
     public static double getPitch() {
