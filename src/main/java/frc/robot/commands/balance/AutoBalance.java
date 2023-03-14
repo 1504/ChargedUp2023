@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class AutoBalance extends CommandBase {
   Drivetrain drivetrain;
+  private static Gyroscope _gyro;
 
   /** Creates a new AutoBalance. */
   public AutoBalance() {
     // Use addRequirements() here to declare subsystem dependencies.
-    drivetrain = new Drivetrain();
+    drivetrain = new Drivetrain(); // verify that this is the correct way to get the drivetrain
+    _gyro = Gyroscope.getInstance();
     addRequirements(drivetrain);
   }
 
@@ -28,6 +30,7 @@ public class AutoBalance extends CommandBase {
   public void initialize() {
     timer = new Timer();
     timer.start();
+
   }
 
   int count = 0;
@@ -39,11 +42,11 @@ public class AutoBalance extends CommandBase {
     if (timer.get() > 1) {
 
       // get the current pitch
-      double pitch = Gyroscope.getPitch();
+      double pitch = _gyro.getPitch();
       // if pitch is greater than 0, then the robot is leaning forward
       if (Math.pow(pitch, 2) < 0.1) { // if the pitch is close to zero, then stop the robot TODO: verify the
         // value of 0.1
-        count++;
+        count++; // if the robot is balanced, increment the count, if not, reset the count
         if (count > 5) { // if the robot is balanced for 6 seconds, stop the robot
           // stop the robot
           drivetrain.cartesianDrive(0, 0, 0);
@@ -51,9 +54,11 @@ public class AutoBalance extends CommandBase {
       } else if (pitch > 0) {
         // if the robot is leaning forward, move the robot backwards
         drivetrain.cartesianDrive(0, -0.11, 0); // TODO: add and verify delay to prevent the robot from overshooting
+        count = 0;
       } else if (pitch < 0) {
         // if the robot is leaning backward, move the robot forward
         drivetrain.cartesianDrive(0, 0.11, 0);
+        count = 0;
       }
 
       timer.reset();

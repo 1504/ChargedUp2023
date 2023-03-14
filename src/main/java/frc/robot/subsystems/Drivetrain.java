@@ -93,7 +93,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     // create a gyro object and reset it
-    gyro = new Gyroscope();
+    gyro = Gyroscope.getInstance();
     // Gyroscope.reset(); // TODO: verify if the reset is required
 
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
@@ -241,7 +241,7 @@ public class Drivetrain extends SubsystemBase {
     MecanumDriveWheelPositions positions = new MecanumDriveWheelPositions(
         getFrontLeftDistance(), getFrontRightDistance(),
         getBackLeftDistance(), getBackRightDistance());
-    _odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
+    _odometry.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
     // _odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
   }
 
