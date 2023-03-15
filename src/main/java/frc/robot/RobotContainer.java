@@ -15,6 +15,7 @@ import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.ShuffleboardManager;
 import frc.robot.subsystems.RGBLights;
 import java.util.List;
 import com.pathplanner.lib.PathPlanner;
@@ -34,19 +35,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Drivetrain m_drivetrain = Drivetrain.getInstance();
 
   private final ControlBoard m_controlBoard = ControlBoard.getInstance();
-
-
   private final RGBLights m_rgbLights = RGBLights.getInstance();
-
-  private final Arm m_arm;
-
+  private final Arm m_arm = Arm.getInstance();
   private final Gripper m_gripper;
 
+  private final ShuffleboardManager m_shuffle = ShuffleboardManager.getInstance();
+
   public RobotContainer() {
-    m_arm = new Arm();
+    m_shuffle.shuffleboardInit();
     m_gripper = new Gripper();
     m_drivetrain.setDefaultCommand(new Cartesian(
         m_drivetrain,
