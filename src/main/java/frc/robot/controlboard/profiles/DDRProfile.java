@@ -59,5 +59,10 @@ public class DDRProfile implements IDriveProfile {
         return ddr;
     }
 
+    @Override
+    public GenericHID getGripperController() {
+        return ddr;
+    }
+
 
 }
