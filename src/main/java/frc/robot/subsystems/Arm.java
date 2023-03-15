@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.Encoder;
@@ -24,6 +25,7 @@ public class Arm extends SubsystemBase {
 
   ShuffleboardTab PIDArm = Shuffleboard.getTab("Arm PID tuning");
   PIDController arm_pid;
+  GenericEntry armPosition;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -32,7 +34,10 @@ public class Arm extends SubsystemBase {
 
     PIDArm.add("arm pid", arm_pid)
         .withPosition(0, 0);
-    
+    armPosition = PIDArm.add("Arm Position", 0)
+        .withPosition(1, 0)
+        .withSize(3,3)
+        .getEntry();
 
   }
 
@@ -59,5 +64,6 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     PIDDrive();
+    armPosition.setDouble(getArmDistance());
   }
 }
