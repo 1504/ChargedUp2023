@@ -21,6 +21,10 @@ public class Open extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Opens the gripper
+   */
+
   @Override
   public void execute() {
     m_gripper.open();

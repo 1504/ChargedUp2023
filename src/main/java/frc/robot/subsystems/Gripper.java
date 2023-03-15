@@ -17,10 +17,15 @@ public class Gripper extends SubsystemBase {
     m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
   }
 
+  /*
+   * Turns the gripper solenoid on 
+   */
   public void open() {
     m_solenoid.set(true);
   }
-
+  /*
+  * Turns the gripper solenoid off 
+  */
   public void close() {
     m_solenoid.set(false);
   }
