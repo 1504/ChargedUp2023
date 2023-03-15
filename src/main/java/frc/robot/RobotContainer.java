@@ -73,8 +73,8 @@ public class RobotContainer {
         .whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
     new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Extend(m_arm));
     new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new Retract(m_arm));
-    new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Open(m_gripper));
-    new JoystickButton(m_controlBoard.getGripperController(), 1).onTrue(new Close(m_gripper));
+    new JoystickButton(m_controlBoard.getGripperController(), 4).whileTrue(new Open(m_gripper));
+    new JoystickButton(m_controlBoard.getGripperController(), 5).onTrue(new Close(m_gripper));
   }
 
   /*
