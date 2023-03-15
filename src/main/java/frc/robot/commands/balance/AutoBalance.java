@@ -7,18 +7,17 @@ package frc.robot.commands.balance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Gyroscope;
 import frc.robot.subsystems.Drivetrain;
-
-// get the current time in seconds
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoBalance extends CommandBase {
   Drivetrain drivetrain;
   private static Gyroscope _gyro;
+  private static boolean finished = false;
 
   /** Creates a new AutoBalance. */
-  public AutoBalance() {
+  public AutoBalance(Drivetrain _driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    drivetrain = new Drivetrain(); // verify that this is the correct way to get the drivetrain
+    drivetrain = _driveTrain; // verify that this is the correct way to get the drivetrain
     _gyro = Gyroscope.getInstance();
     addRequirements(drivetrain);
   }
@@ -50,6 +49,7 @@ public class AutoBalance extends CommandBase {
         if (count > 5) { // if the robot is balanced for 6 seconds, stop the robot
           // stop the robot
           drivetrain.cartesianDrive(0, 0, 0);
+          finished = true;
         }
       } else if (pitch > 0) {
         // if the robot is leaning forward, move the robot backwards
@@ -72,9 +72,8 @@ public class AutoBalance extends CommandBase {
   }
 
   // Returns true when the command should end.
-  // TODO: Verify if it's fine to leave this as false
   @Override
   public boolean isFinished() {
-    return false;
+    return finished;
   }
 }

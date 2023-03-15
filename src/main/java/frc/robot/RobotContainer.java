@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.arm.Extend;
 import frc.robot.commands.arm.Retract;
+import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.commands.gripper.Close;
 import frc.robot.commands.gripper.Open;
@@ -74,7 +75,8 @@ public class RobotContainer {
     new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Extend(m_arm));
     new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new Retract(m_arm));
     new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Open(m_gripper));
-    new JoystickButton(m_controlBoard.getGripperController(), 1).onTrue(new Close(m_gripper));
+    new JoystickButton(m_controlBoard.getGripperController(), 2).whileTrue(new Close(m_gripper));
+    new JoystickButton(m_controlBoard.getArmController(),4).onTrue(new AutoBalance(m_drivetrain));
   }
 
   /*

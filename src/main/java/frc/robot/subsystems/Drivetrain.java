@@ -288,7 +288,6 @@ public class Drivetrain extends SubsystemBase {
         .withPosition(4, 0);
   }
 
-
   public void goToAprilTag(double tagAngleOffset) {
     // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
   }
