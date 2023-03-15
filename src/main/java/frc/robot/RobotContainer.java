@@ -46,8 +46,8 @@ public class RobotContainer {
     m_gripper = new Gripper();
     m_drivetrain.setDefaultCommand(new Cartesian(
         m_drivetrain,
-        () -> m_controlBoard.getRight(),
         () -> m_controlBoard.getThrottle(),
+        () -> m_controlBoard.getRight(),
         () -> m_controlBoard.getRot()));
 
     // Configure the trigger bindings

@@ -71,7 +71,7 @@ public class Arm extends ProfiledPIDSubsystem {
   }
 
   public void rawExtend() {
-    m_motor.set(MAXSPEED);
+    m_motor.set(-MAXSPEED);
   }
 
   public void rawRetract() {
