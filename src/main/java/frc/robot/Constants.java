@@ -131,7 +131,7 @@ public final class Constants {
 
   public static class ArmConstants {
     // TODO: idk any of these numbers
-    public static final int kMotorPort = 20;
+    public static final int kMotorPort = 21;
 
     public static final double kP = 0;
 
