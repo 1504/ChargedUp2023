@@ -29,6 +29,10 @@ public class Cartesian extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * sets the cartesian drive to the values of the joystick
+   * 
+   */
   @Override
   public void execute() {
     m_drivetrain.cartesianDrive(_ySpeed.getAsDouble(), _xSpeed.getAsDouble(), _zRotation.getAsDouble());

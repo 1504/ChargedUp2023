@@ -206,26 +206,52 @@ public class Drivetrain extends SubsystemBase {
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the front right distance in meters
+   */
+
   public double getFrontRightDistance() {
     return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the front left distance in meters
+   */
   public double getFrontLeftDistance() {
     return _front_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the back right distance in meters
+   */
+
   public double getBackRightDistance() {
     return _back_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
-
+  
+  
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the back left distance in meters
+   */
   public double getBackLeftDistance() {
     return _back_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Resets the odometry to the specified pose.
+   */
   public void resetOdometry(Pose2d pose) {
     MecanumDriveWheelPositions positions = new MecanumDriveWheelPositions(
         getFrontLeftDistance(), getFrontRightDistance(),

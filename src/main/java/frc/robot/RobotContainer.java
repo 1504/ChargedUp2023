@@ -16,7 +16,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.ShuffleboardManager;
-
+import frc.robot.subsystems.RGBLights;
 import java.util.List;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -38,9 +38,8 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = Drivetrain.getInstance();
 
   private final ControlBoard m_controlBoard = ControlBoard.getInstance();
-
+  private final RGBLights m_rgbLights = RGBLights.getInstance();
   private final Arm m_arm = Arm.getInstance();
-
   private final Gripper m_gripper;
 
   private final ShuffleboardManager m_shuffle = ShuffleboardManager.getInstance();

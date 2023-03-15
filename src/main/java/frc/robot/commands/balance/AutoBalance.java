@@ -35,6 +35,9 @@ public class AutoBalance extends CommandBase {
   int count = 0;
 
   // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Balances the robot by adjusting the speed of the motors 
+   */
   @Override
   public void execute() {
 
