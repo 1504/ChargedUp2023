@@ -124,10 +124,12 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Main method to drive the robot
    * 
-   * @param xSpeed    The robot speed in the x axis (left/right) values from -1 to
-   *                  1
    * @param ySpeed    The robot speed in the y axis (forward/backward) values from
    *                  -1 to 1
+   * 
+   * @param xSpeed    The robot speed in the x axis (left/right) values from -1 to
+   *                  1
+   * 
    * @param zRotation The robot rotation speed values from -1 to 1
    */
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
