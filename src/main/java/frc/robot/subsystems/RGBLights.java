@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // use the digital output pins to control the rgb lights
 import edu.wpi.first.wpilibj.DigitalOutput;
+import frc.robot.Constants.DIOPins;
 
 public class RGBLights extends SubsystemBase {
     private DigitalOutput red;
@@ -15,9 +16,9 @@ public class RGBLights extends SubsystemBase {
 
     public RGBLights() {
         // initialize the digital output pins
-        red = new DigitalOutput(3);
-        green = new DigitalOutput(4);
-        blue = new DigitalOutput(5);
+        red = new DigitalOutput(DIOPins.RED_LED);
+        green = new DigitalOutput(DIOPins.GREEN_LED);
+        blue = new DigitalOutput(DIOPins.BLUE_LED);
     }
 
     @Override
