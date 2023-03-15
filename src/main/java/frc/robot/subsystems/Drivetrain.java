@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -101,14 +100,6 @@ public class Drivetrain extends SubsystemBase {
     _back_left_pid = new PIDController(-1.85, 0, 0);
     _x_pid = new PIDController(-1.85, 0, 0);
     _y_pid = new PIDController(-1.85, 0, 0);
-    /*
-     * _odometry = new MecanumDriveOdometry(
-     * BuildConstants._KINEMATICS,
-     * new Rotation2d(),
-     * new MecanumDriveWheelPositions(
-     * _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
-     * _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
-     */
     Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
         new Rotation2d(),
@@ -246,7 +237,8 @@ public class Drivetrain extends SubsystemBase {
 
     // addVisionMeasurement should be called every time a new vision measurement is
     // available
-    _poseEstimator.addVisionMeasurement(Limelight.getPose(), Limelight.getLatency());
+    // TODO: Uncomment vision measurement code
+    // _poseEstimator.addVisionMeasurement(Limelight.getPose(),Limelight.getLatency());
   }
 
   // shuffle board stuff
@@ -294,35 +286,6 @@ public class Drivetrain extends SubsystemBase {
     // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
   }
 
-  /**
-   * public static Command followTrajectoryCommand(PathPlannerTrajectory traj,
-   * boolean isFirstPath) {
-   * return new SequentialCommandGroup(
-   * new InstantCommand(() -> {
-   * // Reset odometry for the first path you run during auto
-   * if(isFirstPath){
-   * m_drivetrain.resetOdometry(traj.getInitialHolonomicPose());
-   * //i think i did this wrong
-   * }
-   * }),
-   * new PPSwerveControllerCommand(
-   * traj,
-   * this::getPose, // Pose supplier
-   * this.kinematics, // SwerveDriveKinematics
-   * new PIDController(0, 0, 0), // X controller. Tune these values for your
-   * robot. Leaving them 0 will only use feedforwards.
-   * new PIDController(0, 0, 0), // Y controller (usually the same values as X
-   * controller)
-   * new PIDController(0, 0, 0), // Rotation controller. Tune these values for
-   * your robot. Leaving them 0 will only use feedforwards.
-   * this::setModuleStates, // Module states consumer
-   * true, // Should the path be automatically mirrored depending on alliance
-   * color. Optional, defaults to true
-   * this // Requires this drive subsystem
-   * )
-   * );
-   * }
-   */
   public void shuffleboardUpdate() {
 
     frontLeftEncoder.setDouble(getFrontLeftMeters());
@@ -336,5 +299,6 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     shuffleboardUpdate();
+    updateOdometry();
   }
 }
