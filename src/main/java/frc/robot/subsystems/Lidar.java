@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DIOPins;
 // dio pins 0,1,2 are used for the lidar, we read their values as bits to determine the zone
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -24,9 +25,9 @@ public class Lidar extends SubsystemBase {
 
     public Lidar() {
         // initialize the DIO pins
-        bit0 = new DigitalInput(0);
-        bit1 = new DigitalInput(1);
-        bit2 = new DigitalInput(2);
+        bit0 = new DigitalInput(DIOPins.LIDAR_FIRST_BIT);
+        bit1 = new DigitalInput(DIOPins.LIDAR_SECOND_BIT);
+        bit2 = new DigitalInput(DIOPins.LIDAR_THIRD_BIT);
         // initialize the current action to none
         currentAction = Action.NONE;
     }
