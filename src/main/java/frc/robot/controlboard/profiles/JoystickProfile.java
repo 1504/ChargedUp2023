@@ -24,7 +24,11 @@ public class JoystickProfile implements IDriveProfile{
 
     LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
-
+    /**
+     * Singleton pattern to ensure only one instance of the Joystick is created
+     * 
+     * @return JoystickProfile instance
+     */
     public static JoystickProfile getInstance() {
 
         if (_instance == null) {
@@ -40,22 +44,42 @@ public class JoystickProfile implements IDriveProfile{
         j2 = new Joystick(IOConstants.JOYSTICK_TWO);
     }
 
+    /**
+     * Gets the throttle value from the joystick
+     * 
+     * @return throttle value
+     */
+
     @Override
     public double getThrottle() {
         
         return j1.getRawAxis(1);
     }
 
+    /**
+     * Gets the left and right values from the joystick
+     * 
+     * @return left and right value
+     */
     @Override
     public double getRight() {
         
         return j1.getRawAxis(0) * (-1);
     }
 
+    /**
+     * 
+     * Gets the rotation value from the joystick
+     * 
+     * @return rotation value
+     * 
+     */
     @Override
     public double getRot() {
         return j2.getX() * (-1);
     }
+
+
 
     @Override
     public boolean getRawButtonPressed(int button) {

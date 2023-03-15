@@ -20,6 +20,9 @@ public class Extend extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Extends the arm
+   */
   @Override
   public void execute() {
     m_arm.rawExtend();
