@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -23,11 +22,11 @@ import edu.wpi.first.wpilibj.Encoder;
  */
 public class Arm extends SubsystemBase {
   private final CANSparkMax m_motor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
-  private final RelativeEncoder m_encoder = m_motor.getEncoder();
-  private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts, ArmConstants.kVVolt, ArmConstants.kAVolt);
+  private final Encoder m_encoder = new Encoder(ArmConstants.kEncoderPorts[0], ArmConstants.kEncoderPorts[1]);
+  private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts,
+      ArmConstants.kVVolt, ArmConstants.kAVolt);
 
-
-  private final double MAXSPEED = 0.25;
+  private final double MAXSPEED = 0.1;
 
   private static Arm _instance = null;
 
@@ -60,11 +59,11 @@ public class Arm extends SubsystemBase {
   }
 
   public void PIDDrive() {
-    m_motor.set(m_encoder.getPosition());
+    m_motor.set(m_encoder.getDistance());
   }
 
   public double getArmDistance() {
-    return m_encoder.getPosition();
+    return m_encoder.getDistance();
   }
 
   public void rawExtend() {
@@ -81,8 +80,6 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //PIDDrive();
-    armPosition.setDouble(getArmDistance());
-
+    PIDDrive();
   }
 }
