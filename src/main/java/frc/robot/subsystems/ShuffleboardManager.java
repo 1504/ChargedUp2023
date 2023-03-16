@@ -128,6 +128,7 @@ public class ShuffleboardManager extends SubsystemBase {
                 .getEntry();
         PIDarm.add("arm pid", _arm.getArmPid())
                 .withPosition(0, 0);
+                
     }
 
     public void shuffleboardUpdate() {
@@ -153,7 +154,7 @@ public class ShuffleboardManager extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        System.out.println("d");
         shuffleboardUpdate();
     }
 }
