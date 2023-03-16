@@ -158,7 +158,7 @@ public class ShuffleboardManager extends SubsystemBase {
         armPosition.setDouble(_arm.getArmDistance());
         // if arm reset button is pressed, reset arm position
         if (resetArmPosition.getBoolean(true)) {
-                armPosition.setDouble(0);
+                _arm.resetArmDistance();
         }
     }
 
