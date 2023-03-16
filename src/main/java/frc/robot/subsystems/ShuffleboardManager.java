@@ -52,6 +52,8 @@ public class ShuffleboardManager extends SubsystemBase {
     private GenericEntry resetGyro;
 
     private GenericEntry armPosition;
+    private GenericEntry resetArmPosition;
+
     private Drivetrain _drive = Drivetrain.getInstance();
     private Gyroscope _gyro = Gyroscope.getInstance();
     private Arm _arm = Arm.getInstance();
@@ -128,6 +130,11 @@ public class ShuffleboardManager extends SubsystemBase {
                 .getEntry();
         PIDarm.add("arm pid", _arm.getArmPid())
                 .withPosition(0, 0);
+        resetArmPosition = PIDarm.add("Reset Arm", false)
+                .withWidget(BuiltInWidgets.kToggleButton)
+                .withPosition(5, 0)
+                .withSize(1, 1)
+                .getEntry();
     }
 
     public void shuffleboardUpdate() {
@@ -148,12 +155,14 @@ public class ShuffleboardManager extends SubsystemBase {
         }
         // updates arm position
         armPosition.setDouble(_arm.getArmDistance());
-
+        // if arm reset button is pressed, reset arm position
+        if (resetArmPosition.getBoolean(true)) {
+                armPosition.setDouble(0);
+        }
     }
 
     @Override
     public void periodic() {
-
         shuffleboardUpdate();
     }
 }
