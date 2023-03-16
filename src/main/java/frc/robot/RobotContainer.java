@@ -46,9 +46,9 @@ public class RobotContainer {
     // m_shuffle.shuffleboardInit(); // shuffleboard initialized in its own constructor
     m_drivetrain.setDefaultCommand(new Cartesian(
         m_drivetrain,
-        () -> m_controlBoard.getRot(),
+        () -> m_controlBoard.getThrottle(),
         () -> m_controlBoard.getRight(),
-        () -> m_controlBoard.getThrottle()));
+        () -> m_controlBoard.getRot()));
 
     // Configure the trigger bindings
     configureBindings();
@@ -71,7 +71,7 @@ public class RobotContainer {
   private void configureBindings() {
     // whileTrue stops command when button is released
     new JoystickButton(m_controlBoard.getArmController(), 1)
-        .whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0.2, () -> 0));
+        .whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0, () -> 0));
     new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Extend(m_arm));
     new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new Retract(m_arm));
     new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Open(m_gripper));
