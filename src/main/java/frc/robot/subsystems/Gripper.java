@@ -14,7 +14,7 @@ public class Gripper extends SubsystemBase {
 
   /** Creates a new Gripper. */
   public Gripper() {
-    m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+    m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
   }
 
   public void open() {

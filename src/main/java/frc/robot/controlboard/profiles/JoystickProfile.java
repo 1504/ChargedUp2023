@@ -54,7 +54,7 @@ public class JoystickProfile implements IDriveProfile{
 
     @Override
     public double getRot() {
-        return j2.getX() * (-1);
+        return j2.getX();
     }
 
     @Override

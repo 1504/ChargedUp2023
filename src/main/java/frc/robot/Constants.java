@@ -29,9 +29,9 @@ public final class Constants {
 
     // Motor Controller IDs
     public static final int FRONT_LEFT = 10;
-    public static final int FRONT_RIGHT = 13;
+    public static final int FRONT_RIGHT = 20;
     public static final int BACK_LEFT = 11;
-    public static final int BACK_RIGHT = 12;
+    public static final int BACK_RIGHT = 13;
     public static final int ARM = 20;
 
     // Drive input deadband
@@ -131,7 +131,7 @@ public final class Constants {
 
   public static class ArmConstants {
     // TODO: idk any of these numbers
-    public static final int kMotorPort = 20;
+    public static final int kMotorPort = 23;
 
     public static final double kP = 0;
 
