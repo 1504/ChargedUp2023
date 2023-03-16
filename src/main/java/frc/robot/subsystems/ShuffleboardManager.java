@@ -135,6 +135,7 @@ public class ShuffleboardManager extends SubsystemBase {
                 .withPosition(5, 0)
                 .withSize(1, 1)
                 .getEntry();
+
     }
 
     public void shuffleboardUpdate() {
@@ -163,6 +164,7 @@ public class ShuffleboardManager extends SubsystemBase {
 
     @Override
     public void periodic() {
+
         shuffleboardUpdate();
     }
 }
