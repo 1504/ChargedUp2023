@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.UnitConstants;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class Limelight extends SubsystemBase {
 
@@ -25,16 +29,29 @@ public class Limelight extends SubsystemBase {
     }
 
     private static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-
     /**
      * Get the pose of the limelight
      * @return a new constructed pose at the origin facing toward the positive X axis.
 
      */
-    public static Pose2d getPose() {
+    public static Pose2d getPose(double distanceToShiftBy) {
+        double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(new double[]{});
+		// final double kOffset = 100;
 
-        return new Pose2d(); // TODO: get the pose from the limelight
+		// LinearDigitalFilter
 
+		// final double kLimelightForeOffset = 25; //inches from limelight to hatch pannel
+		// forward/backward motion, left/right motion
+		Translation2d mTranToGoal = new Translation2d(UnitConstants.METERS_TO_INCHES * ((camtran[2]) + distanceToShiftBy), UnitConstants.METERS_TO_INCHES * (camtran[0] * -1) + distanceToShiftBy);
+		Rotation2d mRotToGoal = new Rotation2d(camtran[4] * 1);
+		Pose2d mPoseToGoal = new Pose2d(mTranToGoal, mRotToGoal);
+		return mPoseToGoal;
+        // TODO: get the pose from the limelight
+
+    }
+
+    public static double getDistanceFromAprilTag() {
+        return 0.0;
     }
 
     /**

@@ -25,6 +25,11 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public final class Constants {
 
+  public static class UnitConstants {
+    public static final double RADIANS_TO_DEGREES = 180/Math.PI;
+    public static final double METERS_TO_INCHES = 39.3701;
+  }
+
   public static class DriveConstants {
 
     // Motor Controller IDs
@@ -49,7 +54,7 @@ public final class Constants {
     public static final double kaVoltSecondsSquaredPerMeter = 0;
 
     // TODO: i did this wrong
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
+    //public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
 
   }
 
@@ -105,6 +110,8 @@ public final class Constants {
     public static final double CONE_AREA = 0; // ^
     public static final double CONE_WIDTH = 0; // used for wizardry
     public static final double CONE_HEIGHT = 0; // ^
+
+    public static final double kCameraHeight = 0;
   }
 
   public static class BuildConstants {
@@ -152,10 +159,6 @@ public final class Constants {
     // The offset of the arm from the horizontal in its neutral position,
     // measured from the horizontal
     public static final double kArmOffsetRads = 0;
-
-    // public static final double kArmLength = 0;
-    // public static final double kMinAngleRads = 0;
-    // public static final double kMaxAngleRads = 0;
   }
 
   public static class AutoConstants {
