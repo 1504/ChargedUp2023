@@ -4,6 +4,17 @@ import edu.wpi.first.wpilibj.GenericHID;
 
 public class DDR extends GenericHID {
 
+    private static DDR _instance = null;
+
+    public static DDR getInstance(int port) {
+
+        if (_instance == null) {
+            _instance = new DDR(port);
+        }
+
+        return _instance;
+    }
+
     public enum Button {
         kLeft(1),
         kUp(3),
@@ -24,7 +35,7 @@ public class DDR extends GenericHID {
 
     }
 
-    public DDR(int port) {
+    private DDR(int port) {
         super(port);
     }
 

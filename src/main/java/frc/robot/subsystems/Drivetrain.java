@@ -17,18 +17,37 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 
+/**
+ * Drivetrain subsystem
+ * <p>
+ * Warning: This class is a singleton. Use getInstance() to get the instance of
+ * the Drivetrain subsystem
+ * The constructor is private to prevent other classes from instantiating it.
+ */
 public class Drivetrain extends SubsystemBase {
+
+  static private Drivetrain _instance = null;
+
+  /**
+   * getInstance to provide a singleton instance of the Drivetrain subsystem
+   * 
+   * @return the instance of the Drivetrain subsystem
+   */
+  public static Drivetrain getInstance() {
+    if (_instance == null) {
+      _instance = new Drivetrain();
+    }
+
+    return _instance;
+
+  }
+
   /* Motor Controllers */
   private final CANSparkMax _front_left_motor;
   private final CANSparkMax _front_right_motor;
@@ -43,25 +62,13 @@ public class Drivetrain extends SubsystemBase {
 
   private final MecanumDrive _drive;
 
-  // private final MecanumDriveOdometry _odometry;
   private final MecanumDrivePoseEstimator _poseEstimator;
 
   private MecanumAutoBuilder _autoBuilder;
 
   private final HashMap<String, Command> m_eventMap = new HashMap<String, Command>();
 
-  // private static final AHRS _gyro = new AHRS(SerialPort.Port.kMXP);
-
   Pose2d m_pose;
-
-  // shuffle board
-  ShuffleboardTab telemetry = Shuffleboard.getTab("Telemetry");
-  ShuffleboardTab PIDdrive;
-
-  private GenericEntry frontLeftEncoder;
-  private GenericEntry frontRightEncoder;
-  private GenericEntry backRightEncoder;
-  private GenericEntry backLeftEncoder;
 
   PIDController wheel_pid;
   PIDController _front_left_pid;
@@ -72,10 +79,8 @@ public class Drivetrain extends SubsystemBase {
   PIDController _y_pid;
   Gyroscope gyro;
 
-  public Drivetrain() {
-    // create a gyro object and reset it
+  private Drivetrain() {
     gyro = Gyroscope.getInstance();
-    // Gyroscope.reset(); // TODO: verify if the reset is required
 
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
     _front_right_motor = new CANSparkMax(DriveConstants.FRONT_RIGHT, MotorType.kBrushless);
@@ -101,14 +106,6 @@ public class Drivetrain extends SubsystemBase {
     _back_left_pid = new PIDController(-1.85, 0, 0);
     _x_pid = new PIDController(-1.85, 0, 0);
     _y_pid = new PIDController(-1.85, 0, 0);
-    /*
-     * _odometry = new MecanumDriveOdometry(
-     * BuildConstants._KINEMATICS,
-     * new Rotation2d(),
-     * new MecanumDriveWheelPositions(
-     * _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
-     * _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
-     */
     Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
         new Rotation2d(),
@@ -116,9 +113,6 @@ public class Drivetrain extends SubsystemBase {
             _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
             _back_left_encoder.getPosition(), _back_right_encoder.getPosition()),
         m_pose);
-
-    // Initialize shuffleboard
-    shuffleboardInit();
   }
 
   /**
@@ -159,6 +153,10 @@ public class Drivetrain extends SubsystemBase {
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftMeters()));
     _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightMeters()));
 
+  }
+
+  public void goToAprilTag(double tagAngleOffset) {
+    // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
   }
 
   /**
@@ -211,26 +209,51 @@ public class Drivetrain extends SubsystemBase {
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the front right distance in meters
+   */
+
   public double getFrontRightDistance() {
     return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the front left distance in meters
+   */
   public double getFrontLeftDistance() {
     return _front_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
+
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the back right distance in meters
+   */
 
   public double getBackRightDistance() {
     return _back_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Gets the current position of the robot
+   * 
+   * @return The current position of the back left distance in meters
+   */
   public double getBackLeftDistance() {
     return _back_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
+  /**
+   * Resets the odometry to the specified pose.
+   */
   public void resetOdometry(Pose2d pose) {
     MecanumDriveWheelPositions positions = new MecanumDriveWheelPositions(
         getFrontLeftDistance(), getFrontRightDistance(),
@@ -241,101 +264,138 @@ public class Drivetrain extends SubsystemBase {
 
   public void updateOdometry() {
     // update should be called every scheduler run
-    _poseEstimator.update(gyro.getRotation2d(), new MecanumDriveWheelPositions( // TODO: Verify _gyro.getRotation2d()
+    _poseEstimator.update(gyro.getRotation2d(), new MecanumDriveWheelPositions(
+        // TODO: Verify _gyro.getRotation2d()
         _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
         _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
 
     // addVisionMeasurement should be called every time a new vision measurement is
     // available
-    _poseEstimator.addVisionMeasurement(Limelight.getPose(), Limelight.getLatency());
-  }
-
-  // shuffle board stuff
-  public void shuffleboardInit() {
-    frontLeftEncoder = telemetry.add("Front Left Encoder", 0)
-        .withPosition(0, 0)
-        .withSize(2, 2)
-        .withWidget(BuiltInWidgets.kTextView)
-        .getEntry();
-    frontRightEncoder = telemetry.add("Front Right Encoder", 0)
-        .withPosition(2, 0)
-        .withSize(2, 2)
-        .withWidget(BuiltInWidgets.kTextView)
-        .getEntry();
-    backRightEncoder = telemetry.add("Back Right Encoder", 0)
-        .withPosition(0, 2)
-        .withSize(2, 2)
-        .withWidget(BuiltInWidgets.kTextView)
-        .getEntry();
-    backLeftEncoder = telemetry.add("Back Left Encoder", 0)
-        .withPosition(2, 2)
-        .withSize(2, 2)
-        .withWidget(BuiltInWidgets.kTextView)
-        .getEntry();
-
-    PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
-
-    PIDdrive.add("PID", wheel_pid)
-        .withPosition(2, 0);
-    PIDdrive.add("front left pid", _front_left_pid)
-        .withPosition(0, 0);
-    PIDdrive.add("front right pid", _front_right_pid)
-        .withPosition(1, 0);
-    PIDdrive.add("back left pid", _back_left_pid)
-        .withPosition(0, 2);
-    PIDdrive.add("back right pid", _back_right_pid)
-        .withPosition(1, 2);
-    PIDdrive.add("x pid", _x_pid)
-        .withPosition(3, 0);
-    PIDdrive.add("y pid", _y_pid)
-        .withPosition(4, 0);
-  }
-
-  public void goToAprilTag(double tagAngleOffset) {
-    // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
+    // TODO: Uncomment vision measurement code
+    // _poseEstimator.addVisionMeasurement(Limelight.getPose(),Limelight.getLatency());
   }
 
   /**
-   * public static Command followTrajectoryCommand(PathPlannerTrajectory traj,
-   * boolean isFirstPath) {
-   * return new SequentialCommandGroup(
-   * new InstantCommand(() -> {
-   * // Reset odometry for the first path you run during auto
-   * if(isFirstPath){
-   * m_drivetrain.resetOdometry(traj.getInitialHolonomicPose());
-   * //i think i did this wrong
-   * }
-   * }),
-   * new PPSwerveControllerCommand(
-   * traj,
-   * this::getPose, // Pose supplier
-   * this.kinematics, // SwerveDriveKinematics
-   * new PIDController(0, 0, 0), // X controller. Tune these values for your
-   * robot. Leaving them 0 will only use feedforwards.
-   * new PIDController(0, 0, 0), // Y controller (usually the same values as X
-   * controller)
-   * new PIDController(0, 0, 0), // Rotation controller. Tune these values for
-   * your robot. Leaving them 0 will only use feedforwards.
-   * this::setModuleStates, // Module states consumer
-   * true, // Should the path be automatically mirrored depending on alliance
-   * color. Optional, defaults to true
-   * this // Requires this drive subsystem
-   * )
-   * );
-   * }
+   * Gets the current wheel PID
+   * 
+   * @return The current wheel PID
    */
-  public void shuffleboardUpdate() {
+  public PIDController getWheelPid() {
+    return wheel_pid;
+  }
 
-    frontLeftEncoder.setDouble(getFrontLeftMeters());
-    frontRightEncoder.setDouble(getFrontRightMeters());
-    backRightEncoder.setDouble(getBackRightMeters());
-    backLeftEncoder.setDouble(getBackLeftMeters());
+  /**
+   * Gets the current front left encoder PID
+   * 
+   * @return The current front left encoder PID
+   */
+  public PIDController getFrontLeftPid() {
+    return _front_left_pid;
+  }
 
+  /**
+   * Gets the current front right encoder PID
+   * 
+   * @return The current front right encoder PID
+   */
+  public PIDController getFrontRightPid() {
+    return _front_right_pid;
+  }
+
+  /**
+   * Gets the current back left encoder PID
+   * 
+   * @return The current back left encoder PID
+   */
+  public PIDController getBackLeftPid() {
+    return _back_left_pid;
+  }
+
+  /**
+   * Gets the current back right encoder PID
+   * 
+   * @return The current back right encoder PID
+   */
+  public PIDController getBackRightPid() {
+    return _back_right_pid;
+  }
+
+  public PIDController getXPid() {
+    return _x_pid;
+  }
+
+  public PIDController getYPid() {
+    return _y_pid;
+  }
+
+  /**
+   * Sets the current wheel PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setWheelPid(double p, double i, double d) {
+    wheel_pid.setP(p);
+    wheel_pid.setI(i);
+    wheel_pid.setD(d);
+  }
+
+  /**
+   * Sets the current front left PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setFrontLeftPid(double p, double i, double d) {
+    _front_left_pid.setP(p);
+    _front_left_pid.setI(i);
+    _front_left_pid.setD(d);
+  }
+
+  /**
+   * Sets the current front right PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setFrontRightPid(double p, double i, double d) {
+    _front_right_pid.setP(p);
+    _front_right_pid.setI(i);
+    _front_right_pid.setD(d);
+  }
+
+  /**
+   * Sets the current back left PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setBackLeftPid(double p, double i, double d) {
+    _back_left_pid.setP(p);
+    _back_left_pid.setI(i);
+    _back_left_pid.setD(d);
+  }
+
+  /**
+   * Sets the current back right PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setBackRightPid(double p, double i, double d) {
+    _back_right_pid.setP(p);
+    _back_right_pid.setI(i);
+    _back_right_pid.setD(d);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    shuffleboardUpdate();
+    updateOdometry();
   }
 }

@@ -20,7 +20,7 @@ public class DDRProfile implements IDriveProfile {
     }
 
     private DDRProfile() {
-        ddr = new DDR(IOConstants.DDR_PORT);
+        ddr = DDR.getInstance(IOConstants.DDR_PORT);
     }
 
     @Override
@@ -63,6 +63,5 @@ public class DDRProfile implements IDriveProfile {
     public GenericHID getGripperController() {
         return ddr;
     }
-
 
 }
