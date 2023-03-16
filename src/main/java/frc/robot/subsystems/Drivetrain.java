@@ -87,8 +87,8 @@ public class Drivetrain extends SubsystemBase {
     _back_right_motor = new CANSparkMax(DriveConstants.BACK_RIGHT, MotorType.kBrushless);
     _back_left_motor = new CANSparkMax(DriveConstants.BACK_LEFT, MotorType.kBrushless);
 
-    _front_left_motor.setInverted(true);
-    _back_left_motor.setInverted(true);
+    _front_left_motor.setInverted(false);
+    _back_left_motor.setInverted(false);
     _back_right_motor.setInverted(false);
     _front_right_motor.setInverted(false);
 
@@ -128,6 +128,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
     // Deadband
+    zRotation *= -1;
     double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : zRotation;
     double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : ySpeed;
     double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : xSpeed;
