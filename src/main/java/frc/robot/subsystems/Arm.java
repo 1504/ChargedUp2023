@@ -7,12 +7,13 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;;
 
 /**
  * Arm subsystem.
@@ -24,14 +25,15 @@ import edu.wpi.first.wpilibj.Encoder;
 public class Arm extends SubsystemBase {
   private final CANSparkMax m_motor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
-  private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts, ArmConstants.kVVolt, ArmConstants.kAVolt);
-
+  private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts,
+      ArmConstants.kVVolt, ArmConstants.kAVolt);
 
   private final double MAXSPEED = 0.25;
 
   private static Arm _instance = null;
-
+  ShuffleboardTab PIDArm = Shuffleboard.getTab("Arm PID tuning");
   PIDController arm_pid;
+  GenericEntry armPosition;
 
   /**
    * Private constructor to prevent other classes from instantiating it.
@@ -39,7 +41,12 @@ public class Arm extends SubsystemBase {
   private Arm() {
 
     arm_pid = new PIDController(ArmConstants.kP, 0, 0);
-
+    PIDArm.add("arm pid", arm_pid)
+        .withPosition(0, 0);
+    armPosition = PIDArm.add("Arm Position", 0)
+        .withPosition(1, 0)
+        .withSize(3, 3)
+        .getEntry();
   }
 
   /**
@@ -81,7 +88,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //PIDDrive();
+    // PIDDrive();
     armPosition.setDouble(getArmDistance());
 
   }
