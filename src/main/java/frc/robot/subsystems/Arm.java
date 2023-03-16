@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -28,7 +27,7 @@ public class Arm extends SubsystemBase {
   private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts,
       ArmConstants.kVVolt, ArmConstants.kAVolt);
 
-  private final double MAXSPEED = 0.25;
+  private final double MAXSPEED = 0.1;
 
   private static Arm _instance = null;
   ShuffleboardTab PIDArm = Shuffleboard.getTab("Arm PID tuning");
@@ -46,6 +45,7 @@ public class Arm extends SubsystemBase {
     armPosition = PIDArm.add("Arm Position", 0)
         .withPosition(1, 0)
         .withSize(3, 3)
+
         .getEntry();
   }
 
@@ -67,11 +67,11 @@ public class Arm extends SubsystemBase {
   }
 
   public void PIDDrive() {
-    m_motor.set(m_encoder.getPosition());
+    m_motor.set(m_encoder.getDistance());
   }
 
   public double getArmDistance() {
-    return m_encoder.getPosition();
+    return m_encoder.getDistance();
   }
 
   public void rawExtend() {
@@ -90,6 +90,5 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     // PIDDrive();
     armPosition.setDouble(getArmDistance());
-
   }
 }
