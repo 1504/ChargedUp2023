@@ -42,6 +42,10 @@ public class Limelight extends SubsystemBase {
 
     }
 
+    public static double getDistanceFromAprilTag() {
+        return 0.0;
+    }
+
     public static double getLatency() {
         double tl = table.getEntry("tl").getDouble(0.0);
         double cl = table.getEntry("cl").getDouble(0.0);
