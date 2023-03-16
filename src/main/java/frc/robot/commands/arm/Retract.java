@@ -20,6 +20,9 @@ public class Retract extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Retracts the arm
+   */
   @Override
   public void execute() {
     m_arm.rawRetract();

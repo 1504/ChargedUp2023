@@ -23,22 +23,27 @@ public class Arm extends SubsystemBase {
 
   private final double MAXSPEED = 0.1;
 
-  ShuffleboardTab PIDArm = Shuffleboard.getTab("Arm PID tuning");
+  private static Arm _instance = null;
+
   PIDController arm_pid;
-  GenericEntry armPosition;
 
   /** Creates a new Arm. */
   public Arm() {
 
     arm_pid = new PIDController(ArmConstants.kP, 0, 0);
 
-    PIDArm.add("arm pid", arm_pid)
-        .withPosition(0, 0);
-    armPosition = PIDArm.add("Arm Position", 0)
-        .withPosition(1, 0)
-        .withSize(3,3)
-        .getEntry();
+  }
 
+  public static Arm getInstance() {
+    if (_instance == null) {
+      _instance = new Arm();
+    }
+    return _instance;
+
+  }
+
+  public PIDController getArmPid() {
+    return arm_pid;
   }
 
   public void PIDDrive() {
@@ -64,6 +69,5 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     PIDDrive();
-    armPosition.setDouble(getArmDistance());
   }
 }

@@ -18,6 +18,12 @@ public class ControlBoard {
     ShuffleboardTab p_tab = Shuffleboard.getTab("Pregame");
     NetworkTableEntry profile;
 
+    /**
+     * Singleton pattern to ensure only one instance of the ControlBoard is created
+     * 
+     * @return ControlBoard instance
+     */
+
     public static ControlBoard getInstance() {
 
         if (_instance == null) {
