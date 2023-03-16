@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.HashMap;
 
-import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -15,7 +14,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,8 +65,6 @@ public class Drivetrain extends SubsystemBase {
   private final MecanumDrive _drive;
 
   private final MecanumDrivePoseEstimator _poseEstimator;
-
-  private MecanumAutoBuilder _autoBuilder;
 
   private final HashMap<String, Command> m_eventMap = new HashMap<String, Command>();
 
@@ -393,6 +392,28 @@ public class Drivetrain extends SubsystemBase {
     _back_right_pid.setI(i);
     _back_right_pid.setD(d);
   }
+
+  public Pose2d getPose() {
+    return m_pose;
+  }
+
+  public void outputWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
+    double frontLeft = wheelSpeeds.frontLeftMetersPerSecond;
+    double frontRight = wheelSpeeds.frontRightMetersPerSecond;
+    double backLeft = wheelSpeeds.rearLeftMetersPerSecond;
+    double backRight = wheelSpeeds.rearRightMetersPerSecond;
+
+    _front_left_pid.setSetpoint(frontLeft);
+    _front_right_pid.setSetpoint(frontRight);
+    _back_left_pid.setSetpoint(backLeft);
+    _back_right_pid.setSetpoint(backRight);
+
+    _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftMeters()));
+    _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightMeters()));
+    _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftMeters()));
+    _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightMeters()));
+  }
+
 
   @Override
   public void periodic() {

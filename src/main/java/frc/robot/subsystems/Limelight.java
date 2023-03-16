@@ -51,8 +51,6 @@ public class Limelight extends SubsystemBase {
                 .getDoubleArray(new double[] {});
         // final double kOffset = 100;
 
-        // LinearDigitalFilter
-
         // final double kLimelightForeOffset = 25; //inches from limelight to hatch
         // pannel
         // forward/backward motion, left/right motion
