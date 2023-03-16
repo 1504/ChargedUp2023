@@ -52,7 +52,6 @@ public class ShuffleboardManager extends SubsystemBase {
     private GenericEntry resetGyro;
 
     private GenericEntry armPosition;
-
     private Drivetrain _drive = Drivetrain.getInstance();
     private Gyroscope _gyro = Gyroscope.getInstance();
     private Arm _arm = Arm.getInstance();
@@ -102,8 +101,9 @@ public class ShuffleboardManager extends SubsystemBase {
                 .getEntry();
 
         // PID drive stuff
-        PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
 
+        // Optional: add functionality to modify PID values on the fly
+        PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
         PIDdrive.add("PID", _drive.getWheelPid())
                 .withPosition(2, 0);
         PIDdrive.add("front left pid", _drive.getFrontLeftPid())

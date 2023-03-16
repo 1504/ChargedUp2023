@@ -62,14 +62,11 @@ public class Drivetrain extends SubsystemBase {
 
   private final MecanumDrive _drive;
 
-  // private final MecanumDriveOdometry _odometry;
   private final MecanumDrivePoseEstimator _poseEstimator;
 
   private MecanumAutoBuilder _autoBuilder;
 
   private final HashMap<String, Command> m_eventMap = new HashMap<String, Command>();
-
-  // private static final AHRS _gyro = new AHRS(SerialPort.Port.kMXP);
 
   Pose2d m_pose;
 
@@ -82,17 +79,8 @@ public class Drivetrain extends SubsystemBase {
   PIDController _y_pid;
   Gyroscope gyro;
 
-  /**
-   * Drivetrain subsystem
-   * <p>
-   * Warning: This class is a singleton. Use getInstance() to get the instance of
-   * the Drivetrain subsystem
-   * The constructor is private to prevent other classes from instantiating it.
-   */
   private Drivetrain() {
-    // create a gyro object and reset it
     gyro = Gyroscope.getInstance();
-    // Gyroscope.reset(); // TODO: verify if the reset is required
 
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
     _front_right_motor = new CANSparkMax(DriveConstants.FRONT_RIGHT, MotorType.kBrushless);
@@ -275,7 +263,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void updateOdometry() {
     // update should be called every scheduler run
-    _poseEstimator.update(gyro.getRotation2d(), new MecanumDriveWheelPositions( // TODO: Verify _gyro.getRotation2d()
+    _poseEstimator.update(gyro.getRotation2d(), new MecanumDriveWheelPositions(
+        // TODO: Verify _gyro.getRotation2d()
         _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
         _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
 
@@ -285,22 +274,47 @@ public class Drivetrain extends SubsystemBase {
     // _poseEstimator.addVisionMeasurement(Limelight.getPose(),Limelight.getLatency());
   }
 
+  /**
+   * Gets the current wheel PID
+   * 
+   * @return The current wheel PID
+   */
   public PIDController getWheelPid() {
     return wheel_pid;
   }
 
+  /**
+   * Gets the current front left encoder PID
+   * 
+   * @return The current front left encoder PID
+   */
   public PIDController getFrontLeftPid() {
     return _front_left_pid;
   }
 
+  /**
+   * Gets the current front right encoder PID
+   * 
+   * @return The current front right encoder PID
+   */
   public PIDController getFrontRightPid() {
     return _front_right_pid;
   }
 
+  /**
+   * Gets the current back left encoder PID
+   * 
+   * @return The current back left encoder PID
+   */
   public PIDController getBackLeftPid() {
     return _back_left_pid;
   }
 
+  /**
+   * Gets the current back right encoder PID
+   * 
+   * @return The current back right encoder PID
+   */
   public PIDController getBackRightPid() {
     return _back_right_pid;
   }
@@ -311,6 +325,71 @@ public class Drivetrain extends SubsystemBase {
 
   public PIDController getYPid() {
     return _y_pid;
+  }
+
+  /**
+   * Sets the current wheel PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setWheelPid(double p, double i, double d) {
+    wheel_pid.setP(p);
+    wheel_pid.setI(i);
+    wheel_pid.setD(d);
+  }
+
+  /**
+   * Sets the current front left PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setFrontLeftPid(double p, double i, double d) {
+    _front_left_pid.setP(p);
+    _front_left_pid.setI(i);
+    _front_left_pid.setD(d);
+  }
+
+  /**
+   * Sets the current front right PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setFrontRightPid(double p, double i, double d) {
+    _front_right_pid.setP(p);
+    _front_right_pid.setI(i);
+    _front_right_pid.setD(d);
+  }
+
+  /**
+   * Sets the current back left PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setBackLeftPid(double p, double i, double d) {
+    _back_left_pid.setP(p);
+    _back_left_pid.setI(i);
+    _back_left_pid.setD(d);
+  }
+
+  /**
+   * Sets the current back right PID
+   * 
+   * @param p The new P value
+   * @param i The new I value
+   * @param d The new D value
+   */
+  public void setBackRightPid(double p, double i, double d) {
+    _back_right_pid.setP(p);
+    _back_right_pid.setI(i);
+    _back_right_pid.setD(d);
   }
 
   @Override

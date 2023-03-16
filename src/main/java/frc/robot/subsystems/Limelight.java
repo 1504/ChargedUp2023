@@ -92,7 +92,6 @@ public class Limelight extends SubsystemBase {
      * @param varName
      * @param value
      */
-
     public static void setConfig(String varName, int value) {
         NetworkTableInstance.getDefault().getTable("Limelight").getEntry(varName).setNumber(value);
         // System.out.println("Set " + varName + " to " + value);
