@@ -69,6 +69,10 @@ public class Arm extends SubsystemBase {
     return m_encoder.getPosition();
   }
 
+  public void resetArmDistance() {
+    m_encoder.setPosition(0);
+  }
+
   public void rawExtend() {
     m_motor.set(MAXSPEED);
   }
@@ -83,6 +87,6 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    PIDDrive();
+
   }
 }
