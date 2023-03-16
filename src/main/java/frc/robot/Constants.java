@@ -131,7 +131,7 @@ public final class Constants {
 
   public static class ArmConstants {
     // TODO: idk any of these numbers
-    public static final int kMotorPort = 20;
+    public static final int kMotorPort = 21;
 
     public static final double kP = 0;
 
@@ -164,11 +164,14 @@ public final class Constants {
   }
 
   public static class DIOPins {
-    public static final char RED_LED = 3;
-    public static final char GREEN_LED = 4;
-    public static final char BLUE_LED = 5;
     public static final char LIDAR_FIRST_BIT = 0;
     public static final char LIDAR_SECOND_BIT = 1;
     public static final char LIDAR_THIRD_BIT = 2;
+  }
+
+  public static class PWMPins {
+    public static final char RED_LED = 0;
+    public static final char GREEN_LED = 1;
+    public static final char BLUE_LED = 2;
   }
 }

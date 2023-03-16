@@ -14,33 +14,11 @@ public class Gyroscope extends SubsystemBase {
     private static final AHRS _gyro = new AHRS(SerialPort.Port.kMXP);
     private static Gyroscope _instance = null;
     ShuffleboardTab telemetry = Shuffleboard.getTab("Telemetry");
-    GenericEntry gyroPitch = telemetry.add("Gyro Pitch", 0)
-            .withWidget(BuiltInWidgets.kNumberBar)
-            .getEntry();
-    GenericEntry gyroYaw = telemetry.add("Gyro Yaw", 0)
-            .withWidget(BuiltInWidgets.kNumberBar)
-            .getEntry();
-    GenericEntry gyroRoll = telemetry.add("Gyro Roll", 0)
-            .withWidget(BuiltInWidgets.kNumberBar)
-            .getEntry();
-
-    // create button on shuffleboard to reset gyro
-    GenericEntry resetGyro = telemetry.add("Reset Gyro", false)
-            .withWidget(BuiltInWidgets.kToggleButton)
-            .withPosition(8, 0)
-            .withSize(1, 1)
-            .getEntry();
+   
 
     @Override
     public void periodic() {
-        gyroPitch.setDouble(getPitch());
-        gyroYaw.setDouble(getYaw());
-        gyroRoll.setDouble(getRoll());
-        // if gyro reset button is pressed, reset gyro
-        if (resetGyro.getBoolean(true)) {
-            _gyro.reset();
-        }
-
+       
     }
 
     public static Gyroscope getInstance() {
