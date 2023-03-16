@@ -9,12 +9,33 @@ import frc.robot.Constants.DIOPins;
 // dio pins 0,1,2 are used for the lidar, we read their values as bits to determine the zone
 import edu.wpi.first.wpilibj.DigitalInput;
 
+/**
+ * Lidar subsystem
+ * <p>
+ * Warning: This class is a singleton. Use getInstance() to get the instance of
+ * the Lidar subsystem
+ * The constructor is private to prevent other classes from instantiating it.
+ */
 public class Lidar extends SubsystemBase {
     private DigitalInput bit0;
     private DigitalInput bit1;
     private DigitalInput bit2;
 
     private Action currentAction;
+
+    private static Lidar _instance = null;
+
+    /**
+     * getInstance to provide a singleton instance of the Lidar subsystem
+     * 
+     * @return the instance of the Lidar subsystem
+     */
+    public static Lidar getInstance() {
+        if (_instance == null) {
+            _instance = new Lidar();
+        }
+        return _instance;
+    }
 
     /**
      * @brief Current action to be taken by the robot
@@ -23,7 +44,7 @@ public class Lidar extends SubsystemBase {
         NONE, FORWARD, BACKWARD, LEFT, RIGHT, GRIP, FORWARD_LEFT, FORWARD_RIGHT
     }
 
-    public Lidar() {
+    private Lidar() {
         // initialize the DIO pins
         bit0 = new DigitalInput(DIOPins.LIDAR_FIRST_BIT);
         bit1 = new DigitalInput(DIOPins.LIDAR_SECOND_BIT);

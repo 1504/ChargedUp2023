@@ -36,17 +36,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final Drivetrain m_drivetrain = Drivetrain.getInstance();
-
   private final ControlBoard m_controlBoard = ControlBoard.getInstance();
   private final RGBLights m_rgbLights = RGBLights.getInstance();
   private final Arm m_arm = Arm.getInstance();
-  private final Gripper m_gripper;
-
-  private final ShuffleboardManager m_shuffle = ShuffleboardManager.getInstance();
+  private final Gripper m_gripper = Gripper.getInstance();
+  private final ShuffleboardManager m_shuffleboardManager = ShuffleboardManager.getInstance();
 
   public RobotContainer() {
-    m_shuffle.shuffleboardInit();
-    m_gripper = new Gripper();
+    // m_shuffle.shuffleboardInit(); // shuffleboard initialized in its own constructor
     m_drivetrain.setDefaultCommand(new Cartesian(
         m_drivetrain,
         () -> m_controlBoard.getThrottle(),
