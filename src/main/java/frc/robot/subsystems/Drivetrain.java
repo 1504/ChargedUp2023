@@ -18,16 +18,36 @@ import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 
+/**
+ * Drivetrain subsystem
+ * <p>
+ * Warning: This class is a singleton. Use getInstance() to get the instance of
+ * the Drivetrain subsystem
+ * The constructor is private to prevent other classes from instantiating it.
+ */
 public class Drivetrain extends SubsystemBase {
+
+  static private Drivetrain _instance = null;
+
+  /**
+   * getInstance to provide a singleton instance of the Drivetrain subsystem
+   * 
+   * @return the instance of the Drivetrain subsystem
+   */
+  public static Drivetrain getInstance() {
+    if (_instance == null) {
+      _instance = new Drivetrain();
+    }
+
+    return _instance;
+
+  }
+
   /* Motor Controllers */
   private final CANSparkMax _front_left_motor;
   private final CANSparkMax _front_right_motor;
@@ -62,9 +82,14 @@ public class Drivetrain extends SubsystemBase {
   PIDController _y_pid;
   Gyroscope gyro;
 
-
-
-  public Drivetrain() {
+  /**
+   * Drivetrain subsystem
+   * <p>
+   * Warning: This class is a singleton. Use getInstance() to get the instance of
+   * the Drivetrain subsystem
+   * The constructor is private to prevent other classes from instantiating it.
+   */
+  private Drivetrain() {
     // create a gyro object and reset it
     gyro = Gyroscope.getInstance();
     // Gyroscope.reset(); // TODO: verify if the reset is required
@@ -100,17 +125,6 @@ public class Drivetrain extends SubsystemBase {
             _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
             _back_left_encoder.getPosition(), _back_right_encoder.getPosition()),
         m_pose);
-  }
-
-  static private Drivetrain _instance = null;
-
-  public static Drivetrain getInstance() {
-    if (_instance == null) {
-      _instance = new Drivetrain();
-    }
-
-    return _instance;
-
   }
 
   /**
@@ -237,8 +251,7 @@ public class Drivetrain extends SubsystemBase {
     return _back_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
-  
-  
+
   /**
    * Gets the current position of the robot
    * 
