@@ -8,20 +8,21 @@ import java.util.HashMap;
 
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import frc.robot.Constants.BuildConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.PIDConstants;
+import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
+import frc.robot.Constants.BuildConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PIDConstants;
 
 /**
  * Drivetrain subsystem
@@ -87,8 +88,8 @@ public class Drivetrain extends SubsystemBase {
     _back_right_motor = new CANSparkMax(DriveConstants.BACK_RIGHT, MotorType.kBrushless);
     _back_left_motor = new CANSparkMax(DriveConstants.BACK_LEFT, MotorType.kBrushless);
 
-    _front_left_motor.setInverted(true);
-    _back_left_motor.setInverted(true);
+    _front_left_motor.setInverted(false);
+    _back_left_motor.setInverted(false);
     _back_right_motor.setInverted(false);
     _front_right_motor.setInverted(false);
 
@@ -128,6 +129,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
     // Deadband
+    zRotation *= -1;
     double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : zRotation;
     double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : ySpeed;
     double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : xSpeed;
