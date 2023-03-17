@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import java.util.HashMap;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
-import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -25,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public final class Constants {
 
   public static class UnitConstants {
-    public static final double RADIANS_TO_DEGREES = 180/Math.PI;
+    public static final double RADIANS_TO_DEGREES = 180 / Math.PI;
     public static final double METERS_TO_INCHES = 39.3701;
   }
 
@@ -173,5 +170,11 @@ public final class Constants {
     public static final char RED_LED = 0;
     public static final char GREEN_LED = 1;
     public static final char BLUE_LED = 2;
+  }
+
+  public static class AutonomousPaths{
+    public static final String [] PATHS = {"Straight", "StraightBack", "ComplexPath"};
+    public static final double MAX_VELOCITY = 5.0;
+    public static final double MAX_ACCELERATION = 4.0;
   }
 }

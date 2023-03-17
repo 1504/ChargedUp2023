@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.BuildConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.BuildConstants;
 import frc.robot.commands.arm.Extend;
 import frc.robot.commands.arm.Retract;
 import frc.robot.commands.balance.AutoBalance;
@@ -21,6 +19,7 @@ import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.ShuffleboardManager;
 import frc.robot.subsystems.RGBLights;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,12 +29,14 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 //import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AutonomousPaths;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -54,39 +55,60 @@ public class RobotContainer {
   private final Gripper m_gripper = Gripper.getInstance();
   private final ShuffleboardManager m_shuffleboardManager = ShuffleboardManager.getInstance();
 
-  //Auton
+  // Auton
   private final SendableChooser<CommandBase> m_autoChooser = new SendableChooser<>();
-  
-  private final List<PathPlannerTrajectory> m_testPath = PathPlanner.loadPathGroup("Test Path", new PathConstraints(4, 3));
+
+  // a list of test paths
+  private final List<List<PathPlannerTrajectory>> m_testPaths = new ArrayList<>();
+  {
+    for (String path : AutonomousPaths.PATHS) {
+      m_testPaths.add(PathPlanner.loadPathGroup(path,
+          new PathConstraints(AutonomousPaths.MAX_VELOCITY, AutonomousPaths.MAX_ACCELERATION)));
+    }
+  }
 
   private MecanumAutoBuilder autoBuilder;
   public static final HashMap<String, Command> m_eventMap = new HashMap<>();
 
   public RobotContainer() {
-    // m_shuffle.shuffleboardInit(); // shuffleboard initialized in its own constructor
+    // m_shuffle.shuffleboardInit(); // shuffleboard initialized in its own
+    // constructor
     m_drivetrain.setDefaultCommand(new Cartesian(
         m_drivetrain,
         () -> m_controlBoard.getRot(),
         () -> m_controlBoard.getRight(),
         () -> m_controlBoard.getThrottle()));
 
-    /*
-    autoBuilder = new MecanumAutoBuilder(
-      m_drivetrain::getPose, 
-      m_drivetrain::resetOdometry, 
-      BuildConstants._KINEMATICS, 
-      new com.pathplanner.lib.auto.PIDConstants(-2, 0, 0), 
-      new com.pathplanner.lib.auto.PIDConstants(-2, 0, 0), 
-      PIDConstants.kMaxVelocity, 
-      m_drivetrain::outputWheelSpeeds, 
-      m_eventMap, 
-      this);
-       */
-    //m_autoChooser.addOption("Test Path", m_autoBuilder.fullAuto(m_testPath));
-
-      
     // Configure the trigger bindings
     configureBindings();
+    configureAuton();
+
+  }
+
+  void configureAuton() {
+    m_eventMap.put("Extend", new Extend(m_arm));
+    m_eventMap.put("Retract", new Retract(m_arm));
+    m_eventMap.put("Open", new Open(m_gripper));
+    m_eventMap.put("Close", new Close(m_gripper));
+    autoBuilder = new MecanumAutoBuilder(m_drivetrain::getPoseEstimate, m_drivetrain::resetOdometry,
+        BuildConstants._KINEMATICS, new com.pathplanner.lib.auto.PIDConstants(-2, 0, 0),
+        new com.pathplanner.lib.auto.PIDConstants(-2, 0, 0),
+        PIDConstants.kMaxVelocity, m_drivetrain::outputWheelSpeeds, m_eventMap, m_drivetrain);
+
+    for (int i = 0; i < m_testPaths.size(); i++) {
+      if (i == 0) {
+        m_autoChooser.setDefaultOption(AutonomousPaths.PATHS[i],
+            autoBuilder.fullAuto(m_testPaths.get(i)));
+      } else {
+        m_autoChooser.addOption(AutonomousPaths.PATHS[i],
+            autoBuilder.fullAuto(m_testPaths.get(i)));
+      }
+    }
+
+    Shuffleboard.getTab("Autonomous").add("Auton Paths", m_autoChooser)
+        .withPosition(1, 1)
+        .withSize(3, 1);
+
   }
 
   /**
@@ -106,14 +128,13 @@ public class RobotContainer {
   private void configureBindings() {
     // whileTrue stops command when button is released
     new JoystickButton(m_controlBoard.getArmController(), 1)
-    .whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0.2, () -> 0));
+        .whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0.2, () -> 0));
     new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Extend(m_arm));
     new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new Retract(m_arm));
     new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Open(m_gripper));
     new JoystickButton(m_controlBoard.getGripperController(), 2).whileTrue(new Close(m_gripper));
-    new JoystickButton(m_controlBoard.getArmController(),4).onTrue(new AutoBalance(m_drivetrain));
+    new JoystickButton(m_controlBoard.getArmController(), 4).onTrue(new AutoBalance(m_drivetrain));
   }
-  
 
   /*
    * public static PathPlannerTrajectory getTrajectory( double tagAngleOffset ) {
@@ -128,8 +149,7 @@ public class RobotContainer {
    * //return trajectory;
    * }
    */
-  //TODO: decide if this is useful
-
+  // TODO: decide if this is useful
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -137,12 +157,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    /* 
-    List<PathPlannerTrajectory> autoPaths = PathPlanner.loadPathGroup(
-        "testPath",
-        DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
-        DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED);
-    */
+    /*
+     * List<PathPlannerTrajectory> autoPaths = PathPlanner.loadPathGroup(
+     * "testPath",
+     * DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
+     * DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED);
+     */
     /*
      * Command autoTest = new SequentialCommandGroup(
      * new FollowPathWithEvents(
@@ -153,6 +173,7 @@ public class RobotContainer {
      */
 
     return m_autoChooser.getSelected();
-    
+    // return autoBuilder.followPath(m_testPathPathPlanner);
+
   }
 }
