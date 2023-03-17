@@ -9,12 +9,10 @@ import java.util.HashMap;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -395,6 +393,11 @@ public class Drivetrain extends SubsystemBase {
 
   public Pose2d getPose() {
     return m_pose;
+  }
+
+
+  public Pose2d getPoseEstimate() {
+    return _poseEstimator.getEstimatedPosition();
   }
 
   public void outputWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {

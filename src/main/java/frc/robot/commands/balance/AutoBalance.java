@@ -41,7 +41,9 @@ public class AutoBalance extends CommandBase {
   @Override
   public void execute() {
 
+
     if (timer.get() > 1) {
+      System.out.println("Autobalancing    Pitch: " + _gyro.getPitch() + " Roll: " + _gyro.getRoll() + " Yaw: " + _gyro.getYaw() + " Finished: " + finished);
 
       // get the current pitch
       double pitch = _gyro.getPitch();
