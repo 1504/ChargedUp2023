@@ -52,6 +52,7 @@
       "/Shuffleboard/PID Drive Tuning/front right pid": "PIDController",
       "/Shuffleboard/PID Drive Tuning/x pid": "PIDController",
       "/Shuffleboard/PID Drive Tuning/y pid": "PIDController",
+      "/Shuffleboard/Pregame/Auton Path": "String Chooser",
       "/Shuffleboard/Pregame/Profile": "String Chooser",
       "/Shuffleboard/Telemetry/Profile": "String Chooser"
     }

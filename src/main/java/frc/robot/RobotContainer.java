@@ -48,6 +48,8 @@ import frc.robot.Constants.AutonomousPaths;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  // Subsystems
   private final Drivetrain m_drivetrain = Drivetrain.getInstance();
   private final ControlBoard m_controlBoard = ControlBoard.getInstance();
   private final RGBLights m_rgbLights = RGBLights.getInstance();
@@ -55,10 +57,8 @@ public class RobotContainer {
   private final Gripper m_gripper = Gripper.getInstance();
   private final ShuffleboardManager m_shuffleboardManager = ShuffleboardManager.getInstance();
 
-  // Auton
+  // Autonomous
   private final SendableChooser<CommandBase> m_autoChooser = new SendableChooser<>();
-
-  // a list of test paths
   private final List<List<PathPlannerTrajectory>> m_testPaths = new ArrayList<>();
   {
     for (String path : AutonomousPaths.PATHS) {
@@ -71,8 +71,6 @@ public class RobotContainer {
   public static final HashMap<String, Command> m_eventMap = new HashMap<>();
 
   public RobotContainer() {
-    // m_shuffle.shuffleboardInit(); // shuffleboard initialized in its own
-    // constructor
     m_drivetrain.setDefaultCommand(new Cartesian(
         m_drivetrain,
         () -> m_controlBoard.getRot(),
@@ -85,11 +83,18 @@ public class RobotContainer {
 
   }
 
-  void configureAuton() {
+  /**
+   * Configure autonmous paths and actions to be used in autonomous
+   * 
+   * @apiNote This method is called in the constructor, and should only be called
+   *          once
+   */
+  private void configureAuton() {
     m_eventMap.put("Extend", new Extend(m_arm));
     m_eventMap.put("Retract", new Retract(m_arm));
     m_eventMap.put("Open", new Open(m_gripper));
     m_eventMap.put("Close", new Close(m_gripper));
+    // TODO: verify the following constructor
     autoBuilder = new MecanumAutoBuilder(m_drivetrain::getPoseEstimate, m_drivetrain::resetOdometry,
         BuildConstants._KINEMATICS, new com.pathplanner.lib.auto.PIDConstants(-2, 0, 0),
         new com.pathplanner.lib.auto.PIDConstants(-2, 0, 0),
@@ -105,8 +110,8 @@ public class RobotContainer {
       }
     }
 
-    Shuffleboard.getTab("Autonomous").add("Auton Paths", m_autoChooser)
-        .withPosition(1, 1)
+    Shuffleboard.getTab("Pregame").add("Auton Path", m_autoChooser)
+        .withPosition(0, 1)
         .withSize(3, 1);
 
   }

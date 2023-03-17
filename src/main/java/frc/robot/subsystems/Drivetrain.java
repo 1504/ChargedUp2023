@@ -76,9 +76,14 @@ public class Drivetrain extends SubsystemBase {
   PIDController _x_pid;
   PIDController _y_pid;
   Gyroscope gyro;
+  Limelight limelight;
 
+  /**
+   * Private constructor for the Drivetrain subsystem
+   */
   private Drivetrain() {
     gyro = Gyroscope.getInstance();
+    limelight = Limelight.getInstance();
 
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
     _front_right_motor = new CANSparkMax(DriveConstants.FRONT_RIGHT, MotorType.kBrushless);
@@ -104,9 +109,10 @@ public class Drivetrain extends SubsystemBase {
     _back_left_pid = new PIDController(-1.85, 0, 0);
     _x_pid = new PIDController(-1.85, 0, 0);
     _y_pid = new PIDController(-1.85, 0, 0);
-    Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
+    // Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
+    Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
-        new Rotation2d(),
+        gyro.getRotation2d(),
         new MecanumDriveWheelPositions(
             _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
             _back_left_encoder.getPosition(), _back_right_encoder.getPosition()),
@@ -266,11 +272,7 @@ public class Drivetrain extends SubsystemBase {
         // TODO: Verify _gyro.getRotation2d()
         _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
         _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
-
-    // addVisionMeasurement should be called every time a new vision measurement is
-    // available
-    // TODO: Uncomment vision measurement code
-    // _poseEstimator.addVisionMeasurement(Limelight.getPose(),Limelight.getLatency());
+    _poseEstimator.addVisionMeasurement(limelight.getBotFieldPose(), limelight.getLatency());
   }
 
   /**
@@ -395,7 +397,6 @@ public class Drivetrain extends SubsystemBase {
     return m_pose;
   }
 
-
   public Pose2d getPoseEstimate() {
     return _poseEstimator.getEstimatedPosition();
   }
@@ -416,7 +417,6 @@ public class Drivetrain extends SubsystemBase {
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftMeters()));
     _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightMeters()));
   }
-
 
   @Override
   public void periodic() {
