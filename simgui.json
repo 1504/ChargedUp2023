@@ -1,8 +1,48 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "Compressor[0]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [10]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [11]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [13]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [20]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [23]": {
+        "header": {
+          "open": true
+        }
+      },
+      "navX-Sensor[0]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Arm PID tuning/arm pid": "PIDController",
+      "/Shuffleboard/Autonomous/Auton Paths": "String Chooser",
       "/Shuffleboard/LimeLight/LimeLight Control Scheme": "String Chooser",
       "/Shuffleboard/LimeLight/LimeLight Pipeline": "String Chooser",
       "/Shuffleboard/PID Drive Tuning/PID": "PIDController",
@@ -12,7 +52,8 @@
       "/Shuffleboard/PID Drive Tuning/front right pid": "PIDController",
       "/Shuffleboard/PID Drive Tuning/x pid": "PIDController",
       "/Shuffleboard/PID Drive Tuning/y pid": "PIDController",
-      "/Shuffleboard/Pregame/Profile": "String Chooser"
+      "/Shuffleboard/Pregame/Profile": "String Chooser",
+      "/Shuffleboard/Telemetry/Profile": "String Chooser"
     }
   }
 }
