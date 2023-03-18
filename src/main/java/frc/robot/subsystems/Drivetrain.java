@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.HashMap;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -17,11 +15,12 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.controlboard.ControlBoard;
 
 /**
  * Drivetrain subsystem
@@ -64,19 +63,15 @@ public class Drivetrain extends SubsystemBase {
 
   private final MecanumDrivePoseEstimator _poseEstimator;
 
-  private final HashMap<String, Command> m_eventMap = new HashMap<String, Command>();
 
-  Pose2d m_pose;
-
-  PIDController wheel_pid;
   PIDController _front_left_pid;
   PIDController _front_right_pid;
   PIDController _back_right_pid;
   PIDController _back_left_pid;
-  PIDController _x_pid;
-  PIDController _y_pid;
   Gyroscope gyro;
   Limelight limelight;
+
+  ControlBoard m_controlBoard;
 
   /**
    * Private constructor for the Drivetrain subsystem
@@ -84,11 +79,16 @@ public class Drivetrain extends SubsystemBase {
   private Drivetrain() {
     gyro = Gyroscope.getInstance();
     limelight = Limelight.getInstance();
+    m_controlBoard = ControlBoard.getInstance();
+
+    // initDefaultCommand(); // initialize the default command (Cartesian)
 
     _front_left_motor = new CANSparkMax(DriveConstants.FRONT_LEFT, MotorType.kBrushless);
     _front_right_motor = new CANSparkMax(DriveConstants.FRONT_RIGHT, MotorType.kBrushless);
     _back_right_motor = new CANSparkMax(DriveConstants.BACK_RIGHT, MotorType.kBrushless);
     _back_left_motor = new CANSparkMax(DriveConstants.BACK_LEFT, MotorType.kBrushless);
+
+    // put the data
 
     _front_left_motor.setInverted(false);
     _back_left_motor.setInverted(false);
@@ -102,21 +102,22 @@ public class Drivetrain extends SubsystemBase {
 
     _drive = new MecanumDrive(_front_left_motor, _back_left_motor, _front_right_motor, _back_right_motor);
 
-    wheel_pid = new PIDController(-1.85, 0, 0);
     _front_left_pid = new PIDController(-1.85, 0, 0);
     _front_right_pid = new PIDController(-1.85, 0, 0);
     _back_right_pid = new PIDController(-1.85, 0, 0);
     _back_left_pid = new PIDController(-1.85, 0, 0);
-    _x_pid = new PIDController(-1.85, 0, 0);
-    _y_pid = new PIDController(-1.85, 0, 0);
+
+    SmartDashboard.putData("BackLeftPid", _back_left_pid);
+    SmartDashboard.putData("BackRightPid", _back_right_pid);
+    SmartDashboard.putData("FrontLeftPid", _front_left_pid);
+    SmartDashboard.putData("FrontRightPid", _front_right_pid);
+
     // Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
-    Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
+    // Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
         gyro.getRotation2d(),
-        new MecanumDriveWheelPositions(
-            _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
-            _back_left_encoder.getPosition(), _back_right_encoder.getPosition()),
-        m_pose);
+        getWheelPositions(),
+        new Pose2d(0, 0, gyro.getRotation2d()));
   }
 
   /**
@@ -152,10 +153,10 @@ public class Drivetrain extends SubsystemBase {
     _back_left_pid.setSetpoint(backLeft);
     _back_right_pid.setSetpoint(backRight);
 
-    _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftMeters()));
-    _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightMeters()));
-    _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftMeters()));
-    _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightMeters()));
+    _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
+    _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
+    _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
+    _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightVelocity()));
 
   }
 
@@ -164,8 +165,13 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * @deprecated Since 3/17/2023
+   * <p>
    * Resets the encoders to currently read a position of 0.
+   * <p>
+   * This method is deprecated and will be removed in the future.
    */
+  @Deprecated
   public void resetEncoders() {
     _front_left_encoder.setPosition(0);
     _front_right_encoder.setPosition(0);
@@ -178,7 +184,7 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @return The current velocity of the front left wheel in meters per second
    */
-  public double getFrontLeftMeters() {
+  public double getFrontLeftVelocity() {
     return _front_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
         * BuildConstants.INCHES_TO_METERS;
   }
@@ -188,7 +194,7 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @return The current velocity of the front right wheel in meters per second
    */
-  public double getFrontRightMeters() {
+  public double getFrontRightVelocity() {
     return _front_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
         * BuildConstants.INCHES_TO_METERS;
   }
@@ -198,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @return The current velocity of the back right wheel in meters per second
    */
-  public double getBackRightMeters() {
+  public double getBackRightVelocity() {
     return _back_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
         * BuildConstants.INCHES_TO_METERS;
   }
@@ -208,26 +214,25 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @return The current velocity of the back left wheel in meters per second
    */
-  public double getBackLeftMeters() {
+  public double getBackLeftVelocity() {
     return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
         * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
-   * Gets the current position of the robot
+   * Gets the current traveled distance of the front right wheel of the robot
    * 
-   * @return The current position of the front right distance in meters
+   * @return The current traveled distance of the front right wheel distance in meters
    */
-
   public double getFrontRightDistance() {
     return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
-   * Gets the current position of the robot
+   * Gets the current traveled distance of the front left wheel of the robot
    * 
-   * @return The current position of the front left distance in meters
+   * @return The current traveled distance of the front left wheel distance in meters
    */
   public double getFrontLeftDistance() {
     return _front_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
@@ -235,20 +240,19 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Gets the current position of the robot
+   * Gets the current traveled distance of the back right wheel of the robot
    * 
-   * @return The current position of the back right distance in meters
+   * @return The current traveled distance of the back right wheel distance in meters
    */
-
   public double getBackRightDistance() {
     return _back_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
         * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
-   * Gets the current position of the robot
+   * Gets the current traveled distance of the back left wheel of the robot
    * 
-   * @return The current position of the back left distance in meters
+   * @return The current traveled distance of the back left wheel distance in meters
    */
   public double getBackLeftDistance() {
     return _back_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
@@ -259,29 +263,22 @@ public class Drivetrain extends SubsystemBase {
    * Resets the odometry to the specified pose.
    */
   public void resetOdometry(Pose2d pose) {
-    MecanumDriveWheelPositions positions = new MecanumDriveWheelPositions(
+    MecanumDriveWheelPositions positions = getWheelPositions();
+    _poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
+  }
+
+  private MecanumDriveWheelPositions getWheelPositions() {
+    return new MecanumDriveWheelPositions(
         getFrontLeftDistance(), getFrontRightDistance(),
         getBackLeftDistance(), getBackRightDistance());
-    _poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
-    // _odometry.resetPosition(new Rotation2d(Gyroscope.getYaw()), positions, pose);
   }
 
   public void updateOdometry() {
     // update should be called every scheduler run
-    _poseEstimator.update(gyro.getRotation2d(), new MecanumDriveWheelPositions(
-        // TODO: Verify _gyro.getRotation2d()
-        _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
-        _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
-    _poseEstimator.addVisionMeasurement(limelight.getBotFieldPose(), limelight.getLatency());
-  }
-
-  /**
-   * Gets the current wheel PID
-   * 
-   * @return The current wheel PID
-   */
-  public PIDController getWheelPid() {
-    return wheel_pid;
+    _poseEstimator.update(gyro.getRotation2d(), getWheelPositions());
+    if (limelight.hasValidTarget()) {
+      _poseEstimator.addVisionMeasurement(limelight.getBotFieldPose(), limelight.getVisionTimestampSeconds());
+    }
   }
 
   /**
@@ -318,27 +315,6 @@ public class Drivetrain extends SubsystemBase {
    */
   public PIDController getBackRightPid() {
     return _back_right_pid;
-  }
-
-  public PIDController getXPid() {
-    return _x_pid;
-  }
-
-  public PIDController getYPid() {
-    return _y_pid;
-  }
-
-  /**
-   * Sets the current wheel PID
-   * 
-   * @param p The new P value
-   * @param i The new I value
-   * @param d The new D value
-   */
-  public void setWheelPid(double p, double i, double d) {
-    wheel_pid.setP(p);
-    wheel_pid.setI(i);
-    wheel_pid.setD(d);
   }
 
   /**
@@ -393,10 +369,6 @@ public class Drivetrain extends SubsystemBase {
     _back_right_pid.setD(d);
   }
 
-  public Pose2d getPose() {
-    return m_pose;
-  }
-
   public Pose2d getPoseEstimate() {
     return _poseEstimator.getEstimatedPosition();
   }
@@ -412,15 +384,14 @@ public class Drivetrain extends SubsystemBase {
     _back_left_pid.setSetpoint(backLeft);
     _back_right_pid.setSetpoint(backRight);
 
-    _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftMeters()));
-    _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightMeters()));
-    _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftMeters()));
-    _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightMeters()));
+    _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
+    _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
+    _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
+    _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightVelocity()));
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     updateOdometry();
   }
 }
