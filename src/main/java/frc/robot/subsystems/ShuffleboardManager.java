@@ -105,8 +105,6 @@ public class ShuffleboardManager extends SubsystemBase {
 
                 // Optional: add functionality to modify PID values on the fly
                 PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
-                PIDdrive.add("PID", _drive.getWheelPid())
-                                .withPosition(2, 0);
                 PIDdrive.add("front left pid", _drive.getFrontLeftPid())
                                 .withPosition(0, 0);
                 PIDdrive.add("front right pid", _drive.getFrontRightPid())
@@ -115,10 +113,6 @@ public class ShuffleboardManager extends SubsystemBase {
                                 .withPosition(0, 2);
                 PIDdrive.add("back right pid", _drive.getBackRightPid())
                                 .withPosition(1, 2);
-                PIDdrive.add("x pid", _drive.getXPid())
-                                .withPosition(3, 0);
-                PIDdrive.add("y pid", _drive.getYPid())
-                                .withPosition(4, 0);
 
                 // Arm stuff
                 PIDarm = Shuffleboard.getTab("Arm PID tuning");
@@ -129,6 +123,7 @@ public class ShuffleboardManager extends SubsystemBase {
                                 .getEntry();
                 PIDarm.add("arm pid", _arm.getArmPid())
                                 .withPosition(0, 0);
+
                 resetArmPosition = PIDarm.add("Reset Arm", false)
                                 .withWidget(BuiltInWidgets.kToggleButton)
                                 .withPosition(5, 0)
@@ -140,10 +135,10 @@ public class ShuffleboardManager extends SubsystemBase {
         public void shuffleboardUpdate() {
 
                 // updates encoder values
-                frontLeftEncoder.setDouble(_drive.getFrontLeftMeters());
-                frontRightEncoder.setDouble(_drive.getFrontRightMeters());
-                backRightEncoder.setDouble(_drive.getBackRightMeters());
-                backLeftEncoder.setDouble(_drive.getBackLeftMeters());
+                frontLeftEncoder.setDouble(_drive.getFrontLeftVelocity());
+                frontRightEncoder.setDouble(_drive.getFrontRightVelocity());
+                backRightEncoder.setDouble(_drive.getBackRightVelocity());
+                backLeftEncoder.setDouble(_drive.getBackLeftVelocity());
 
                 // updates gyro values
                 gyroPitch.setDouble(_gyro.getPitch());
@@ -156,9 +151,14 @@ public class ShuffleboardManager extends SubsystemBase {
 
                 // updates arm position
                 armPosition.setDouble(_arm.getArmDistance());
-                // if arm reset button is pressed, reset arm position
+                
+                /*
+                 * Warning: This will reset the arm encoder position to 0. This may cause the
+                 * arm to move to the bottom of its range. This is not recommended unless you
+                 * know what you're doing
+                 */
                 if (resetArmPosition.getBoolean(true)) {
-                        _arm.resetArmDistance();
+                        _arm.resetArmEncoderPosition(); // Please don't use this unless you know what you're doing
                 }
         }
 

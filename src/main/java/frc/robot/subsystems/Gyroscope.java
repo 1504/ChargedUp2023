@@ -40,7 +40,8 @@ public class Gyroscope extends SubsystemBase {
     }
 
     private Gyroscope() {
-        _gyro.reset(); // call gyro reset on first object instantiation
+        // _gyro.reset(); // call gyro reset on first object instantiation
+        _gyro.calibrate();
     }
 
     public double getPitch() {

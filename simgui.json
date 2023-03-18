@@ -54,7 +54,17 @@
       "/Shuffleboard/PID Drive Tuning/y pid": "PIDController",
       "/Shuffleboard/Pregame/Auton Path": "String Chooser",
       "/Shuffleboard/Pregame/Profile": "String Chooser",
-      "/Shuffleboard/Telemetry/Profile": "String Chooser"
+      "/Shuffleboard/Telemetry/Profile": "String Chooser",
+      "/SmartDashboard/Arm PID": "PIDController",
+      "/SmartDashboard/BackLeftPid": "PIDController",
+      "/SmartDashboard/BackRightPid": "PIDController",
+      "/SmartDashboard/FrontLeftPid": "PIDController",
+      "/SmartDashboard/FrontRightPid": "PIDController"
+    }
+  },
+  "NetworkTables": {
+    "Transitory Values": {
+      "open": false
     }
   }
 }

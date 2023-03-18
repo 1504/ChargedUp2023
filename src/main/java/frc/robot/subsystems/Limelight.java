@@ -60,8 +60,6 @@ public class Limelight extends SubsystemBase {
         Rotation2d mRotToGoal = new Rotation2d(camtran[4] * 1);
         Pose2d mPoseToGoal = new Pose2d(mTranToGoal, mRotToGoal);
         return mPoseToGoal;
-        // TODO: get the pose from the limelight
-
     }
 
     public Pose2d getBotFieldPose() {
@@ -85,16 +83,20 @@ public class Limelight extends SubsystemBase {
         return 0.0;
     }
 
+
+    public boolean hasValidTarget() {
+        return table.getEntry("tv").getDouble(0.0) == 1.0;
+    }
+
     /**
      * Get the latency of the limelight
      * 
      * @return latency in seconds
      */
-    public double getLatency() {
+    public double getVisionTimestampSeconds() {
         double tl = table.getEntry("tl").getDouble(0.0);
         double cl = table.getEntry("cl").getDouble(0.0);
         return Timer.getFPGATimestamp() - (tl / 1000.0) - (cl / 1000.0);
-
     }
 
     @Override
