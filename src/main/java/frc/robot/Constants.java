@@ -127,7 +127,7 @@ public final class Constants {
     // TODO: idk any of these numbers
     public static final int kMotorPort = 23;
 
-    public static final double kP = 0;
+    public static final double kP = -1; // TODO: tune arm PID
 
     // ArmFeedforward //
     // https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/characterizing-drive.html
@@ -146,14 +146,16 @@ public final class Constants {
     // The offset of the arm from the horizontal in its neutral position,
     // measured from the horizontal
     public static final double kArmOffsetRads = 0;
-  }
 
+    public static final double kExtendSetpoint = 50;
+    public static final double kRetractSetpoint = 0;
+  }
   public static class AutoConstants {
 
     // AUTON CONSTANTS
-    // TODO: these numbers
-    public static final int AUTO_MAX_SPEED_METERS_PER_SECOND = 0;
-    public static final int AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 0;
+    public static final String [] PATHS = {"Straight", "StraightBack", "ComplexPath"};
+    public static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 1.0;
+    public static final double AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 3.0;
 
     public static final double kAutoDriveDistanceInches = 0;
     public static final double kMaxSpeedMetersPerSecond = 1.5;
@@ -172,9 +174,4 @@ public final class Constants {
     public static final char BLUE_LED = 2;
   }
 
-  public static class AutonomousPaths{
-    public static final String [] PATHS = {"Straight", "StraightBack", "ComplexPath"};
-    public static final double MAX_VELOCITY = 5.0;
-    public static final double MAX_ACCELERATION = 4.0;
-  }
 }
