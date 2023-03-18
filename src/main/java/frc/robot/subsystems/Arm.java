@@ -9,10 +9,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 // import relative encoder
-
 
 /**
  * Arm subsystem.
@@ -38,6 +38,7 @@ public class Arm extends SubsystemBase {
   private Arm() {
 
     arm_pid = new PIDController(ArmConstants.kP, 0, 0);
+    SmartDashboard.putData("Arm PID", arm_pid);
   }
 
   /**
@@ -57,15 +58,25 @@ public class Arm extends SubsystemBase {
     return arm_pid;
   }
 
-  public void PIDDrive() {
-    m_motor.set(m_encoder.getPosition());
+  public void PIDDrive(double setpoint) {
+    // m_motor.set(m_encoder.getPosition());
+    // use pid to drive extend the arm
+    m_motor.set(arm_pid.calculate(m_encoder.getPosition(), setpoint));
+    
   }
 
   public double getArmDistance() {
     return m_encoder.getPosition();
   }
 
-  public void resetArmDistance() {
+  /**
+   * Please do not ever use this method. It is only here for testing purposes.
+   * <p>
+   * It can significantly mess up the arm PID control, potentially causing the arm to snap (again).
+   * @deprecated Since 03/17/2023
+   */
+  @Deprecated
+  public void resetArmEncoderPosition() {
     m_encoder.setPosition(0);
   }
 

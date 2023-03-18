@@ -5,15 +5,12 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 
 public class Extend extends CommandBase {
   
-  private final Arm m_arm;
-
-  public Extend(Arm _a) {
-    m_arm = _a;
-  }
+  private static final Arm m_arm = Arm.getInstance();
 
   // Called when the command is initially scheduled.
   @Override
@@ -25,7 +22,9 @@ public class Extend extends CommandBase {
    */
   @Override
   public void execute() {
-    m_arm.rawExtend();
+    // m_arm.rawExtend();
+    m_arm.PIDDrive(ArmConstants.kExtendSetpoint);
+    System.out.println("me when I exdend");
   }
 
   // Called once the command ends or is interrupted.
