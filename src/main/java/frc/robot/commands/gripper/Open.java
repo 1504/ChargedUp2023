@@ -9,16 +9,16 @@ import frc.robot.subsystems.Gripper;
 
 public class Open extends CommandBase {
 
-  private final Gripper m_gripper;
+  private static final Gripper m_gripper = Gripper.getInstance();
 
   /** Creates a new Open. */
-  public Open(Gripper _g) {
-    m_gripper = _g;
+  public Open() {
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   /**
@@ -28,6 +28,7 @@ public class Open extends CommandBase {
   @Override
   public void execute() {
     m_gripper.open();
+    System.out.println("me when I open");
   }
 
   // Called once the command ends or is interrupted.

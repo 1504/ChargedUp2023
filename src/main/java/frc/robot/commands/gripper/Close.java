@@ -9,10 +9,10 @@ import frc.robot.subsystems.Gripper;
 
 public class Close extends CommandBase {
 
-  private final Gripper m_gripper;
+  private static final Gripper m_gripper = Gripper.getInstance();
 
-  public Close(Gripper _g) {
-    m_gripper = _g;
+  public Close() {
+
   }
 
   // Called when the command is initially scheduled.
@@ -23,6 +23,7 @@ public class Close extends CommandBase {
   @Override
   public void execute() { 
     m_gripper.close();
+    System.out.println("me when I close");
   }
 
   // Called once the command ends or is interrupted.
