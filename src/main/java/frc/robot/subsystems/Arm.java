@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
   private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts,
       ArmConstants.kVVolt, ArmConstants.kAVolt);
 
-  private final double MAXSPEED = 0.25;
+  private final double MAXSPEED = 0.35;
 
   private static Arm _instance = null;
   PIDController arm_pid;
