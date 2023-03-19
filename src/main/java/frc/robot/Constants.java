@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -77,6 +78,8 @@ public final class Constants {
 
     public static final double kMaxVelocity = 1.0;
     public static final double kMaxAcceleration = 3.0;
+
+    public static final Constraints THETA_CONSTRAINTS = new Constraints(kMaxVelocity, kMaxAcceleration);
   }
 
   public static class IOConstants {

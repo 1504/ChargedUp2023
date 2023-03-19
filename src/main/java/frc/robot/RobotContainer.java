@@ -14,6 +14,7 @@ import frc.robot.commands.gripper.Close;
 import frc.robot.commands.gripper.Open;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShuffleboardManager;
 import frc.robot.subsystems.RGBLights;
 
@@ -26,11 +27,13 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -52,6 +55,7 @@ public class RobotContainer {
   public final ControlBoard m_controlBoard = ControlBoard.getInstance();
   public final RGBLights m_rgbLights = RGBLights.getInstance();
   public final ShuffleboardManager m_shuffleboardManager = ShuffleboardManager.getInstance();
+  private final Limelight m_Limelight = Limelight.getInstance();
 
   // Autonomous
   private final SendableChooser<CommandBase> m_autoChooser = new SendableChooser<>();
@@ -147,6 +151,7 @@ public class RobotContainer {
             () -> m_controlBoard.getRight(),
             () -> m_controlBoard.getThrottle()));
   }
+
   /*
    * public static PathPlannerTrajectory getTrajectory( double tagAngleOffset ) {
    * 
@@ -168,20 +173,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    /*
-     * List<PathPlannerTrajectory> autoPaths = PathPlanner.loadPathGroup(
-     * "testPath",
-     * DriveConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,
-     * DriveConstants.AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED);
-     */
-    /*
-     * Command autoTest = new SequentialCommandGroup(
-     * new FollowPathWithEvents(
-     * new FollowTrajectory( autoPaths.get(0), true),
-     * autoPaths.get(0).getMarkers(),
-     * DriveConstants.AUTO_EVENT_MAP)
-     * );
-     */
 
     return m_autoChooser.getSelected()
         .andThen(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));

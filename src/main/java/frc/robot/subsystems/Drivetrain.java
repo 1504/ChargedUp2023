@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,7 +18,10 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PIDConstants;
@@ -158,10 +163,6 @@ public class Drivetrain extends SubsystemBase {
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
     _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightVelocity()));
 
-  }
-
-  public void goToAprilTag(double tagAngleOffset) {
-    // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
   }
 
   /**
@@ -388,6 +389,27 @@ public class Drivetrain extends SubsystemBase {
     _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
     _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightVelocity()));
+  }
+
+
+  
+  public void followTrajectory(PathPlannerTrajectory traj) {
+    MecanumControllerCommand m = new MecanumControllerCommand(
+      traj, 
+      limelight::getBotFieldPose, 
+      BuildConstants._KINEMATICS, 
+      _back_right_pid, 
+      _back_left_pid, 
+      new ProfiledPIDController(PIDConstants.THETA_kPa, PIDConstants.THETA_kIa, PIDConstants.THETA_kDa, PIDConstants.THETA_CONSTRAINTS), 
+      null, 
+      AutoConstants.AUTO_MAX_SPEED_METERS_PER_SECOND, this::outputWheelSpeeds, this);
+
+    this.resetOdometry(traj.getInitialPose());
+  }
+
+
+  public void goToAprilTag(double tagAngleOffset) {
+    // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
   }
 
   @Override

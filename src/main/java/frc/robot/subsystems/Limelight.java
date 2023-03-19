@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.UnitConstants;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
@@ -46,22 +45,6 @@ public class Limelight extends SubsystemBase {
      *         axis.
      * 
      */
-    public static Pose2d getPose(double distanceToShiftBy) {
-        double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran")
-                .getDoubleArray(new double[] {});
-        // final double kOffset = 100;
-
-        // final double kLimelightForeOffset = 25; //inches from limelight to hatch
-        // pannel
-        // forward/backward motion, left/right motion
-        Translation2d mTranToGoal = new Translation2d(
-                UnitConstants.METERS_TO_INCHES * ((camtran[2]) + distanceToShiftBy),
-                UnitConstants.METERS_TO_INCHES * (camtran[0] * -1) + distanceToShiftBy);
-        Rotation2d mRotToGoal = new Rotation2d(camtran[4] * 1);
-        Pose2d mPoseToGoal = new Pose2d(mTranToGoal, mRotToGoal);
-        return mPoseToGoal;
-    }
-
     public Pose2d getBotFieldPose() {
         double[] fieldSpaceRobotPose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose")
                 .getDoubleArray(new double[6]);
