@@ -18,7 +18,6 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
@@ -67,7 +66,6 @@ public class Drivetrain extends SubsystemBase {
   private final MecanumDrive _drive;
 
   private final MecanumDrivePoseEstimator _poseEstimator;
-
 
   PIDController _front_left_pid;
   PIDController _front_right_pid;
@@ -120,10 +118,15 @@ public class Drivetrain extends SubsystemBase {
     Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
     // Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
-        gyro.getRotation2d(),
+        // gyro.getRotation2d(),
+        getYaw(),
         getWheelPositions(),
-        //new Pose2d(0, 0, gyro.getRotation2d()));
         m_pose);
+  }
+
+  public Rotation2d getYaw() {
+    return (DriveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
+        : Rotation2d.fromDegrees(gyro.getYaw());
   }
 
   /**
@@ -168,10 +171,10 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * @deprecated Since 3/17/2023
-   * <p>
-   * Resets the encoders to currently read a position of 0.
-   * <p>
-   * This method is deprecated and will be removed in the future.
+   *             <p>
+   *             Resets the encoders to currently read a position of 0.
+   *             <p>
+   *             This method is deprecated and will be removed in the future.
    */
   @Deprecated
   public void resetEncoders() {
@@ -224,7 +227,8 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Gets the current traveled distance of the front right wheel of the robot
    * 
-   * @return The current traveled distance of the front right wheel distance in meters
+   * @return The current traveled distance of the front right wheel distance in
+   *         meters
    */
   public double getFrontRightDistance() {
     return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
@@ -234,7 +238,8 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Gets the current traveled distance of the front left wheel of the robot
    * 
-   * @return The current traveled distance of the front left wheel distance in meters
+   * @return The current traveled distance of the front left wheel distance in
+   *         meters
    */
   public double getFrontLeftDistance() {
     return _front_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
@@ -244,7 +249,8 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Gets the current traveled distance of the back right wheel of the robot
    * 
-   * @return The current traveled distance of the back right wheel distance in meters
+   * @return The current traveled distance of the back right wheel distance in
+   *         meters
    */
   public double getBackRightDistance() {
     return _back_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
@@ -254,7 +260,8 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Gets the current traveled distance of the back left wheel of the robot
    * 
-   * @return The current traveled distance of the back left wheel distance in meters
+   * @return The current traveled distance of the back left wheel distance in
+   *         meters
    */
   public double getBackLeftDistance() {
     return _back_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
@@ -395,7 +402,7 @@ public class Drivetrain extends SubsystemBase {
 
   
   public void followTrajectory(PathPlannerTrajectory traj) {
-    MecanumControllerCommand m = new MecanumControllerCommand(
+    MecanumControllerCommand m_command = new MecanumControllerCommand(
       traj, 
       limelight::getBotFieldPose, 
       BuildConstants._KINEMATICS, 

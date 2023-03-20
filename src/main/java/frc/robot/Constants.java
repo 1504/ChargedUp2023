@@ -29,6 +29,8 @@ public final class Constants {
 
   public static class DriveConstants {
 
+    public static final boolean invertGyro = false;
+
     // Motor Controller IDs
     public static final int FRONT_LEFT = 10;
     public static final int FRONT_RIGHT = 20;
