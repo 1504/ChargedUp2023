@@ -130,7 +130,7 @@ public final class Constants {
     // TODO: idk any of these numbers
     public static final int kMotorPort = 23;
 
-    public static final double kP = -1; // TODO: tune arm PID
+    public static final double kP = 0.04; // TODO: tune arm PID
 
     // ArmFeedforward //
     // https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/characterizing-drive.html
@@ -175,6 +175,14 @@ public final class Constants {
     public static final char RED_LED = 0;
     public static final char GREEN_LED = 1;
     public static final char BLUE_LED = 2;
+  }
+
+  public static class SETPOINTS {
+      //SETPOINTS
+      public static final double ZERO = 0;
+      public static final double MID = 65;
+      public static final double HIGH = 100;
+      public static final double PICKUP = 55;
   }
 
 }
