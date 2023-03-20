@@ -26,8 +26,8 @@ public class Retract extends CommandBase {
    */
   @Override
   public void execute() {
-    // m_arm.rawRetract();
-    m_arm.PIDDrive(ArmConstants.kRetractSetpoint);
+    m_arm.rawRetract();
+    //m_arm.PIDDrive(ArmConstants.kRetractSetpoint);
     System.out.println("me when I retract");
   }
 

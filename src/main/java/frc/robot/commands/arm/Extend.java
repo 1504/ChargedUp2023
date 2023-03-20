@@ -22,8 +22,8 @@ public class Extend extends CommandBase {
    */
   @Override
   public void execute() {
-    // m_arm.rawExtend();
-    m_arm.PIDDrive(ArmConstants.kExtendSetpoint);
+    m_arm.rawExtend();
+    //m_arm.PIDDrive(ArmConstants.kExtendSetpoint);
     System.out.println("me when I exdend");
   }
 

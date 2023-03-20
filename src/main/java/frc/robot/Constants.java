@@ -37,7 +37,7 @@ public final class Constants {
     public static final int ARM = 20;
 
     // Drive input deadband
-    public static final double DEADBAND = 0.1;
+    public static final double DEADBAND = 0.03;
 
     // Voltage Constraints
     public static final double ksVolts = 0;
@@ -108,8 +108,8 @@ public final class Constants {
     public static final double WHEEL_CIRCUMFERENCE = 6 * Math.PI;
     public static final double INCHES_TO_METERS = 0.0254;
     public static final double INCHES_PER_REVOLUTION = WHEEL_CIRCUMFERENCE / INCHES_TO_METERS;
-    public static final double WHEEL_TO_CENTER_SIDE_INCHES = 12.5;
-    public static final double WHEEL_TO_CENTER_FRONT_INCHES = 9.75;
+    public static final double WHEEL_TO_CENTER_SIDE_INCHES = 0.26 / INCHES_TO_METERS;
+    public static final double WHEEL_TO_CENTER_FRONT_INCHES = 0.3175 / INCHES_TO_METERS;
     public static final double GR = 12;
 
     // Wheel positions

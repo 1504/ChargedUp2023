@@ -117,12 +117,13 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("FrontLeftPid", _front_left_pid);
     SmartDashboard.putData("FrontRightPid", _front_right_pid);
 
-    // Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
+    Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
     // Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
         gyro.getRotation2d(),
         getWheelPositions(),
-        new Pose2d(0, 0, gyro.getRotation2d()));
+        //new Pose2d(0, 0, gyro.getRotation2d()));
+        m_pose);
   }
 
   /**
@@ -139,9 +140,9 @@ public class Drivetrain extends SubsystemBase {
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
     // Deadband
     zRotation *= -1;
-    double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : zRotation;
-    double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : ySpeed;
-    double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : xSpeed;
+    double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : Math.pow(zRotation, 3);
+    double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(ySpeed, 3);
+    double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(xSpeed, 3);
 
     _drive.driveCartesian(xSpd, ySpd, zRot);
   }
