@@ -29,7 +29,7 @@ public class Close extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_gripper.close();
+    //m_gripper.close();
   }
 
   // Returns true when the command should end.

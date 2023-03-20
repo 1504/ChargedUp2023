@@ -5,36 +5,29 @@
 package frc.robot.commands.gripper;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.Arm;
 
-public class Open extends CommandBase {
+public class AddSetpoint extends CommandBase {
+  
+  private final Arm m_arm = Arm.getInstance();
 
-  private static final Gripper m_gripper = Gripper.getInstance();
-
-  /** Creates a new Open. */
-  public Open() {
+  public AddSetpoint() {
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_arm.addSetpoint(15);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  /**
-   * Opens the gripper
-   */
-
   @Override
-  public void execute() {
-    m_gripper.open();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    //m_gripper.close();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

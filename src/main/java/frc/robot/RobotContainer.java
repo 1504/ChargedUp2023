@@ -5,13 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.SETPOINTS;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.commands.arm.Extend;
 import frc.robot.commands.arm.Retract;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
+import frc.robot.commands.gripper.AddSetpoint;
 import frc.robot.commands.gripper.Close;
 import frc.robot.commands.gripper.Open;
+import frc.robot.commands.gripper.SetArmPosition;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
@@ -28,6 +31,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,6 +60,8 @@ public class RobotContainer {
   public final RGBLights m_rgbLights = RGBLights.getInstance();
   public final ShuffleboardManager m_shuffleboardManager = ShuffleboardManager.getInstance();
   private final Limelight m_Limelight = Limelight.getInstance();
+
+  private final XboxController m_xbox = new XboxController(2);
 
   // Autonomous
   private final SendableChooser<CommandBase> m_autoChooser = new SendableChooser<>();
@@ -141,12 +147,20 @@ public class RobotContainer {
      * .whileTrue(new Cartesian(m_drivetrain, () -> 0, () -> 0.2, () -> 0));
      */
     new JoystickButton(m_controlBoard.getArmController(), 1).whileTrue(new Extend());
-    new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Retract());
-    new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Open());
-    new JoystickButton(m_controlBoard.getGripperController(), 2).whileTrue(new Close());
+    //new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new Retract());
+    new JoystickButton(m_xbox, XboxController.Button.kLeftBumper.value).whileTrue(new Close());
+    //new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Open());
+    new JoystickButton(m_controlBoard.getGripperController(), 1).whileTrue(new Retract());
+    new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().withTimeout(1).andThen(new AddSetpoint()));
     new JoystickButton(m_controlBoard.getArmController(), 3)
         .whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
-  }
+  
+    new JoystickButton(m_xbox, XboxController.Button.kY.value).whileTrue(new SetArmPosition(SETPOINTS.HIGH));
+    new JoystickButton(m_xbox, XboxController.Button.kX.value).whileTrue(new SetArmPosition(SETPOINTS.MID));
+    new JoystickButton(m_xbox, XboxController.Button.kA.value).whileTrue(new SetArmPosition(SETPOINTS.ZERO));
+    new JoystickButton(m_xbox, XboxController.Button.kB.value).whileTrue(new SetArmPosition(SETPOINTS.PICKUP));
+  
+      }
 
   /**
    * Initializes the default command for the drivetrain

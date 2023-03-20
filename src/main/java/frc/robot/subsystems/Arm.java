@@ -28,6 +28,9 @@ public class Arm extends SubsystemBase {
       ArmConstants.kVVolt, ArmConstants.kAVolt);
 
   private final double MAXSPEED = 0.35;
+  private double curr_pos = 0;
+
+  private boolean auto = false;
 
   private static Arm _instance = null;
   PIDController arm_pid;
@@ -81,19 +84,44 @@ public class Arm extends SubsystemBase {
   }
 
   public void rawExtend() {
-    m_motor.set(MAXSPEED);
+    if (!auto) {
+      m_motor.set(MAXSPEED);
+    }
   }
 
   public void rawRetract() {
-    m_motor.set(-MAXSPEED);
+    if (!auto) {
+      m_motor.set(-MAXSPEED);
+    }
   }
 
   public void stopMotor() {
     m_motor.set(0);
   }
 
+  public void toggleAuto() {
+    auto = !auto;
+  }
+
+  public void setAuto(boolean a) {
+    auto = a;
+  }
+
+  public void setSetpoint(double setpoint) {
+    arm_pid.setSetpoint(setpoint);
+    curr_pos = setpoint;
+  }
+
+  public void addSetpoint(double amt) {
+    arm_pid.setSetpoint(curr_pos + amt);
+    System.out.println(curr_pos + amt);
+  }
+
   @Override
   public void periodic() {
-
+    double val = arm_pid.calculate(m_encoder.getPosition());
+    System.out.println(Math.min(Math.max(val, -0.6), 0.6));
+    m_motor.set(val);
+    
   }
 }
