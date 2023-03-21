@@ -112,7 +112,7 @@ public final class Constants {
     public static final double INCHES_PER_REVOLUTION = WHEEL_CIRCUMFERENCE / INCHES_TO_METERS;
     public static final double WHEEL_TO_CENTER_SIDE_INCHES = 0.26 / INCHES_TO_METERS;
     public static final double WHEEL_TO_CENTER_FRONT_INCHES = 0.3175 / INCHES_TO_METERS;
-    public static final double GR = 12;
+    public static final double GEAR_RATIO = 12;
 
     // Wheel positions
     public static final Translation2d _FRONT_LEFT_LOCATION = new Translation2d(
@@ -159,6 +159,8 @@ public final class Constants {
 
     // AUTON CONSTANTS
     public static final String [] PATHS = {"Straight", "StraightBack", "ComplexPath"};
+
+    public static final boolean USE_AUTO_BALANCE = false;
     public static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 1.0;
     public static final double AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 3.0;
 

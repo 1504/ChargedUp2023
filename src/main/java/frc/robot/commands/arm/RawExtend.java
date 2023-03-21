@@ -5,30 +5,25 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 
-public class Retract extends CommandBase {
-
+public class RawExtend extends CommandBase {
+  
   private static final Arm m_arm = Arm.getInstance();
-
-  public Retract() {
-  }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   /**
-   * Retracts the arm using PID
+   * Extends the arm using the raw motor
    */
   @Override
   public void execute() {
-    m_arm.rawRetract();
-    //m_arm.PIDDrive(ArmConstants.kRetractSetpoint);
-    System.out.println("me when I retract");
+    m_arm.rawExtend();
+    //m_arm.PIDDrive(ArmConstants.kExtendSetpoint);
+    System.out.println("me when I extend");
   }
 
   // Called once the command ends or is interrupted.

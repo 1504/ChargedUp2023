@@ -5,8 +5,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +30,7 @@ public class Arm extends SubsystemBase {
   private final double MAXSPEED = 0.35;
   private double curr_pos = 0;
 
-  private boolean auto = false;
+  private boolean auto = true;
 
   private static Arm _instance = null;
   PIDController arm_pid;
@@ -46,7 +46,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * getInstance to provide a singleton instance of the Arm subsystem
-   * 
+   *
    * @return the instance of the Arm subsystem
    */
   public static Arm getInstance() {
@@ -54,7 +54,6 @@ public class Arm extends SubsystemBase {
       _instance = new Arm();
     }
     return _instance;
-
   }
 
   public PIDController getArmPid() {
@@ -65,7 +64,6 @@ public class Arm extends SubsystemBase {
     // m_motor.set(m_encoder.getPosition());
     // use pid to drive extend the arm
     m_motor.set(arm_pid.calculate(m_encoder.getPosition(), setpoint));
-    
   }
 
   public double getArmDistance() {
@@ -81,6 +79,11 @@ public class Arm extends SubsystemBase {
   @Deprecated
   public void resetArmEncoderPosition() {
     m_encoder.setPosition(0);
+  }
+
+
+  public boolean getAutoStatus() {
+    return auto;
   }
 
   public void rawExtend() {
@@ -119,9 +122,10 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double val = arm_pid.calculate(m_encoder.getPosition());
-    System.out.println(Math.min(Math.max(val, -0.6), 0.6));
-    m_motor.set(val);
-    
+    if (auto) {
+      double val = arm_pid.calculate(m_encoder.getPosition());
+      // System.out.println(Math.min(Math.max(val, -0.6), 0.6));
+      m_motor.set(val);
+    }
   }
 }

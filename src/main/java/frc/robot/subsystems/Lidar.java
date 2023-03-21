@@ -17,9 +17,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * The constructor is private to prevent other classes from instantiating it.
  */
 public class Lidar extends SubsystemBase {
-    private DigitalInput bit0;
-    private DigitalInput bit1;
-    private DigitalInput bit2;
+    private final DigitalInput bit0;
+    private final DigitalInput bit1;
+    private final DigitalInput bit2;
 
     private Action currentAction;
 
@@ -38,7 +38,7 @@ public class Lidar extends SubsystemBase {
     }
 
     /**
-     * @brief Current action to be taken by the robot
+     * Current action to be taken by the robot
      */
     public enum Action {
         NONE, FORWARD, BACKWARD, LEFT, RIGHT, GRIP, FORWARD_LEFT, FORWARD_RIGHT
@@ -54,7 +54,7 @@ public class Lidar extends SubsystemBase {
     }
 
     /**
-     * @brief Called periodically to get the current action
+     * Called periodically to get the current action
      * @return The current action
      */
     public Action getAction() {
@@ -99,7 +99,7 @@ public class Lidar extends SubsystemBase {
     }
 
     /**
-     * @brief Calculates the current zone based on the bits read from the lidar DIO
+     * Calculates the current zone based on the bits read from the lidar DIO
      *        pins
      * @return The current zone, in the range 0-7
      */
@@ -120,7 +120,7 @@ public class Lidar extends SubsystemBase {
     }
 
     /**
-     * @brief Gets the individual bits from the DIO pins
+     * Gets the individual bits from the DIO pins
      * @return An array of boolean values representing the bits
      */
     private boolean[] getBits() {
