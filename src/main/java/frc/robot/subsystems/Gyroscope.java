@@ -59,6 +59,18 @@ public class Gyroscope extends SubsystemBase {
         return _gyro.getYaw();
     }
 
+    public double getDisplacementX() {
+        return _gyro.getDisplacementX();
+    }
+
+    public double getDisplacementY() {
+        return _gyro.getDisplacementY();
+    }
+
+    public double getDisplacementZ() {
+        return _gyro.getDisplacementZ();
+    }
+
     public Rotation2d getRotation2d() {
         return _gyro.getRotation2d();
     }

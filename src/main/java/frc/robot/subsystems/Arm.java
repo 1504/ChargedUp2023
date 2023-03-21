@@ -117,7 +117,6 @@ public class Arm extends SubsystemBase {
 
   public void addSetpoint(double amt) {
     arm_pid.setSetpoint(curr_pos + amt);
-    System.out.println(curr_pos + amt);
   }
 
   @Override
@@ -127,5 +126,6 @@ public class Arm extends SubsystemBase {
       // System.out.println(Math.min(Math.max(val, -0.6), 0.6));
       m_motor.set(val);
     }
+
   }
 }

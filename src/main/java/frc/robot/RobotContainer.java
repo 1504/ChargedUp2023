@@ -92,7 +92,22 @@ public class RobotContainer {
     m_eventMap.put("Open", new Open());
     m_eventMap.put("Close", new Close());
     // TODO: verify the following constructor
+
+/*
     MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(m_drivetrain::getPoseEstimate, m_drivetrain::resetOdometry, BuildConstants._KINEMATICS, new com.pathplanner.lib.auto.PIDConstants(1, 0, 0), new com.pathplanner.lib.auto.PIDConstants(0, 0, 0), PIDConstants.kMaxVelocity, m_drivetrain::outputWheelSpeeds, m_eventMap, m_drivetrain);
+    */
+
+    autoBuilder = new MecanumAutoBuilder(
+      m_drivetrain::getPose, 
+      m_drivetrain::resetOdometry,
+        BuildConstants._KINEMATICS, 
+        new com.pathplanner.lib.auto.PIDConstants(6, 0, 0),
+        new com.pathplanner.lib.auto.PIDConstants(0, 0, 0),
+        PIDConstants.kMaxVelocity, 
+        m_drivetrain::outputWheelSpeeds, 
+        m_eventMap,
+        m_drivetrain
+      );
 
     for (int i = 0; i < m_testPaths.size(); i++) {
       if (i == 0) {

@@ -55,6 +55,10 @@ public class ShuffleboardManager extends SubsystemBase {
         private GenericEntry backRightEncoder;
         private GenericEntry backLeftEncoder;
 
+        private GenericEntry xPos;
+        private GenericEntry yPos;
+        private GenericEntry zPos;
+
         private GenericEntry gyroPitch;
         private GenericEntry gyroYaw;
         private GenericEntry gyroRoll;
@@ -108,6 +112,91 @@ public class ShuffleboardManager extends SubsystemBase {
                 } catch (Exception e) {
                         System.out.println("ShuffleboardManager: " + e);
                 }
+/*
+                // encoders and gyro stuff
+                telemetry = Shuffleboard.getTab("Telemetry");
+
+                frontLeftEncoder = telemetry.add("Front Left Encoder", 0)
+                                .withPosition(0, 0)
+                                .withSize(2, 2)
+                                .withWidget(BuiltInWidgets.kTextView)
+                                .getEntry();
+                frontRightEncoder = telemetry.add("Front Right Encoder", 0)
+                                .withPosition(2, 0)
+                                .withSize(2, 2)
+                                .withWidget(BuiltInWidgets.kTextView)
+                                .getEntry();
+                backRightEncoder = telemetry.add("Back Right Encoder", 0)
+                                .withPosition(0, 2)
+                                .withSize(2, 2)
+                                .withWidget(BuiltInWidgets.kTextView)
+                                .getEntry();
+                backLeftEncoder = telemetry.add("Back Left Encoder", 0)
+                                .withPosition(2, 2)
+                                .withSize(2, 2)
+                                .withWidget(BuiltInWidgets.kTextView)
+                                .getEntry();
+                gyroPitch = telemetry.add("Gyro Pitch", 0)
+                                .withWidget(BuiltInWidgets.kNumberBar)
+                                .getEntry();
+                gyroYaw = telemetry.add("Gyro Yaw", 0)
+                                .withWidget(BuiltInWidgets.kNumberBar)
+                                .getEntry();
+                gyroRoll = telemetry.add("Gyro Roll", 0)
+                                .withWidget(BuiltInWidgets.kNumberBar)
+                                .getEntry();
+                resetGyro = telemetry.add("Reset Gyro", false)
+                                .withWidget(BuiltInWidgets.kToggleButton)
+                                .withPosition(8, 0)
+                                .withSize(1, 1)
+                                .getEntry();
+                                */
+
+                //Robot position stuff
+                xPos = telemetry.add("X Position", 0)
+                        .withPosition(4, 1)
+                        .withSize(3, 1)
+                        .getEntry();
+                yPos = telemetry.add("Y Position", 0)
+                        .withPosition(4, 2)
+                        .withSize(3, 1)
+                        .getEntry();
+                zPos = telemetry.add("Z Position", 0)
+                        .withPosition(4, 3)
+                        .withSize(3, 1)
+                        .getEntry();
+                // PID drive stuff
+                /*
+
+                // Optional: add functionality to modify PID values on the fly
+                PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
+                PIDdrive.add("front left pid", _drive.getFrontLeftPid())
+                                .withPosition(0, 0);
+                PIDdrive.add("front right pid", _drive.getFrontRightPid())
+                                .withPosition(1, 0);
+                PIDdrive.add("back left pid", _drive.getBackLeftPid())
+                                .withPosition(0, 2);
+                PIDdrive.add("back right pid", _drive.getBackRightPid())
+                                .withPosition(1, 2);
+              
+
+                // Arm stuff
+                PIDarm = Shuffleboard.getTab("Arm PID tuning");
+
+                armPosition = PIDarm.add("Arm Position", 0)
+                                .withPosition(1, 0)
+                                .withSize(3, 3)
+                                .getEntry();
+                PIDarm.add("arm pid", _arm.getArmPid())
+                                .withPosition(0, 0);
+
+                resetArmPosition = PIDarm.add("Reset Arm", false)
+                                .withWidget(BuiltInWidgets.kToggleButton)
+                                .withPosition(5, 0)
+                                .withSize(1, 1)
+                                .getEntry();
+                                                  */
+
         }
 
         public void shuffleboardUpdate() {
@@ -148,6 +237,10 @@ public class ShuffleboardManager extends SubsystemBase {
                 // Energy is the power summed over time with units Joules.
                 double totalEnergy = m_pdp.getTotalEnergy();
                 SmartDashboard.putNumber("Total Energy", totalEnergy);
+                // updates robot positions
+                xPos.setDouble(_drive.getPose().getX());
+                yPos.setDouble(_drive.getPose().getY());
+                //zPos.setDouble(_drive.getPose())
 
                 // updates gyro values
                 gyroPitch.setDouble(_gyro.getPitch());
