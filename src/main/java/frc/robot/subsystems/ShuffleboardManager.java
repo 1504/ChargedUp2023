@@ -46,6 +46,10 @@ public class ShuffleboardManager extends SubsystemBase {
         private GenericEntry backRightEncoder;
         private GenericEntry backLeftEncoder;
 
+        private GenericEntry xPos;
+        private GenericEntry yPos;
+        private GenericEntry zPos;
+
         private GenericEntry gyroPitch;
         private GenericEntry gyroYaw;
         private GenericEntry gyroRoll;
@@ -101,6 +105,20 @@ public class ShuffleboardManager extends SubsystemBase {
                                 .withPosition(8, 0)
                                 .withSize(1, 1)
                                 .getEntry();
+
+                //Robot position stuff
+                xPos = telemetry.add("X Position", 0)
+                        .withPosition(4, 1)
+                        .withSize(3, 1)
+                        .getEntry();
+                yPos = telemetry.add("Y Position", 0)
+                        .withPosition(4, 2)
+                        .withSize(3, 1)
+                        .getEntry();
+                zPos = telemetry.add("Z Position", 0)
+                        .withPosition(4, 3)
+                        .withSize(3, 1)
+                        .getEntry();
                 // PID drive stuff
 
                 // Optional: add functionality to modify PID values on the fly
@@ -139,6 +157,11 @@ public class ShuffleboardManager extends SubsystemBase {
                 frontRightEncoder.setDouble(_drive.getFrontRightVelocity());
                 backRightEncoder.setDouble(_drive.getBackRightVelocity());
                 backLeftEncoder.setDouble(_drive.getBackLeftVelocity());
+
+                // updates robot positions
+                xPos.setDouble(_drive.getPose().getX());
+                yPos.setDouble(_drive.getPose().getY());
+                //zPos.setDouble(_drive.getPose())
 
                 // updates gyro values
                 gyroPitch.setDouble(_gyro.getPitch());
