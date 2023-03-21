@@ -99,7 +99,7 @@ public class RobotContainer {
     m_eventMap.put("Close", new Close());
     // TODO: verify the following constructor
     autoBuilder = new MecanumAutoBuilder(
-      m_drivetrain::getPoseEstimate, 
+      m_drivetrain::getPose, 
       m_drivetrain::resetOdometry,
         BuildConstants._KINEMATICS, 
         new com.pathplanner.lib.auto.PIDConstants(6, 0, 0),
