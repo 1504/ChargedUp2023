@@ -2,11 +2,13 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Constants;
 
 /**
  * Gyroscope subsystem
@@ -42,6 +44,7 @@ public class Gyroscope extends SubsystemBase {
     private Gyroscope() {
         // _gyro.reset(); // call gyro reset on first object instantiation
         _gyro.calibrate();
+        SmartDashboard.putData("Gyro", _gyro);
     }
 
     public double getPitch() {
@@ -70,6 +73,11 @@ public class Gyroscope extends SubsystemBase {
 
     public Rotation2d getRotation2d() {
         return _gyro.getRotation2d();
+    }
+
+    public Rotation2d getYawRotation() {
+        return (Constants.DriveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - getYaw())
+                : Rotation2d.fromDegrees(getYaw());
     }
 
     public void reset() {

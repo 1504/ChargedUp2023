@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -66,6 +67,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final MecanumDrive _drive;
 
+  private final Field2d m_field = new Field2d();
+
   private final MecanumDrivePoseEstimator _poseEstimator;
   private MecanumDriveOdometry _odometry;
 
@@ -109,6 +112,13 @@ public class Drivetrain extends SubsystemBase {
 
     _drive = new MecanumDrive(_front_left_motor, _back_left_motor, _front_right_motor, _back_right_motor);
 
+    SmartDashboard.putData("Drive", _drive);
+
+    SmartDashboard.putData("Field", m_field);
+
+    // _drive.setSafetyEnabled(false); // Disable motor safety (potentially dangerous)
+    // _drive.setExpiration(0.1);
+
     _front_left_pid = new PIDController(-1.85, 0, 0);
     _front_right_pid = new PIDController(-1.85, 0, 0);
     _back_right_pid = new PIDController(-1.85, 0, 0);
@@ -120,6 +130,10 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("FrontRightPid", _front_right_pid);
 
     Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
+
+/*
+    _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS, gyro.getYawRotation(), getWheelPositions(), m_pose);
+    */
     // Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
         // gyro.getRotation2d(),
@@ -138,10 +152,6 @@ public class Drivetrain extends SubsystemBase {
     );
   }
 
-  public Rotation2d getYaw() {
-    return (DriveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
-        : Rotation2d.fromDegrees(gyro.getYaw());
-  }
 
   /**
    * Main method to drive the robot
@@ -164,6 +174,17 @@ public class Drivetrain extends SubsystemBase {
     _drive.driveCartesian(xSpd, ySpd, zRot);
   }
 
+
+/*
+  public void drivePID(double xSpeed, double ySpeed, double zRotation) {
+    WheelSpeeds wheelSpeeds = MecanumDrive.driveCartesianIK(xSpeed, ySpeed, zRotation);
+    double frontLeft = wheelSpeeds.frontLeft * PIDConstants.kMaxVelocity;
+    double frontRight = wheelSpeeds.frontRight * PIDConstants.kMaxVelocity;
+    double backLeft = wheelSpeeds.rearLeft * PIDConstants.kMaxVelocity;
+    double backRight = wheelSpeeds.rearRight * PIDConstants.kMaxVelocity;
+
+    setWheelSpeeds(frontLeft, frontRight, backLeft, backRight);
+    */
   public void drivePID() {
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
     _back_right_motor.setVoltage(_back_left_pid.calculate(getBackRightVelocity()));
@@ -193,8 +214,7 @@ public class Drivetrain extends SubsystemBase {
    * @return The current velocity of the front left wheel in meters per second
    */
   public double getFrontLeftVelocity() {
-    return _front_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
-        * BuildConstants.INCHES_TO_METERS;
+    return _front_left_encoder.getVelocity() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -203,8 +223,7 @@ public class Drivetrain extends SubsystemBase {
    * @return The current velocity of the front right wheel in meters per second
    */
   public double getFrontRightVelocity() {
-    return _front_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
-        * BuildConstants.INCHES_TO_METERS;
+    return _front_right_encoder.getVelocity() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -213,8 +232,7 @@ public class Drivetrain extends SubsystemBase {
    * @return The current velocity of the back right wheel in meters per second
    */
   public double getBackRightVelocity() {
-    return _back_right_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
-        * BuildConstants.INCHES_TO_METERS;
+    return _back_right_encoder.getVelocity() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -223,8 +241,7 @@ public class Drivetrain extends SubsystemBase {
    * @return The current velocity of the back left wheel in meters per second
    */
   public double getBackLeftVelocity() {
-    return _back_left_encoder.getVelocity() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE / 60
-        * BuildConstants.INCHES_TO_METERS;
+    return _back_left_encoder.getVelocity() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE / 60 * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -234,8 +251,7 @@ public class Drivetrain extends SubsystemBase {
    *         meters
    */
   public double getFrontRightDistance() {
-    return _front_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
-        * BuildConstants.INCHES_TO_METERS;
+    return _front_right_encoder.getPosition() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -245,8 +261,7 @@ public class Drivetrain extends SubsystemBase {
    *         meters
    */
   public double getFrontLeftDistance() {
-    return _front_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
-        * BuildConstants.INCHES_TO_METERS;
+    return _front_left_encoder.getPosition() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -256,8 +271,7 @@ public class Drivetrain extends SubsystemBase {
    *         meters
    */
   public double getBackRightDistance() {
-    return _back_right_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
-        * BuildConstants.INCHES_TO_METERS;
+    return _back_right_encoder.getPosition() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -267,8 +281,7 @@ public class Drivetrain extends SubsystemBase {
    *         meters
    */
   public double getBackLeftDistance() {
-    return _back_left_encoder.getPosition() / BuildConstants.GR * BuildConstants.WHEEL_CIRCUMFERENCE
-        * BuildConstants.INCHES_TO_METERS;
+    return _back_left_encoder.getPosition() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS;
   }
 
   /**
@@ -305,6 +318,9 @@ public class Drivetrain extends SubsystemBase {
   public void updateOdometry() {
     // update should be called every scheduler run
     _poseEstimator.update(gyro.getRotation2d(), getWheelPositions());
+    //System.out.println("X: " + _poseEstimator.getEstimatedPosition().getTranslation().getX());
+    //System.out.println("Y: " + _poseEstimator.getEstimatedPosition().getTranslation().getY());
+    //System.out.println("Angle: " + _poseEstimator.getEstimatedPosition().getRotation().getDegrees());
     if (limelight.hasValidTarget()) {
       _poseEstimator.addVisionMeasurement(limelight.getBotFieldPose(), limelight.getVisionTimestampSeconds());
     }
@@ -412,11 +428,18 @@ public class Drivetrain extends SubsystemBase {
     double backLeft = wheelSpeeds.rearLeftMetersPerSecond;
     double backRight = wheelSpeeds.rearRightMetersPerSecond;
 
+    setWheelSpeeds(frontLeft, frontRight, backLeft, backRight);
+  }
+
+  private void setWheelSpeeds(double frontLeft, double frontRight, double backLeft, double backRight) {
     _front_left_pid.setSetpoint(frontLeft);
     _front_right_pid.setSetpoint(frontRight);
     _back_left_pid.setSetpoint(backLeft);
     _back_right_pid.setSetpoint(backRight);
-
+    System.out.println("Front Left: " + frontLeft);
+    System.out.println("Front Right: " + frontRight);
+    System.out.println("Back Left: " + backLeft);
+    System.out.println("Back Right: " + backRight);
     _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
     _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
@@ -424,7 +447,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
 
-  
   public void followTrajectory(PathPlannerTrajectory traj) {
     MecanumControllerCommand m_command = new MecanumControllerCommand(
       traj, 
@@ -459,6 +481,7 @@ public class Drivetrain extends SubsystemBase {
     m_pose = _odometry.update(gyroAngle, positions);
 
     updateOdometry();
+    m_field.setRobotPose(getPoseEstimate());
     //drivePID();
   }
 }

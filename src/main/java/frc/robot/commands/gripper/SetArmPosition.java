@@ -26,8 +26,6 @@ public class SetArmPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //m_arm.PIDDrive(position);
-    //m_arm.setSetpoint(position);
   }
 
   // Called once the command ends or is interrupted.
