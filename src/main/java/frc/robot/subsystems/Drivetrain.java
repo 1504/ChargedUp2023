@@ -152,6 +152,10 @@ public class Drivetrain extends SubsystemBase {
     );
   }
 
+  public Rotation2d getYaw() {
+    return (DriveConstants.invertGyro ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw()));
+  }
+
 
   /**
    * Main method to drive the robot
@@ -298,19 +302,19 @@ public class Drivetrain extends SubsystemBase {
   private MecanumDriveWheelPositions getWheelPositions() {
     return new MecanumDriveWheelPositions(
         getFrontLeftDistance() 
-          / BuildConstants.GR 
+          / BuildConstants.GEAR_RATIO
           * BuildConstants.WHEEL_CIRCUMFERENCE
           * BuildConstants.INCHES_TO_METERS, 
         getFrontRightDistance() 
-          / BuildConstants.GR 
+          / BuildConstants.GEAR_RATIO
           * BuildConstants.WHEEL_CIRCUMFERENCE
           * BuildConstants.INCHES_TO_METERS,
         getBackLeftDistance() 
-          / BuildConstants.GR 
+          / BuildConstants.GEAR_RATIO
           * BuildConstants.WHEEL_CIRCUMFERENCE
           * BuildConstants.INCHES_TO_METERS, 
         getBackRightDistance() 
-          / BuildConstants.GR 
+          / BuildConstants.GEAR_RATIO
           * BuildConstants.WHEEL_CIRCUMFERENCE
           * BuildConstants.INCHES_TO_METERS);
   }

@@ -57,6 +57,8 @@ public class RobotContainer {
 
   private final XboxController m_xbox = new XboxController(2);
 
+  private MecanumAutoBuilder autoBuilder;
+
   // Autonomous
   private final SendableChooser<CommandBase> m_autoChooser = new SendableChooser<>();
   private final List<List<PathPlannerTrajectory>> m_testPaths = new ArrayList<>();
