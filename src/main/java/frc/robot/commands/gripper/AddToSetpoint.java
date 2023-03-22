@@ -10,19 +10,17 @@ import frc.robot.subsystems.Arm;
 public class AddToSetpoint extends CommandBase {
 
   private final Arm m_arm = Arm.getInstance();
-  private double position = 15;
-
-  public AddToSetpoint() {
-  }
+  private double addedPosition = 15;
 
   public AddToSetpoint(double pos) {
-    position = pos;
+    addedPosition = pos;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.addSetpoint(position);
+    m_arm.setAuto(true);
+    m_arm.addSetpoint(addedPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

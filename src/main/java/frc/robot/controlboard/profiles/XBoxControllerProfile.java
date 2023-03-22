@@ -54,12 +54,12 @@ public class XBoxControllerProfile implements IDriveProfile {
     }
 
     @Override
-    public GenericHID getArmController() {
+    public GenericHID getLeftController() {
         return controller;
     }
 
     @Override
-    public GenericHID getGripperController() {
+    public GenericHID getRightController() {
         return controller;
     }
 

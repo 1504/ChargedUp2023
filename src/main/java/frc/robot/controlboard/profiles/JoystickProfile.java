@@ -1,12 +1,12 @@
 package frc.robot.controlboard.profiles;
 
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.IOConstants;
 import frc.robot.controlboard.IDriveProfile;
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.networktables.GenericEntry;
 
 public class JoystickProfile implements IDriveProfile{
 
@@ -117,14 +117,13 @@ public class JoystickProfile implements IDriveProfile{
     }
 
     @Override
-    public GenericHID getArmController() { // Use Joystick #1 for arm control
+    public GenericHID getLeftController() { // Use Joystick #1 for arm control
         return j1;
     }
 
     @Override
-    public GenericHID getGripperController() { // Use Joystick #2 for gripper control
+    public GenericHID getRightController() { // Use Joystick #2 for gripper control
         return j2;
     }
-
 
 }

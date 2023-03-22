@@ -5,11 +5,11 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPMecanumControllerCommand;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,12 +19,12 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.PIDConstants;
 import frc.robot.controlboard.ControlBoard;
 
 /**
@@ -115,7 +115,7 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", m_field);
 
-    _drive.setSafetyEnabled(false); // Disable motor safety (potentially dangerous)
+    // _drive.setSafetyEnabled(false); // Disable motor safety (potentially dangerous)
     // _drive.setExpiration(0.1);
 
     _front_left_pid = new PIDController(-1.85, 0, 0);
@@ -123,10 +123,10 @@ public class Drivetrain extends SubsystemBase {
     _back_right_pid = new PIDController(-1.85, 0, 0);
     _back_left_pid = new PIDController(-1.85, 0, 0);
 
-    SmartDashboard.putData("BackLeftPid", _back_left_pid);
-    SmartDashboard.putData("BackRightPid", _back_right_pid);
-    SmartDashboard.putData("FrontLeftPid", _front_left_pid);
-    SmartDashboard.putData("FrontRightPid", _front_right_pid);
+    // SmartDashboard.putData("BackLeftPid", _back_left_pid);
+    // SmartDashboard.putData("BackRightPid", _back_right_pid);
+    // SmartDashboard.putData("FrontLeftPid", _front_left_pid);
+    // SmartDashboard.putData("FrontRightPid", _front_right_pid);
 
     Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
 
@@ -169,7 +169,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
     // Deadband
-    zRotation *= -1;
+    zRotation *= -1; // TODO: Verify this is correct
     double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : Math.pow(zRotation, 3);
     double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(ySpeed, 3);
     double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(xSpeed, 3);
@@ -442,10 +442,10 @@ public class Drivetrain extends SubsystemBase {
     _front_right_pid.setSetpoint(frontRight);
     _back_left_pid.setSetpoint(backLeft);
     _back_right_pid.setSetpoint(backRight);
-    System.out.println("Front Left: " + frontLeft);
-    System.out.println("Front Right: " + frontRight);
-    System.out.println("Back Left: " + backLeft);
-    System.out.println("Back Right: " + backRight);
+    // System.out.println("Front Left: " + frontLeft);
+    // System.out.println("Front Right: " + frontRight);
+    // System.out.println("Back Left: " + backLeft);
+    // System.out.println("Back Right: " + backRight);
     _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
     _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
@@ -453,18 +453,49 @@ public class Drivetrain extends SubsystemBase {
   }
 
 
+  /*
   public void followTrajectory(PathPlannerTrajectory traj) {
     MecanumControllerCommand m_command = new MecanumControllerCommand(
-      traj, 
-      limelight::getBotFieldPose, 
-      BuildConstants._KINEMATICS, 
-      _back_right_pid, 
-      _back_left_pid, 
-      new ProfiledPIDController(PIDConstants.THETA_kPa, PIDConstants.THETA_kIa, PIDConstants.THETA_kDa, PIDConstants.THETA_CONSTRAINTS), 
-      null, 
-      AutoConstants.AUTO_MAX_SPEED_METERS_PER_SECOND, this::outputWheelSpeeds, this);
+            traj,
+            this::getPose,
+            BuildConstants._KINEMATICS,
+            new ProfiledPIDController(PIDConstants.X_kPa, PIDConstants.X_kIa, PIDConstants.X_kDa, PIDConstants.X_CONSTRAINTS),
+            new ProfiledPIDController(PIDConstants.Y_kPa, PIDConstants.Y_kIa, PIDConstants.Y_kDa, PIDConstants.Y_CONSTRAINTS),
+            new ProfiledPIDController(PIDConstants.THETA_kPa, PIDConstants.THETA_kIa, PIDConstants.THETA_kDa, PIDConstants.THETA_CONSTRAINTS),
+            null,
+            this::outputWheelSpeeds,
+            AutoConstants.AUTO_MAX_SPEED_METERS_PER_SECOND, this::outputWheelSpeeds, this);
 
     this.resetOdometry(traj.getInitialPose());
+    m_command.schedule();
+  }
+
+   */
+
+  public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+    return new SequentialCommandGroup(new InstantCommand(() -> {
+      // Reset odometry for the first path you run during auto
+      if (isFirstPath) {
+        this.resetOdometry(traj.getInitialHolonomicPose());
+      }
+    }), new PPMecanumControllerCommand(traj, this::getPose, // Pose supplier
+            BuildConstants._KINEMATICS, // Kinematics object
+            new PIDController(0.01, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(0.01, 0, 0), // Y controller (usually the same values as X controller)
+            new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            3.0, // Max wheel velocity meters per second
+            this::outputWheelSpeeds, // MecanumDriveWheelSpeeds consumer
+            true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            this // Requires this drive subsystem
+    ));
+  }
+
+
+  public void stop() {
+    _front_left_motor.setVoltage(0);
+    _front_right_motor.setVoltage(0);
+    _back_left_motor.setVoltage(0);
+    _back_right_motor.setVoltage(0);
   }
 
   public void DriveDistance(double x, double y) {

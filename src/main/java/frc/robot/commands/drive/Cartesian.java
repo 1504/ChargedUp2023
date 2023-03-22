@@ -18,7 +18,7 @@ public class Cartesian extends CommandBase {
 
   // public Cartesian(Drivetrain _d, DoubleSupplier _y, DoubleSupplier _x,
   // DoubleSupplier _z) {
-  public Cartesian(DoubleSupplier _y, DoubleSupplier _x, DoubleSupplier _z) {
+  public Cartesian(DoubleSupplier _x, DoubleSupplier _y, DoubleSupplier _z) {
     _ySpeed = _y;
     _xSpeed = _x;
     _zRotation = _z;

@@ -32,7 +32,7 @@ public class ShuffleboardManager extends SubsystemBase {
         /**
          * getInstance to provide a singleton instance of the ShuffleboardManager
          * subsystem
-         * 
+         *
          * @return the instance of the ShuffleboardManager subsystem
          */
         public static ShuffleboardManager getInstance() {
@@ -42,37 +42,27 @@ public class ShuffleboardManager extends SubsystemBase {
                 return _instance;
         }
 
-        // shuffle board
+        private final Drivetrain _drive = Drivetrain.getInstance();
+        private final Gyroscope _gyro = Gyroscope.getInstance();
+        private final Arm _arm = Arm.getInstance();
+
         ShuffleboardTab telemetry;
 
         PowerDistribution m_pdp = new PowerDistribution();
 
-        ShuffleboardTab PIDdrive;
+        ShuffleboardTab PID_Drive;
 
-        ShuffleboardTab PIDarm;
+        ShuffleboardTab PID_Arm;
 
         private GenericEntry frontLeftEncoder;
         private GenericEntry frontRightEncoder;
         private GenericEntry backRightEncoder;
         private GenericEntry backLeftEncoder;
-
-        private GenericEntry xPos;
-        private GenericEntry yPos;
-        private GenericEntry zPos;
-
         private GenericEntry gyroPitch;
         private GenericEntry gyroYaw;
         private GenericEntry gyroRoll;
-        private GenericEntry resetGyro;
-
         private GenericEntry armPosition;
-        private GenericEntry resetArmPosition;
-
         private GenericEntry RobotPosition;
-
-        private Drivetrain _drive = Drivetrain.getInstance();
-        private Gyroscope _gyro = Gyroscope.getInstance();
-        private Arm _arm = Arm.getInstance();
 
         private ShuffleboardManager() {
                 shuffleboardInit();
@@ -81,190 +71,65 @@ public class ShuffleboardManager extends SubsystemBase {
                 SmartDashboard.putData("Reset Gyro", new ResetGyro());
                 SmartDashboard.putData("Toggle Auto", new ToggleAuto());
                 SmartDashboard.putData("Reset Encoders", new ResetEncoders());
+                SmartDashboard.putData("Reset Arm", new ResetArmPosition());
+                SmartDashboard.putData("Reset All", Commands.run(() -> {
+                        new ResetArmPosition().schedule();
+                        new ResetGyro().schedule();
+                        new ResetEncoders().schedule();
+                }));
         }
+
+
 
         public void shuffleboardInit() {
                 try {
-
                         // encoders and gyro stuff
                         telemetry = Shuffleboard.getTab("Telemetry");
-
                         frontLeftEncoder = telemetry.add("Front Left Encoder", 0).withPosition(0, 0).withSize(2, 2).withWidget(BuiltInWidgets.kTextView).getEntry();
                         frontRightEncoder = telemetry.add("Front Right Encoder", 0).withPosition(2, 0).withSize(2, 2).withWidget(BuiltInWidgets.kTextView).getEntry();
                         backRightEncoder = telemetry.add("Back Right Encoder", 0).withPosition(0, 2).withSize(2, 2).withWidget(BuiltInWidgets.kTextView).getEntry();
                         backLeftEncoder = telemetry.add("Back Left Encoder", 0).withPosition(2, 2).withSize(2, 2).withWidget(BuiltInWidgets.kTextView).getEntry();
-                        gyroPitch = telemetry.add("Gyro Pitch", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
-                        gyroYaw = telemetry.add("Gyro Yaw", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
-                        gyroRoll = telemetry.add("Gyro Roll", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
+                        gyroPitch = telemetry.add("Gyro Pitch", _gyro.getPitch()).withWidget(BuiltInWidgets.kNumberBar).getEntry();
+                        gyroYaw = telemetry.add("Gyro Yaw", _gyro.getYaw()).withWidget(BuiltInWidgets.kNumberBar).getEntry();
+                        gyroRoll = telemetry.add("Gyro Roll", _gyro.getRoll()).withWidget(BuiltInWidgets.kNumberBar).getEntry();
+                        telemetry.add("Reset Gyro", new ResetGyro()).withPosition(7, 0).withSize(1, 1);
                         RobotPosition = telemetry.add("Robot Position", "Null").withWidget(BuiltInWidgets.kTextView).getEntry();
                         // PID drive stuff
 
-                        // Optional: add functionality to modify PID values on the fly
-                        PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
-                        PIDdrive.add("front left pid", _drive.getFrontLeftPid()).withPosition(0, 0);
-                        PIDdrive.add("front right pid", _drive.getFrontRightPid()).withPosition(1, 0);
-                        PIDdrive.add("back left pid", _drive.getBackLeftPid()).withPosition(0, 2);
-                        PIDdrive.add("back right pid", _drive.getBackRightPid()).withPosition(1, 2);
+                        PID_Drive = Shuffleboard.getTab("PID Drive Tuning");
+                        PID_Drive.add("front left pid", _drive.getFrontLeftPid()).withPosition(0, 0);
+                        PID_Drive.add("front right pid", _drive.getFrontRightPid()).withPosition(1, 0);
+                        PID_Drive.add("back left pid", _drive.getBackLeftPid()).withPosition(0, 2);
+                        PID_Drive.add("back right pid", _drive.getBackRightPid()).withPosition(1, 2);
 
                         // Arm stuff
-                        PIDarm = Shuffleboard.getTab("Arm PID tuning");
-                        armPosition = PIDarm.add("Arm Position", 0).withPosition(1, 0).withSize(3, 3).getEntry();
-                        PIDarm.add("arm pid", _arm.getArmPid()).withPosition(0, 0);
-                        resetArmPosition = PIDarm.add("Reset Arm", false).withWidget(BuiltInWidgets.kToggleButton).withPosition(5, 0).withSize(1, 1).getEntry();
+                        PID_Arm = Shuffleboard.getTab("Arm PID tuning");
+                        armPosition = PID_Arm.add("Arm Position", 0).withPosition(1, 0).withSize(3, 3).getEntry();
+                        PID_Arm.add("arm pid", _arm.getArmPid()).withPosition(0, 0);
+                        // resetArmPosition = PIDarm.add("Reset Arm", false).withWidget(BuiltInWidgets.kToggleButton).withPosition(5, 0).withSize(1, 1).getEntry();
+                        PID_Arm.add("Reset Arm Position", new ResetArmPosition()).withPosition(4, 0).withSize(1, 1);
                 } catch (Exception e) {
                         System.out.println("ShuffleboardManager: " + e);
                 }
-/*
-                // encoders and gyro stuff
-                telemetry = Shuffleboard.getTab("Telemetry");
-
-                frontLeftEncoder = telemetry.add("Front Left Encoder", 0)
-                                .withPosition(0, 0)
-                                .withSize(2, 2)
-                                .withWidget(BuiltInWidgets.kTextView)
-                                .getEntry();
-                frontRightEncoder = telemetry.add("Front Right Encoder", 0)
-                                .withPosition(2, 0)
-                                .withSize(2, 2)
-                                .withWidget(BuiltInWidgets.kTextView)
-                                .getEntry();
-                backRightEncoder = telemetry.add("Back Right Encoder", 0)
-                                .withPosition(0, 2)
-                                .withSize(2, 2)
-                                .withWidget(BuiltInWidgets.kTextView)
-                                .getEntry();
-                backLeftEncoder = telemetry.add("Back Left Encoder", 0)
-                                .withPosition(2, 2)
-                                .withSize(2, 2)
-                                .withWidget(BuiltInWidgets.kTextView)
-                                .getEntry();
-                gyroPitch = telemetry.add("Gyro Pitch", 0)
-                                .withWidget(BuiltInWidgets.kNumberBar)
-                                .getEntry();
-                gyroYaw = telemetry.add("Gyro Yaw", 0)
-                                .withWidget(BuiltInWidgets.kNumberBar)
-                                .getEntry();
-                gyroRoll = telemetry.add("Gyro Roll", 0)
-                                .withWidget(BuiltInWidgets.kNumberBar)
-                                .getEntry();
-                resetGyro = telemetry.add("Reset Gyro", false)
-                                .withWidget(BuiltInWidgets.kToggleButton)
-                                .withPosition(8, 0)
-                                .withSize(1, 1)
-                                .getEntry();
-                                */
-
-                //Robot position stuff
-                /*
-                xPos = telemetry.add("X Position", 0)
-                        .withPosition(4, 1)
-                        .withSize(3, 1)
-                        .getEntry();
-                yPos = telemetry.add("Y Position", 0)
-                        .withPosition(4, 2)
-                        .withSize(3, 1)
-                        .getEntry();
-                zPos = telemetry.add("Z Position", 0)
-                        .withPosition(4, 3)
-                        .withSize(3, 1)
-                        .getEntry();
-                        */
-
-                // PID drive stuff
-                /*
-
-                // Optional: add functionality to modify PID values on the fly
-                PIDdrive = Shuffleboard.getTab("PID Drive Tuning");
-                PIDdrive.add("front left pid", _drive.getFrontLeftPid())
-                                .withPosition(0, 0);
-                PIDdrive.add("front right pid", _drive.getFrontRightPid())
-                                .withPosition(1, 0);
-                PIDdrive.add("back left pid", _drive.getBackLeftPid())
-                                .withPosition(0, 2);
-                PIDdrive.add("back right pid", _drive.getBackRightPid())
-                                .withPosition(1, 2);
-              
-
-                // Arm stuff
-                PIDarm = Shuffleboard.getTab("Arm PID tuning");
-
-                armPosition = PIDarm.add("Arm Position", 0)
-                                .withPosition(1, 0)
-                                .withSize(3, 3)
-                                .getEntry();
-                PIDarm.add("arm pid", _arm.getArmPid())
-                                .withPosition(0, 0);
-
-                resetArmPosition = PIDarm.add("Reset Arm", false)
-                                .withWidget(BuiltInWidgets.kToggleButton)
-                                .withPosition(5, 0)
-                                .withSize(1, 1)
-                                .getEntry();
-                                                  */
 
         }
 
         public void shuffleboardUpdate() {
-
-                // updates encoder values
-                /*
-                frontLeftEncoder.setDouble(_drive.getFrontLeftVelocity());
-                frontRightEncoder.setDouble(_drive.getFrontRightVelocity());
-                backRightEncoder.setDouble(_drive.getBackRightVelocity());
-                backLeftEncoder.setDouble(_drive.getBackLeftVelocity());
-
-                 */
                 frontLeftEncoder.setDouble(_drive.getFrontLeftDistance());
                 frontRightEncoder.setDouble(_drive.getFrontRightDistance());
                 backRightEncoder.setDouble(_drive.getBackRightDistance());
                 backLeftEncoder.setDouble(_drive.getBackLeftDistance());
                 RobotPosition.setString(_drive.getPoseEstimate().toString());
 
-                // Get the voltage going into the PDP, in Volts.
-                // The PDP returns the voltage in increments of 0.05 Volts.
-                double voltage = m_pdp.getVoltage();
-                SmartDashboard.putNumber("Voltage", voltage);
+                SmartDashboard.putNumber("Voltage", m_pdp.getVoltage());
 
-                // Retrieves the temperature of the PDP, in degrees Celsius.
-                double temperatureCelsius = m_pdp.getTemperature();
-                SmartDashboard.putNumber("Temperature", temperatureCelsius);
+                SmartDashboard.putNumber("Total Current", m_pdp.getTotalCurrent());
 
-                // Get the total current of all channels.
-                double totalCurrent = m_pdp.getTotalCurrent();
-                SmartDashboard.putNumber("Total Current", totalCurrent);
-
-                // Get the total power of all channels.
-                // Power is the bus voltage multiplied by the current with the units Watts.
-                double totalPower = m_pdp.getTotalPower();
-                SmartDashboard.putNumber("Total Power", totalPower);
-
-                // Get the total energy of all channels.
-                // Energy is the power summed over time with units Joules.
-                double totalEnergy = m_pdp.getTotalEnergy();
-                SmartDashboard.putNumber("Total Energy", totalEnergy);
-                // updates robot positions
-                /*
-                xPos.setDouble(_drive.getPose().getX());
-                yPos.setDouble(_drive.getPose().getY());
-                */
-                //zPos.setDouble(_drive.getPose())
-
-                // updates gyro values
                 gyroPitch.setDouble(_gyro.getPitch());
                 gyroYaw.setDouble(_gyro.getYaw());
                 gyroRoll.setDouble(_gyro.getRoll());
-                // updates arm position
-                armPosition.setDouble(_arm.getArmDistance());
-
-                /*
-                 * Warning: This will reset the arm encoder position to 0. This may cause the
-                 * arm to move to the bottom of its range. This is not recommended unless you
-                 * know what you're doing
-                 */
-                if (resetArmPosition.getBoolean(true)) {
-                        _arm.resetArmEncoderPosition(); // Please don't use this unless you know what you're doing
-                }
-                SmartDashboard.putBoolean("Auto Status", _arm.getAutoStatus());
+                armPosition.setDouble(_arm.getArmDistance()); // get arm position
+                SmartDashboard.putBoolean("Auto Status", _arm.getAutoStatus()); // get auto status
         }
 
         @Override

@@ -82,6 +82,9 @@ public final class Constants {
     public static final double kMaxAcceleration = 3.0;
 
     public static final Constraints THETA_CONSTRAINTS = new Constraints(kMaxVelocity, kMaxAcceleration);
+
+    public static final Constraints X_CONSTRAINTS = new Constraints(kMaxVelocity, kMaxAcceleration);
+    public static final Constraints Y_CONSTRAINTS = new Constraints(kMaxVelocity, kMaxAcceleration);
   }
 
   public static class IOConstants {
