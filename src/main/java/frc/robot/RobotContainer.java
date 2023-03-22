@@ -111,7 +111,17 @@ public class RobotContainer {
     */
 
 
-    MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(m_drivetrain::getPose, m_drivetrain::resetOdometry, BuildConstants._KINEMATICS, new com.pathplanner.lib.auto.PIDConstants(6, 0, 0), new com.pathplanner.lib.auto.PIDConstants(6, 0, 0), PIDConstants.kMaxVelocity, m_drivetrain::outputWheelSpeeds, m_eventMap, m_drivetrain);
+    MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(
+      m_drivetrain::getPose, 
+      m_drivetrain::resetOdometry, 
+      BuildConstants._KINEMATICS, 
+      new com.pathplanner.lib.auto.PIDConstants(0, 0, 0), 
+      new com.pathplanner.lib.auto.PIDConstants(9, 0, 0), 
+      PIDConstants.kMaxVelocity, 
+      m_drivetrain::outputWheelSpeeds, 
+      m_eventMap, 
+      m_drivetrain
+    );
 
 
     for (int i = 0; i < m_testPaths.size(); i++) {
@@ -154,6 +164,10 @@ public class RobotContainer {
     new JoystickButton(m_xbox, XboxController.Button.kB.value).whileTrue(new SetArmPosition(SETPOINTS.PICKUP));
     new JoystickButton(m_xbox, XboxController.Button.kStart.value).whileTrue(new ToggleAuto());
     new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
+
+    new JoystickButton(m_controlBoard.getRightController(), 2).whileTrue(new Cartesian(() -> 0.5, () -> 0, () -> 0));
+    new JoystickButton(m_controlBoard.getRightController(), 3).whileTrue(new Cartesian(() -> 0, () -> 0.5, () -> 0));
+    new JoystickButton(m_controlBoard.getRightController(), 4).whileTrue(new Cartesian(() -> 0, () -> 0, () -> 0.5));
   }
 
   /**
