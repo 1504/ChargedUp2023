@@ -1,16 +1,16 @@
-package frc.robot.commands.arm;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Drivetrain;
 
 
-public class ResetArmPosition extends CommandBase {
-    private final Arm arm = Arm.getInstance();
+public class ResetEncoders extends CommandBase {
+    private final Drivetrain drivetrain = Drivetrain.getInstance();
 
-    public ResetArmPosition() {
+    public ResetEncoders() {
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
-        addRequirements(this.arm);
+        addRequirements(this.drivetrain);
     }
 
     /**
@@ -18,7 +18,8 @@ public class ResetArmPosition extends CommandBase {
      */
     @Override
     public void initialize() {
-        arm.resetArmEncoderPosition();
+        drivetrain.resetEncoders();
+
     }
 
     /**
@@ -46,7 +47,6 @@ public class ResetArmPosition extends CommandBase {
      */
     @Override
     public boolean isFinished() {
-        // TODO: Make this return true when this Command no longer needs to run execute()
         return true;
     }
 
