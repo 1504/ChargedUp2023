@@ -26,6 +26,7 @@ import frc.robot.commands.arm.RawExtend;
 import frc.robot.commands.arm.RawRetract;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
+import frc.robot.commands.drive.GoToAprilTag;
 import frc.robot.commands.gripper.*;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Drivetrain;
@@ -142,9 +143,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // whileTrue stops command when button is released
-    new JoystickButton(m_controlBoard.getArmController(), 1).whileTrue(new RawExtend());
-    new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new RawRetract());
-    new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
+    new JoystickButton(m_controlBoard.getLeftController(), 1).whileTrue(new RawExtend());
+    new JoystickButton(m_controlBoard.getLeftController(), 2).whileTrue(new RawRetract());
+    new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
     new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().withTimeout(2).andThen(new AddToSetpoint(15)));
     new JoystickButton(m_xbox, XboxController.Button.kLeftBumper.value).whileTrue(new Close());
     new JoystickButton(m_xbox, XboxController.Button.kY.value).whileTrue(new SetArmPosition(SETPOINTS.HIGH));
@@ -152,6 +153,7 @@ public class RobotContainer {
     new JoystickButton(m_xbox, XboxController.Button.kA.value).whileTrue(new SetArmPosition(SETPOINTS.ZERO));
     new JoystickButton(m_xbox, XboxController.Button.kB.value).whileTrue(new SetArmPosition(SETPOINTS.PICKUP));
     new JoystickButton(m_xbox, XboxController.Button.kStart.value).whileTrue(new ToggleAuto());
+    new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
   }
 
   /**

@@ -41,6 +41,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Arm PID tuning/Reset Arm": "Command",
       "/Shuffleboard/Arm PID tuning/arm pid": "PIDController",
       "/Shuffleboard/Autonomous/Auton Paths": "String Chooser",
       "/Shuffleboard/LimeLight/LimeLight Control Scheme": "String Chooser",
@@ -55,6 +56,7 @@
       "/Shuffleboard/Pregame/Auton Path": "String Chooser",
       "/Shuffleboard/Pregame/Profile": "String Chooser",
       "/Shuffleboard/Telemetry/Profile": "String Chooser",
+      "/Shuffleboard/Telemetry/Reset Gyro": "Command",
       "/SmartDashboard/Arm PID": "PIDController",
       "/SmartDashboard/Auto Balance": "Command",
       "/SmartDashboard/BackLeftPid": "PIDController",
@@ -64,8 +66,10 @@
       "/SmartDashboard/FrontLeftPid": "PIDController",
       "/SmartDashboard/FrontRightPid": "PIDController",
       "/SmartDashboard/Gyro": "Gyro",
+      "/SmartDashboard/Reset All": "Command",
       "/SmartDashboard/Reset Arm": "Command",
       "/SmartDashboard/Reset Arm Position": "Command",
+      "/SmartDashboard/Reset Encoders": "Command",
       "/SmartDashboard/Reset Gyro": "Command",
       "/SmartDashboard/Toggle Auto": "Command"
     }

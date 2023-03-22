@@ -13,10 +13,9 @@ public class ControlBoard {
 
     private static ControlBoard _instance = null;
     private IDriveProfile dboard;
-    private SendableChooser<IDriveProfile> mProfileChooser;
+    private final SendableChooser<IDriveProfile> mProfileChooser;
 
     ShuffleboardTab p_tab = Shuffleboard.getTab("Pregame");
-    NetworkTableEntry profile;
 
     /**
      * Singleton pattern to ensure only one instance of the ControlBoard is created
@@ -88,22 +87,12 @@ public class ControlBoard {
         dboard.shuffleboardUpdate();
     }
 
-    /**
-     * Gets the controller used for arm related functions
-     * 
-     * @return the arm controller
-     */
-    public GenericHID getArmController() {
-        return dboard.getArmController();
+
+    public GenericHID getLeftController() {
+        return dboard.getLeftController();
     }
 
-
-    /**
-     * Gets the controller used for gripper related functions
-     * @return the gripper controller
-     */
-    public GenericHID getGripperController() {
-        return dboard.getGripperController();
+    public GenericHID getRightController() {
+        return dboard.getRightController();
     }
-
 }

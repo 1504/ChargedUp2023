@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 // import relative encoder
@@ -24,8 +23,6 @@ import frc.robot.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
   private final CANSparkMax m_motor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
-  private final ArmFeedforward m_Feedforward = new ArmFeedforward(ArmConstants.kSVolts, ArmConstants.kGVolts,
-      ArmConstants.kVVolt, ArmConstants.kAVolt);
 
   private final double MAXSPEED = 0.35;
   private double curr_pos = 0;
@@ -39,9 +36,8 @@ public class Arm extends SubsystemBase {
    * Private constructor to prevent other classes from instantiating it.
    */
   private Arm() {
-
     arm_pid = new PIDController(ArmConstants.kP, 0, 0);
-    SmartDashboard.putData("Arm PID", arm_pid);
+    // SmartDashboard.putData("Arm PID", arm_pid);
   }
 
   /**
@@ -79,6 +75,7 @@ public class Arm extends SubsystemBase {
   @Deprecated
   public void resetArmEncoderPosition() {
     m_encoder.setPosition(0);
+    System.out.println("Warning: Arm encoder position reset");
   }
 
 

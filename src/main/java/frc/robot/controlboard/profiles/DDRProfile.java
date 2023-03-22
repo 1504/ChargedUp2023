@@ -55,12 +55,12 @@ public class DDRProfile implements IDriveProfile {
     }
 
     @Override
-    public GenericHID getArmController() {
+    public GenericHID getLeftController() {
         return ddr;
     }
 
     @Override
-    public GenericHID getGripperController() {
+    public GenericHID getRightController() {
         return ddr;
     }
 
