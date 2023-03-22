@@ -37,7 +37,7 @@ public class Cartesian extends CommandBase {
    */
   @Override
   public void execute() {
-    m_drivetrain.cartesianDrive(_ySpeed.getAsDouble(), _xSpeed.getAsDouble(), _zRotation.getAsDouble());
+    m_drivetrain.cartesianDrive(_xSpeed.getAsDouble(),_ySpeed.getAsDouble(), _zRotation.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

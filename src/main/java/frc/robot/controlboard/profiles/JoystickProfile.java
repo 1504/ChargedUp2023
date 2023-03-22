@@ -52,7 +52,6 @@ public class JoystickProfile implements IDriveProfile{
 
     @Override
     public double getThrottle() {
-        
         return j1.getRawAxis(1);
     }
 
@@ -63,8 +62,7 @@ public class JoystickProfile implements IDriveProfile{
      */
     @Override
     public double getRight() {
-        
-        return j1.getRawAxis(0) * (-1);
+        return j1.getRawAxis(0);
     }
 
     /**
@@ -76,7 +74,8 @@ public class JoystickProfile implements IDriveProfile{
      */
     @Override
     public double getRot() {
-        return j2.getX();
+        // return j2.getX();
+        return j2.getRawAxis(0);
     }
 
 

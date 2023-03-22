@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
@@ -116,7 +115,7 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", m_field);
 
-    // _drive.setSafetyEnabled(false); // Disable motor safety (potentially dangerous)
+    _drive.setSafetyEnabled(false); // Disable motor safety (potentially dangerous)
     // _drive.setExpiration(0.1);
 
     _front_left_pid = new PIDController(-1.85, 0, 0);
@@ -135,20 +134,20 @@ public class Drivetrain extends SubsystemBase {
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS, gyro.getYawRotation(), getWheelPositions(), m_pose);
     */
     // Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
+
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
-        // gyro.getRotation2d(),
-        getYaw(),
-        getWheelPositions(),
-        m_pose);
+            gyro.getYawRotation(),
+            getWheelPositions(),
+            m_pose);
+
 
     _odometry = new MecanumDriveOdometry(
-    BuildConstants._KINEMATICS, 
-    //_gyro.getRotation2d(), 
-    gyro.getRotation2d(),
-    new MecanumDriveWheelPositions(
-      _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
-      _back_left_encoder.getPosition(), _back_right_encoder.getPosition()
-    )
+            BuildConstants._KINEMATICS,
+            gyro.getRotation2d(),
+            new MecanumDriveWheelPositions(
+                    _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
+                    _back_left_encoder.getPosition(), _back_right_encoder.getPosition()
+            )
     );
   }
 
@@ -295,28 +294,29 @@ public class Drivetrain extends SubsystemBase {
     MecanumDriveWheelPositions positions = getWheelPositions();
     _poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
 
-    _odometry.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
+    // _odometry.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
 
   }
 
   private MecanumDriveWheelPositions getWheelPositions() {
     return new MecanumDriveWheelPositions(
-        getFrontLeftDistance() 
-          / BuildConstants.GEAR_RATIO
-          * BuildConstants.WHEEL_CIRCUMFERENCE
-          * BuildConstants.INCHES_TO_METERS, 
-        getFrontRightDistance() 
-          / BuildConstants.GEAR_RATIO
-          * BuildConstants.WHEEL_CIRCUMFERENCE
-          * BuildConstants.INCHES_TO_METERS,
-        getBackLeftDistance() 
-          / BuildConstants.GEAR_RATIO
-          * BuildConstants.WHEEL_CIRCUMFERENCE
-          * BuildConstants.INCHES_TO_METERS, 
-        getBackRightDistance() 
-          / BuildConstants.GEAR_RATIO
-          * BuildConstants.WHEEL_CIRCUMFERENCE
-          * BuildConstants.INCHES_TO_METERS);
+            getFrontLeftDistance()
+                    / BuildConstants.GEAR_RATIO
+                    * BuildConstants.WHEEL_CIRCUMFERENCE
+                    * BuildConstants.INCHES_TO_METERS,
+            getFrontRightDistance()
+                    / BuildConstants.GEAR_RATIO
+                    * BuildConstants.WHEEL_CIRCUMFERENCE
+                    * BuildConstants.INCHES_TO_METERS,
+            getBackLeftDistance()
+                    / BuildConstants.GEAR_RATIO
+                    * BuildConstants.WHEEL_CIRCUMFERENCE
+                    * BuildConstants.INCHES_TO_METERS,
+            getBackRightDistance()
+                    / BuildConstants.GEAR_RATIO
+                    * BuildConstants.WHEEL_CIRCUMFERENCE
+                    * BuildConstants.INCHES_TO_METERS);
+
   }
 
   public void updateOdometry() {
@@ -422,9 +422,11 @@ public class Drivetrain extends SubsystemBase {
     return _poseEstimator.getEstimatedPosition();
   }
 
+
   public Pose2d getPose() {
     return _odometry.getPoseMeters();
   }
+
 
   public void outputWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
     double frontLeft = wheelSpeeds.frontLeftMetersPerSecond;
@@ -484,8 +486,9 @@ public class Drivetrain extends SubsystemBase {
 
     m_pose = _odometry.update(gyroAngle, positions);
 
-    updateOdometry();
-    m_field.setRobotPose(getPoseEstimate());
+    // updateOdometry();
+    // m_field.setRobotPose(getPoseEstimate());
+    m_field.setRobotPose(_odometry.getPoseMeters());
     //drivePID();
   }
 }

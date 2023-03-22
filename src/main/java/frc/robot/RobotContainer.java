@@ -89,27 +89,29 @@ public class RobotContainer {
    * once
    */
   private void initAuton() {
+    m_drivetrain.resetEncoders();
     m_eventMap.put("RawExtend", new RawExtend());
     m_eventMap.put("RawRetract", new RawRetract());
     m_eventMap.put("Open", new Open());
     m_eventMap.put("Close", new Close());
     // TODO: verify the following constructor
-
 /*
-    MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(m_drivetrain::getPoseEstimate, m_drivetrain::resetOdometry, BuildConstants._KINEMATICS, new com.pathplanner.lib.auto.PIDConstants(1, 0, 0), new com.pathplanner.lib.auto.PIDConstants(0, 0, 0), PIDConstants.kMaxVelocity, m_drivetrain::outputWheelSpeeds, m_eventMap, m_drivetrain);
+    MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(
+            m_drivetrain::getPoseEstimate,
+            m_drivetrain::resetOdometry,
+            BuildConstants._KINEMATICS,
+            new com.pathplanner.lib.auto.PIDConstants(6, 0, 0),
+            new com.pathplanner.lib.auto.PIDConstants(6, 0, 0),
+            PIDConstants.kMaxVelocity,
+            m_drivetrain::outputWheelSpeeds,
+            m_eventMap,
+            m_drivetrain
+    );
     */
 
-    autoBuilder = new MecanumAutoBuilder(
-      m_drivetrain::getPose, 
-      m_drivetrain::resetOdometry,
-        BuildConstants._KINEMATICS, 
-        new com.pathplanner.lib.auto.PIDConstants(6, 0, 0),
-        new com.pathplanner.lib.auto.PIDConstants(0, 0, 0),
-        PIDConstants.kMaxVelocity, 
-        m_drivetrain::outputWheelSpeeds, 
-        m_eventMap,
-        m_drivetrain
-      );
+
+    MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(m_drivetrain::getPose, m_drivetrain::resetOdometry, BuildConstants._KINEMATICS, new com.pathplanner.lib.auto.PIDConstants(6, 0, 0), new com.pathplanner.lib.auto.PIDConstants(6, 0, 0), PIDConstants.kMaxVelocity, m_drivetrain::outputWheelSpeeds, m_eventMap, m_drivetrain);
+
 
     for (int i = 0; i < m_testPaths.size(); i++) {
       if (i == 0) {
@@ -143,7 +145,7 @@ public class RobotContainer {
     new JoystickButton(m_controlBoard.getArmController(), 1).whileTrue(new RawExtend());
     new JoystickButton(m_controlBoard.getArmController(), 2).whileTrue(new RawRetract());
     new JoystickButton(m_controlBoard.getArmController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
-    new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().andThen(new AddToSetpoint(15)));
+    new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().withTimeout(2).andThen(new AddToSetpoint(15)));
     new JoystickButton(m_xbox, XboxController.Button.kLeftBumper.value).whileTrue(new Close());
     new JoystickButton(m_xbox, XboxController.Button.kY.value).whileTrue(new SetArmPosition(SETPOINTS.HIGH));
     new JoystickButton(m_xbox, XboxController.Button.kX.value).whileTrue(new SetArmPosition(SETPOINTS.MID));
@@ -156,7 +158,7 @@ public class RobotContainer {
    * Initializes the default command for the drivetrain
    */
   public void initDefaultCommand() {
-    m_drivetrain.setDefaultCommand(new Cartesian(m_controlBoard::getRot, m_controlBoard::getRight, m_controlBoard::getThrottle));
+    m_drivetrain.setDefaultCommand(new Cartesian(m_controlBoard::getThrottle, m_controlBoard::getRight, m_controlBoard::getRot));
   }
 
   private void initMotors() {

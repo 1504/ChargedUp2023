@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.arm.ResetArmPosition;
 import frc.robot.commands.balance.AutoBalance;
+import frc.robot.commands.drive.ResetEncoders;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.gripper.ToggleAuto;
 
@@ -79,6 +80,7 @@ public class ShuffleboardManager extends SubsystemBase {
                 SmartDashboard.putData("Reset Arm", new ResetArmPosition());
                 SmartDashboard.putData("Reset Gyro", new ResetGyro());
                 SmartDashboard.putData("Toggle Auto", new ToggleAuto());
+                SmartDashboard.putData("Reset Encoders", new ResetEncoders());
         }
 
         public void shuffleboardInit() {
@@ -153,6 +155,7 @@ public class ShuffleboardManager extends SubsystemBase {
                                 */
 
                 //Robot position stuff
+                /*
                 xPos = telemetry.add("X Position", 0)
                         .withPosition(4, 1)
                         .withSize(3, 1)
@@ -165,6 +168,8 @@ public class ShuffleboardManager extends SubsystemBase {
                         .withPosition(4, 3)
                         .withSize(3, 1)
                         .getEntry();
+                        */
+
                 // PID drive stuff
                 /*
 
@@ -238,8 +243,10 @@ public class ShuffleboardManager extends SubsystemBase {
                 double totalEnergy = m_pdp.getTotalEnergy();
                 SmartDashboard.putNumber("Total Energy", totalEnergy);
                 // updates robot positions
+                /*
                 xPos.setDouble(_drive.getPose().getX());
                 yPos.setDouble(_drive.getPose().getY());
+                */
                 //zPos.setDouble(_drive.getPose())
 
                 // updates gyro values
