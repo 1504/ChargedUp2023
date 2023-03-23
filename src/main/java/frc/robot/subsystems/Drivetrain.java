@@ -23,9 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.controlboard.ControlBoard;
 
 /**
  * Drivetrain subsystem
@@ -66,29 +66,22 @@ public class Drivetrain extends SubsystemBase {
 
   private final MecanumDrive _drive;
 
-  private final Field2d m_field = new Field2d();
+  private final Field2d field = new Field2d();
 
   private final MecanumDrivePoseEstimator _poseEstimator;
-  private MecanumDriveOdometry _odometry;
+  private final MecanumDriveOdometry _odometry;
 
-  private Pose2d m_pose;
-
-  PIDController _front_left_pid;
-  PIDController _front_right_pid;
-  PIDController _back_right_pid;
-  PIDController _back_left_pid;
-  Gyroscope gyro;
-  Limelight limelight;
-
-  ControlBoard m_controlBoard;
+  private final PIDController _front_left_pid;
+  private final PIDController _front_right_pid;
+  private final PIDController _back_right_pid;
+  private final PIDController _back_left_pid;
+  private final Gyroscope gyro = Gyroscope.getInstance();
+  private final Limelight limelight = Limelight.getInstance();
 
   /**
    * Private constructor for the Drivetrain subsystem
    */
   private Drivetrain() {
-    gyro = Gyroscope.getInstance();
-    limelight = Limelight.getInstance();
-    m_controlBoard = ControlBoard.getInstance();
 
     // initDefaultCommand(); // initialize the default command (Cartesian)
 
@@ -113,48 +106,23 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Drive", _drive);
 
-    SmartDashboard.putData("Field", m_field);
-
-    // _drive.setSafetyEnabled(false); // Disable motor safety (potentially dangerous)
-    // _drive.setExpiration(0.1);
+    SmartDashboard.putData("Field", field);
 
     _front_left_pid = new PIDController(-1.85, 0, 0);
     _front_right_pid = new PIDController(-1.85, 0, 0);
     _back_right_pid = new PIDController(-1.85, 0, 0);
     _back_left_pid = new PIDController(-1.85, 0, 0);
 
-    // SmartDashboard.putData("BackLeftPid", _back_left_pid);
-    // SmartDashboard.putData("BackRightPid", _back_right_pid);
-    // SmartDashboard.putData("FrontLeftPid", _front_left_pid);
-    // SmartDashboard.putData("FrontRightPid", _front_right_pid);
-
-    Pose2d m_pose = new Pose2d(); // TODO: Verify pose constructor
-
-/*
+    Pose2d m_pose;
+    if (limelight.hasValidTarget()) {
+      m_pose = limelight.getBotFieldPose();
+    } else {
+      m_pose = new Pose2d();
+    }
     _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS, gyro.getYawRotation(), getWheelPositions(), m_pose);
-    */
-    // Pose2d m_pose = limelight.getBotFieldPose(); // Use limelight supplied pose to initialize
 
-    _poseEstimator = new MecanumDrivePoseEstimator(BuildConstants._KINEMATICS,
-            gyro.getYawRotation(),
-            getWheelPositions(),
-            m_pose);
-
-
-    _odometry = new MecanumDriveOdometry(
-            BuildConstants._KINEMATICS,
-            gyro.getRotation2d(),
-            new MecanumDriveWheelPositions(
-                    _front_left_encoder.getPosition(), _front_right_encoder.getPosition(),
-                    _back_left_encoder.getPosition(), _back_right_encoder.getPosition()
-            )
-    );
+    _odometry = new MecanumDriveOdometry(BuildConstants._KINEMATICS, gyro.getRotation2d(), new MecanumDriveWheelPositions(_front_left_encoder.getPosition(), _front_right_encoder.getPosition(), _back_left_encoder.getPosition(), _back_right_encoder.getPosition()));
   }
-
-  public Rotation2d getYaw() {
-    return (DriveConstants.invertGyro ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw()));
-  }
-
 
   /**
    * Main method to drive the robot
@@ -168,42 +136,31 @@ public class Drivetrain extends SubsystemBase {
    * @param zRotation The robot rotation speed values from -1 to 1
    */
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
-    // Deadband
-   
-    xSpeed *= -1; // TODO: Verify this is correct
+    zRotation *= -1;
+    // deadband the inputs
     double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : Math.pow(zRotation, 3);
     double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(ySpeed, 3);
     double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(xSpeed, 3);
-    
     _drive.driveCartesian(xSpd, ySpd, zRot);
-
   }
 
-
-/*
-  public void drivePID(double xSpeed, double ySpeed, double zRotation) {
-    WheelSpeeds wheelSpeeds = MecanumDrive.driveCartesianIK(xSpeed, ySpeed, zRotation);
-    double frontLeft = wheelSpeeds.frontLeft * PIDConstants.kMaxVelocity;
-    double frontRight = wheelSpeeds.frontRight * PIDConstants.kMaxVelocity;
-    double backLeft = wheelSpeeds.rearLeft * PIDConstants.kMaxVelocity;
-    double backRight = wheelSpeeds.rearRight * PIDConstants.kMaxVelocity;
-
-    setWheelSpeeds(frontLeft, frontRight, backLeft, backRight);
-    */
+  /**
+   * @deprecated Since 3/23/2023
+   * <p>
+   * Drives the robot using PID controls
+   */
+  @Deprecated
   public void drivePID() {
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
     _back_right_motor.setVoltage(_back_left_pid.calculate(getBackRightVelocity()));
     _front_left_motor.setVoltage(_back_left_pid.calculate(getFrontLeftVelocity()));
     _front_right_motor.setVoltage(_back_left_pid.calculate(getFrontRightVelocity()));
-
   }
 
   /**
    * @deprecated Since 3/17/2023
-   *             <p>
-   *             Resets the encoders to currently read a position of 0.
-   *             <p>
-   *             This method is deprecated and will be removed in the future.
+   *
+   * Resets the encoders to currently read a position of 0.
    */
   @Deprecated
   public void resetEncoders() {
@@ -294,42 +251,33 @@ public class Drivetrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     MecanumDriveWheelPositions positions = getWheelPositions();
-    _poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
-
-    // _odometry.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
-
+    if (Constants.AutoConstants.USE_VISION_ASSIST) {
+      _poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
+    } else {
+      _odometry.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
+    }
   }
 
+  /**
+   * Gets the distance traveled by the wheels for odometry
+   *
+   * @return The current wheel positions
+   */
   private MecanumDriveWheelPositions getWheelPositions() {
-    return new MecanumDriveWheelPositions(
-            getFrontLeftDistance()
-                    / BuildConstants.GEAR_RATIO
-                    * BuildConstants.WHEEL_CIRCUMFERENCE
-                    * BuildConstants.INCHES_TO_METERS,
-            getFrontRightDistance()
-                    / BuildConstants.GEAR_RATIO
-                    * BuildConstants.WHEEL_CIRCUMFERENCE
-                    * BuildConstants.INCHES_TO_METERS,
-            getBackLeftDistance()
-                    / BuildConstants.GEAR_RATIO
-                    * BuildConstants.WHEEL_CIRCUMFERENCE
-                    * BuildConstants.INCHES_TO_METERS,
-            getBackRightDistance()
-                    / BuildConstants.GEAR_RATIO
-                    * BuildConstants.WHEEL_CIRCUMFERENCE
-                    * BuildConstants.INCHES_TO_METERS);
-
+    return new MecanumDriveWheelPositions(getFrontLeftDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS, getFrontRightDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS, getBackLeftDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS, getBackRightDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS);
   }
 
-  public void updateOdometry() {
-    // update should be called every scheduler run
+  /**
+   * Updates the odometry with the current robot pose, assisted by vision
+   *
+   * @return The current pose of the robot
+   */
+  public Pose2d updateOdometryWithVision() {
     _poseEstimator.update(gyro.getRotation2d(), getWheelPositions());
-    //System.out.println("X: " + _poseEstimator.getEstimatedPosition().getTranslation().getX());
-    //System.out.println("Y: " + _poseEstimator.getEstimatedPosition().getTranslation().getY());
-    //System.out.println("Angle: " + _poseEstimator.getEstimatedPosition().getRotation().getDegrees());
     if (limelight.hasValidTarget()) {
       _poseEstimator.addVisionMeasurement(limelight.getBotFieldPose(), limelight.getVisionTimestampSeconds());
     }
+    return _poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -369,111 +317,66 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Sets the current front left PID
-   * 
-   * @param p The new P value
-   * @param i The new I value
-   * @param d The new D value
+   * Gets the current pose of the robot using pose estimator (vision assisted)
+   *
+   * @return The estimated pose of the robot
    */
-  public void setFrontLeftPid(double p, double i, double d) {
-    _front_left_pid.setP(p);
-    _front_left_pid.setI(i);
-    _front_left_pid.setD(d);
-  }
-
-  /**
-   * Sets the current front right PID
-   * 
-   * @param p The new P value
-   * @param i The new I value
-   * @param d The new D value
-   */
-  public void setFrontRightPid(double p, double i, double d) {
-    _front_right_pid.setP(p);
-    _front_right_pid.setI(i);
-    _front_right_pid.setD(d);
-  }
-
-  /**
-   * Sets the current back left PID
-   * 
-   * @param p The new P value
-   * @param i The new I value
-   * @param d The new D value
-   */
-  public void setBackLeftPid(double p, double i, double d) {
-    _back_left_pid.setP(p);
-    _back_left_pid.setI(i);
-    _back_left_pid.setD(d);
-  }
-
-  /**
-   * Sets the current back right PID
-   * 
-   * @param p The new P value
-   * @param i The new I value
-   * @param d The new D value
-   */
-  public void setBackRightPid(double p, double i, double d) {
-    _back_right_pid.setP(p);
-    _back_right_pid.setI(i);
-    _back_right_pid.setD(d);
-  }
-
   public Pose2d getPoseEstimate() {
     return _poseEstimator.getEstimatedPosition();
   }
 
-
+  /**
+   * Gets the current pose of the robot using odometry (no vision)
+   *
+   * @return The current pose of the robot
+   */
   public Pose2d getPose() {
-    return _odometry.getPoseMeters();
+    if (Constants.AutoConstants.USE_VISION_ASSIST) {
+      return _poseEstimator.getEstimatedPosition();
+    } else {
+      return _odometry.getPoseMeters();
+    }
   }
 
-
-  public void outputWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
+  /**
+   * Sets the wheel speeds given a MecanumDriveWheelSpeeds object
+   *
+   * @param wheelSpeeds The desired wheel speeds
+   */
+  public void setOutputWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
     double frontLeft = wheelSpeeds.frontLeftMetersPerSecond;
     double frontRight = wheelSpeeds.frontRightMetersPerSecond;
     double backLeft = wheelSpeeds.rearLeftMetersPerSecond;
     double backRight = wheelSpeeds.rearRightMetersPerSecond;
-
     setWheelSpeeds(frontLeft, frontRight, backLeft, backRight);
   }
 
+  /**
+   * Sets the wheel speeds given individual wheel speeds
+   *
+   * @param frontLeft  Front left wheel speed
+   * @param frontRight Front right wheel speed
+   * @param backLeft   Back left wheel speed
+   * @param backRight  Back right wheel speed
+   */
   private void setWheelSpeeds(double frontLeft, double frontRight, double backLeft, double backRight) {
     _front_left_pid.setSetpoint(frontLeft);
     _front_right_pid.setSetpoint(frontRight);
     _back_left_pid.setSetpoint(backLeft);
     _back_right_pid.setSetpoint(backRight);
-    // System.out.println("Front Left: " + frontLeft);
-    // System.out.println("Front Right: " + frontRight);
-    // System.out.println("Back Left: " + backLeft);
-    // System.out.println("Back Right: " + backRight);
     _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
     _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
     _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightVelocity()));
   }
 
-
-  /*
-  public void followTrajectory(PathPlannerTrajectory traj) {
-    MecanumControllerCommand m_command = new MecanumControllerCommand(
-            traj,
-            this::getPose,
-            BuildConstants._KINEMATICS,
-            new ProfiledPIDController(PIDConstants.X_kPa, PIDConstants.X_kIa, PIDConstants.X_kDa, PIDConstants.X_CONSTRAINTS),
-            new ProfiledPIDController(PIDConstants.Y_kPa, PIDConstants.Y_kIa, PIDConstants.Y_kDa, PIDConstants.Y_CONSTRAINTS),
-            new ProfiledPIDController(PIDConstants.THETA_kPa, PIDConstants.THETA_kIa, PIDConstants.THETA_kDa, PIDConstants.THETA_CONSTRAINTS),
-            null,
-            this::outputWheelSpeeds,
-            AutoConstants.AUTO_MAX_SPEED_METERS_PER_SECOND, this::outputWheelSpeeds, this);
-
-    this.resetOdometry(traj.getInitialPose());
-    m_command.schedule();
-  }
-
+  /**
+   * Follows a given trajectory using the PPMecanumControllerCommand
+   *
+   * @param traj        The trajectory to follow
+   * @param isFirstPath Whether or not this is the first path you are running (if so, reset odometry)
+   * @return The command to follow the trajectory
    */
-
   public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
     return new SequentialCommandGroup(new InstantCommand(() -> {
       // Reset odometry for the first path you run during auto
@@ -485,14 +388,16 @@ public class Drivetrain extends SubsystemBase {
             new PIDController(0.01, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
             new PIDController(0.01, 0, 0), // Y controller (usually the same values as X controller)
             new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-            3.0, // Max wheel velocity meters per second
-            this::outputWheelSpeeds, // MecanumDriveWheelSpeeds consumer
+            Constants.AutoConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,  // Max wheel velocity meters per second
+            this::setOutputWheelSpeeds, // MecanumDriveWheelSpeeds consumer
             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
             this // Requires this drive subsystem
     ));
   }
 
-
+  /**
+   * STOP STOP STOP
+   */
   public void stop() {
     _front_left_motor.setVoltage(0);
     _front_right_motor.setVoltage(0);
@@ -500,27 +405,31 @@ public class Drivetrain extends SubsystemBase {
     _back_right_motor.setVoltage(0);
   }
 
-  public void DriveDistance(double x, double y) {
+  /**
+   * Gets the wheel driven displacements using the gyroscope
+   *
+   * @deprecated Use {@link #getWheelPositions()} instead
+   */
+  @Deprecated
+  public void DriveDistance() {
     //Scuffed
     double starting_x = gyro.getDisplacementX();
     double starting_y = gyro.getDisplacementY();
   }
 
-
-  public void goToAprilTag(double tagAngleOffset) {
-    // PathPlannerTrajectory traj = RobotContainer.getTrajectory(tagAngleOffset);
-  }
-
+  /**
+   * Periodic method for the drivetrain
+   */
   @Override
   public void periodic() {
 
-    Rotation2d gyroAngle = gyro.getRotation2d();
-    MecanumDriveWheelPositions positions = getWheelPositions();
-    m_pose = _odometry.update(gyroAngle, positions);
-    // updateOdometry();
-    m_field.setRobotPose(m_pose);
-
-    // m_field.setRobotPose(_odometry.getPoseMeters());
-    //drivePID();
+    Pose2d pose;
+    if (Constants.AutoConstants.USE_VISION_ASSIST) {
+      // use _odometry object
+      pose = _odometry.update(gyro.getRotation2d(), getWheelPositions());
+    } else {
+      pose = updateOdometryWithVision();
+    }
+    field.setRobotPose(pose);
   }
 }

@@ -8,7 +8,6 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,7 +23,7 @@ import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.SETPOINTS;
 import frc.robot.commands.arm.RawExtend;
 import frc.robot.commands.arm.RawRetract;
-import frc.robot.commands.arm.ResetArmPosition;
+import frc.robot.commands.resets.ResetArmPosition;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.commands.drive.GoToAprilTag;
@@ -91,37 +90,25 @@ public class RobotContainer {
    * once
    */
   private void initAuton() {
-    m_drivetrain.resetEncoders();
-    m_eventMap.put("RawExtend", new RawExtend());
-    m_eventMap.put("RawRetract", new RawRetract());
+    // m_drivetrain.resetOdometry(new Pose2d()); TODO: Verify if initialization is needed
+    m_eventMap.put("SetPoint High", new SetArmPosition(SETPOINTS.HIGH));
+    m_eventMap.put("SetPoint Mid", new SetArmPosition(SETPOINTS.MID));
+    m_eventMap.put("SetPoint Zero", new SetArmPosition(SETPOINTS.ZERO));
+    m_eventMap.put("SetPoint Pickup", new SetArmPosition(SETPOINTS.PICKUP));
     m_eventMap.put("Open", new Open());
     m_eventMap.put("Close", new Close());
+
     // TODO: verify the following constructor
-/*
     MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(
-            m_drivetrain::getPoseEstimate,
+            m_drivetrain::getPose,
             m_drivetrain::resetOdometry,
             BuildConstants._KINEMATICS,
-            new com.pathplanner.lib.auto.PIDConstants(6, 0, 0),
-            new com.pathplanner.lib.auto.PIDConstants(6, 0, 0),
+            new com.pathplanner.lib.auto.PIDConstants(0, 0, 0),
+            new com.pathplanner.lib.auto.PIDConstants(9, 0, 0),
             PIDConstants.kMaxVelocity,
-            m_drivetrain::outputWheelSpeeds,
+            m_drivetrain::setOutputWheelSpeeds,
             m_eventMap,
             m_drivetrain
-    );
-    */
-
-
-    MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(
-      m_drivetrain::getPose, 
-      m_drivetrain::resetOdometry, 
-      BuildConstants._KINEMATICS, 
-      new com.pathplanner.lib.auto.PIDConstants(0, 0, 0), 
-      new com.pathplanner.lib.auto.PIDConstants(9, 0, 0), 
-      PIDConstants.kMaxVelocity, 
-      m_drivetrain::outputWheelSpeeds, 
-      m_eventMap, 
-      m_drivetrain
     );
 
 
@@ -166,9 +153,6 @@ public class RobotContainer {
     new JoystickButton(m_xbox, XboxController.Button.kStart.value).whileTrue(new ToggleAuto());
     new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
     new JoystickButton(m_xbox, XboxController.Button.kBack.value).onTrue(new ResetArmPosition());
-    new JoystickButton(m_controlBoard.getRightController(), 2).whileTrue(new Cartesian(() -> 0.5, () -> 0, () -> 0));
-    new JoystickButton(m_controlBoard.getRightController(), 3).whileTrue(new Cartesian(() -> 0, () -> 0.5, () -> 0));
-    new JoystickButton(m_controlBoard.getRightController(), 4).whileTrue(new Cartesian(() -> 0, () -> 0, () -> 0.5));
   }
 
   /**
@@ -179,7 +163,6 @@ public class RobotContainer {
   }
 
   private void initMotors() {
-    m_drivetrain.resetOdometry(new Pose2d());
     m_drivetrain.resetEncoders();
   }
 

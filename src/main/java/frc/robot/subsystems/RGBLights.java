@@ -41,12 +41,9 @@ public class RGBLights extends SubsystemBase {
         blue_pwd = new PWM(PWMPins.BLUE_LED);
     }
 
-    // private int num = 0;
 
     @Override
     public void periodic() {
-        // updateLights(num);
-        // num++;
     }
 
     // to activate a light, set the pin to false (0v)
@@ -55,7 +52,6 @@ public class RGBLights extends SubsystemBase {
         red_pwd.setRaw((int) ((num % 2550) / 10));
         green_pwd.setRaw((int) ((num % 2550) / 10));
         blue_pwd.setRaw((int) ((num % 2550) / 10));
-        // System.out.println((int) ((num % 2550) / 10));
     }
 
     public boolean setFromHex(String hex) {
@@ -74,7 +70,6 @@ public class RGBLights extends SubsystemBase {
             blue_pwd.setRaw(b);
             return true;
         }
-
     }
 
 }

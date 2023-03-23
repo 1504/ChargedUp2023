@@ -1,16 +1,16 @@
-package frc.robot.commands.drive;
+package frc.robot.commands.resets;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Gyroscope;
 
 
-public class ResetEncoders extends CommandBase {
-    private final Drivetrain drivetrain = Drivetrain.getInstance();
+public class ResetGyro extends CommandBase {
+    private final Gyroscope gyroscope = Gyroscope.getInstance();
 
-    public ResetEncoders() {
+    public ResetGyro() {
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
-        addRequirements(this.drivetrain);
+        addRequirements(this.gyroscope);
     }
 
     /**
@@ -18,8 +18,7 @@ public class ResetEncoders extends CommandBase {
      */
     @Override
     public void initialize() {
-        drivetrain.resetEncoders();
-
+        gyroscope.reset();
     }
 
     /**
