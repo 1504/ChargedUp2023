@@ -21,7 +21,9 @@ public class RawExtend extends CommandBase {
    */
   @Override
   public void execute() {
-    m_arm.setAuto(false);
+    if(m_arm.getAutoStatus()){
+      m_arm.setAuto(false);
+    }
     m_arm.rawExtend();
     //m_arm.PIDDrive(ArmConstants.kExtendSetpoint);
     System.out.println("me when I extend");

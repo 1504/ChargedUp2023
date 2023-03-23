@@ -24,6 +24,7 @@ import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.SETPOINTS;
 import frc.robot.commands.arm.RawExtend;
 import frc.robot.commands.arm.RawRetract;
+import frc.robot.commands.arm.ResetArmPosition;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.commands.drive.GoToAprilTag;
@@ -143,10 +144,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // whileTrue stops command when button is released
-    new JoystickButton(m_controlBoard.getLeftController(), 1).whileTrue(new RawExtend());
-    new JoystickButton(m_controlBoard.getLeftController(), 2).whileTrue(new RawRetract());
+    new JoystickButton(m_xbox, XboxController.Axis.kLeftTrigger.value).whileTrue(new RawExtend());
+    new JoystickButton(m_xbox, XboxController.Axis.kLeftTrigger.value).whileTrue(new RawRetract());
     new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
-    new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().withTimeout(2).andThen(new AddToSetpoint(15)));
+    new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().withTimeout(1).andThen(new AddToSetpoint(15)));
     new JoystickButton(m_xbox, XboxController.Button.kLeftBumper.value).whileTrue(new Close());
     new JoystickButton(m_xbox, XboxController.Button.kY.value).whileTrue(new SetArmPosition(SETPOINTS.HIGH));
     new JoystickButton(m_xbox, XboxController.Button.kX.value).whileTrue(new SetArmPosition(SETPOINTS.MID));
@@ -154,6 +155,7 @@ public class RobotContainer {
     new JoystickButton(m_xbox, XboxController.Button.kB.value).whileTrue(new SetArmPosition(SETPOINTS.PICKUP));
     new JoystickButton(m_xbox, XboxController.Button.kStart.value).whileTrue(new ToggleAuto());
     new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
+    new JoystickButton(m_xbox, XboxController.Button.kBack.value).onTrue(new ResetArmPosition());
   }
 
   /**

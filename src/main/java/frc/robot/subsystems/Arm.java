@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
   private final double MAXSPEED = 0.35;
   private double curr_pos = 0;
 
-  private boolean auto = true;
+  private boolean auto = false;
 
   private static Arm _instance = null;
   PIDController arm_pid;

@@ -25,7 +25,9 @@ public class RawRetract extends CommandBase {
    */
   @Override
   public void execute() {
-    m_arm.setAuto(false);
+    if(m_arm.getAutoStatus()){
+      m_arm.setAuto(false);
+    }
     m_arm.rawRetract();
     //m_arm.PIDDrive(ArmConstants.kRetractSetpoint);
     System.out.println("me when I retract");
