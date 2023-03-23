@@ -154,8 +154,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // whileTrue stops command when button is released
-    new JoystickButton(m_xbox, XboxController.Axis.kLeftTrigger.value).whileTrue(new RawExtend());
-    new JoystickButton(m_xbox, XboxController.Axis.kLeftTrigger.value).whileTrue(new RawRetract());
+    new JoystickButton(m_xbox, XboxController.Button.kRightStick.value).whileTrue(new RawExtend());
+    new JoystickButton(m_xbox, XboxController.Button.kLeftStick.value).whileTrue(new RawRetract());
     new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
     new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().withTimeout(1).andThen(new AddToSetpoint(15)));
     new JoystickButton(m_xbox, XboxController.Button.kLeftBumper.value).whileTrue(new Close());
