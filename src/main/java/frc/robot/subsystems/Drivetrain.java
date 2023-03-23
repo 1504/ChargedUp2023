@@ -516,11 +516,10 @@ public class Drivetrain extends SubsystemBase {
 
     Rotation2d gyroAngle = gyro.getRotation2d();
     MecanumDriveWheelPositions positions = getWheelPositions();
-
     m_pose = _odometry.update(gyroAngle, positions);
-
     // updateOdometry();
-    m_field.setRobotPose(getPose());
+    m_field.setRobotPose(m_pose);
+
     // m_field.setRobotPose(_odometry.getPoseMeters());
     //drivePID();
   }

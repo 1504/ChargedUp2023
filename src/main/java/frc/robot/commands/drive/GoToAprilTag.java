@@ -33,6 +33,7 @@ public class GoToAprilTag extends CommandBase {
         ValidTarget = limelight.hasValidTarget();
         if (!ValidTarget) {
             System.err.println("GO TO APRIL TAG COMMAND: NO VALID TARGET FOUND");
+            return;
         } else {
             targetPose = limelight.getBotTargetPose();
             System.out.println("Target Pose: " + targetPose);
@@ -46,6 +47,7 @@ public class GoToAprilTag extends CommandBase {
         // follow the path
         drivetrain.followTrajectoryCommand(traj1, false).andThen(() -> {
             finished = true;
+            drivetrain.stop();
         }).schedule();
     }
 

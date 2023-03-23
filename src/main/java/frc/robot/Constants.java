@@ -135,7 +135,7 @@ public final class Constants {
     // TODO: idk any of these numbers
     public static final int kMotorPort = 23;
 
-    public static final double kP = 0.04; // TODO: tune arm PID
+    public static final double kP = 0.025; // TODO: tune arm PID
 
     // ArmFeedforward //
     // https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/characterizing-drive.html
