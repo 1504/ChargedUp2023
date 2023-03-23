@@ -37,6 +37,7 @@ public class Arm extends SubsystemBase {
    */
   private Arm() {
     arm_pid = new PIDController(ArmConstants.kP, 0, 0);
+    m_motor.setInverted(true);
     // SmartDashboard.putData("Arm PID", arm_pid);
   }
 

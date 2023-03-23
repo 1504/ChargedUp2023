@@ -32,9 +32,9 @@ public final class Constants {
     public static final boolean invertGyro = false;
 
     // Motor Controller IDs
-    public static final int FRONT_LEFT = 10;
+    public static final int FRONT_LEFT = 11;
     public static final int FRONT_RIGHT = 20;
-    public static final int BACK_LEFT = 11;
+    public static final int BACK_LEFT = 10;
     public static final int BACK_RIGHT = 13;
     public static final int ARM = 20;
 
@@ -49,19 +49,19 @@ public final class Constants {
   }
 
   public static class PIDConstants {
-    public static final double FRONT_LEFT_kPa = -1.85;
+    public static final double FRONT_LEFT_kPa = 1.85;
     public static final double FRONT_LEFT_kIa = 0.0;
     public static final double FRONT_LEFT_kDa = 0.0;
 
-    public static final double FRONT_RIGHT_kPa = -1.85;
+    public static final double FRONT_RIGHT_kPa = 1.85;
     public static final double FRONT_RIGHT_kIa = 0.0;
     public static final double FRONT_RIGHT_kDa = 0.0;
 
-    public static final double BACK_LEFT_kPa = -1.85;
+    public static final double BACK_LEFT_kPa = 1.85;
     public static final double BACK_LEFT_kIa = 0.0;
     public static final double BACK_LEFT_kDa = 0.0;
 
-    public static final double BACK_RIGHT_kPa = -1.85;
+    public static final double BACK_RIGHT_kPa = 1.85;
     public static final double BACK_RIGHT_kIa = 0.0;
     public static final double BACK_RIGHT_kDa = 0.0;
 

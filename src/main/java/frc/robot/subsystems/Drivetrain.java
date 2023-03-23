@@ -101,8 +101,8 @@ public class Drivetrain extends SubsystemBase {
 
     _front_left_motor.setInverted(false);
     _back_left_motor.setInverted(false);
-    _back_right_motor.setInverted(false);
-    _front_right_motor.setInverted(false);
+    _back_right_motor.setInverted(true);
+    _front_right_motor.setInverted(true);
 
     _front_left_encoder = _front_left_motor.getEncoder();
     _front_right_encoder = _front_right_motor.getEncoder();
@@ -169,12 +169,14 @@ public class Drivetrain extends SubsystemBase {
    */
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
     // Deadband
-    zRotation *= -1; // TODO: Verify this is correct
+   
+    xSpeed *= -1; // TODO: Verify this is correct
     double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : Math.pow(zRotation, 3);
     double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(ySpeed, 3);
     double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(xSpeed, 3);
-
+    
     _drive.driveCartesian(xSpd, ySpd, zRot);
+
   }
 
 
@@ -517,6 +519,7 @@ public class Drivetrain extends SubsystemBase {
     m_pose = _odometry.update(gyroAngle, positions);
     // updateOdometry();
     m_field.setRobotPose(m_pose);
+
     // m_field.setRobotPose(_odometry.getPoseMeters());
     //drivePID();
   }
