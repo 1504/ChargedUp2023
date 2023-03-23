@@ -16,21 +16,17 @@ public class Cartesian extends CommandBase {
   private final DoubleSupplier _zRotation;
   private final Drivetrain m_drivetrain = Drivetrain.getInstance();
 
-  // public Cartesian(Drivetrain _d, DoubleSupplier _y, DoubleSupplier _x,
-  // DoubleSupplier _z) {
-  public Cartesian(DoubleSupplier _x, DoubleSupplier _y, DoubleSupplier _z) {
-    _ySpeed = _y;
-    _xSpeed = _x;
-    _zRotation = _z;
+  public Cartesian(DoubleSupplier forwardSpeed, DoubleSupplier HorizontalSpeed, DoubleSupplier RotationSpeed) {
+    _ySpeed = HorizontalSpeed;
+    _xSpeed = forwardSpeed;
+    _zRotation = RotationSpeed;
     addRequirements(m_drivetrain);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   /**
    * sets the cartesian drive to the values of the joystick
    * 
@@ -40,13 +36,11 @@ public class Cartesian extends CommandBase {
     m_drivetrain.cartesianDrive(_xSpeed.getAsDouble(),_ySpeed.getAsDouble(), _zRotation.getAsDouble());
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.cartesianDrive(0, 0, 0);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

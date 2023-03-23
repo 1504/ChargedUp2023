@@ -1,16 +1,17 @@
-package frc.robot.commands.drive;
+package frc.robot.commands.resets;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Gyroscope;
+import frc.robot.subsystems.Drivetrain;
 
 
-public class ResetGyro extends CommandBase {
-    private final Gyroscope gyroscope = Gyroscope.getInstance();
+public class ResetOdometry extends CommandBase {
+    private final Drivetrain drivetrain = Drivetrain.getInstance();
 
-    public ResetGyro() {
+    public ResetOdometry() {
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
-        addRequirements(this.gyroscope);
+        addRequirements(this.drivetrain);
     }
 
     /**
@@ -18,7 +19,7 @@ public class ResetGyro extends CommandBase {
      */
     @Override
     public void initialize() {
-        gyroscope.reset();
+        drivetrain.resetOdometry(new Pose2d());
     }
 
     /**

@@ -12,10 +12,11 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.arm.ResetArmPosition;
+import frc.robot.commands.resets.ResetArmPosition;
 import frc.robot.commands.balance.AutoBalance;
-import frc.robot.commands.drive.ResetEncoders;
-import frc.robot.commands.drive.ResetGyro;
+import frc.robot.commands.resets.ResetEncoders;
+import frc.robot.commands.resets.ResetGyro;
+import frc.robot.commands.resets.ResetOdometry;
 import frc.robot.commands.gripper.ToggleAuto;
 
 /**
@@ -71,11 +72,13 @@ public class ShuffleboardManager extends SubsystemBase {
                 SmartDashboard.putData("Reset Gyro", new ResetGyro());
                 SmartDashboard.putData("Toggle Auto", new ToggleAuto());
                 SmartDashboard.putData("Reset Encoders", new ResetEncoders());
+                SmartDashboard.putData("Reset Odometry", new ResetOdometry());
                 SmartDashboard.putData("Reset Arm", new ResetArmPosition());
                 SmartDashboard.putData("Reset All", Commands.run(() -> {
                         new ResetArmPosition().schedule();
                         new ResetGyro().schedule();
                         new ResetEncoders().schedule();
+                        new ResetOdometry().schedule();
                 }));
         }
 
@@ -120,15 +123,12 @@ public class ShuffleboardManager extends SubsystemBase {
                 backRightEncoder.setDouble(_drive.getBackRightDistance());
                 backLeftEncoder.setDouble(_drive.getBackLeftDistance());
                 RobotPosition.setString(_drive.getPoseEstimate().toString());
-
-                SmartDashboard.putNumber("Voltage", m_pdp.getVoltage());
-
-                SmartDashboard.putNumber("Total Current", m_pdp.getTotalCurrent());
-
                 gyroPitch.setDouble(_gyro.getPitch());
                 gyroYaw.setDouble(_gyro.getYaw());
                 gyroRoll.setDouble(_gyro.getRoll());
                 armPosition.setDouble(_arm.getArmDistance()); // get arm position
+                SmartDashboard.putNumber("Voltage", m_pdp.getVoltage());
+                SmartDashboard.putNumber("Total Current", m_pdp.getTotalCurrent());
                 SmartDashboard.putBoolean("Auto Status", _arm.getAutoStatus()); // get auto status
         }
 
