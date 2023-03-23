@@ -159,7 +159,7 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * @deprecated Since 3/17/2023
-   *
+   * <p>
    * Resets the encoders to currently read a position of 0.
    */
   @Deprecated

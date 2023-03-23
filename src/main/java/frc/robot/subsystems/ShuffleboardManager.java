@@ -17,7 +17,7 @@ import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.resets.ResetEncoders;
 import frc.robot.commands.resets.ResetGyro;
 import frc.robot.commands.resets.ResetOdometry;
-import frc.robot.commands.gripper.ToggleAuto;
+import frc.robot.commands.arm.ToggleAuto;
 
 /**
  * ShuffleboardManager subsystem

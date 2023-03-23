@@ -7,11 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-// import relative encoder
 
 /**
  * Arm subsystem.
@@ -53,13 +51,23 @@ public class Arm extends SubsystemBase {
     return _instance;
   }
 
+  /**
+   * Gets the arm PID controller
+   *
+   * @return the arm PID controller
+   */
   public PIDController getArmPid() {
     return arm_pid;
   }
 
+  /**
+   * Drives the arm using PID
+   *
+   * @param setpoint the setpoint to drive to
+   * @deprecated Since 03/23/2023 - Use {@link #setSetpoint(double)} and {@link #addSetpoint(double)} instead
+   */
+  @Deprecated
   public void PIDDrive(double setpoint) {
-    // m_motor.set(m_encoder.getPosition());
-    // use pid to drive extend the arm
     m_motor.set(arm_pid.calculate(m_encoder.getPosition(), setpoint));
   }
 
@@ -68,9 +76,8 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * Please do not ever use this method. It is only here for testing purposes.
-   * <p>
-   * It can significantly mess up the arm PID control, potentially causing the arm to snap (again).
+   * Resets the arm encoder position to 0
+   *
    * @deprecated Since 03/17/2023
    */
   @Deprecated
@@ -80,48 +87,82 @@ public class Arm extends SubsystemBase {
   }
 
 
+  /**
+   * Returns whether the arm is in auto mode
+   *
+   * @return true if the arm is in auto mode, false otherwise
+   */
   public boolean getAutoStatus() {
     return auto;
   }
 
+  /**
+   * Extends the arm without using PID
+   */
   public void rawExtend() {
     if (!auto) {
       m_motor.set(MAXSPEED);
     }
   }
 
+  /**
+   * Retracts the arm without using PID
+   */
   public void rawRetract() {
     if (!auto) {
       m_motor.set(-MAXSPEED);
     }
   }
 
+  /**
+   * Stops the motor
+   */
   public void stopMotor() {
     m_motor.set(0);
   }
 
+  /**
+   * Toggles the auto mode
+   */
   public void toggleAuto() {
     auto = !auto;
   }
 
+  /**
+   * Sets the auto mode
+   *
+   * @param a the auto mode to set to
+   */
   public void setAuto(boolean a) {
     auto = a;
   }
 
+  /**
+   * Sets the setpoint of the arm PID controller
+   *
+   * @param setpoint the setpoint to set
+   */
   public void setSetpoint(double setpoint) {
     arm_pid.setSetpoint(setpoint);
     curr_pos = setpoint;
   }
 
+  /**
+   * Adds to the current setpoint of the arm PID controller
+   *
+   * @param amt the amount to add to the setpoint
+   */
   public void addSetpoint(double amt) {
     arm_pid.setSetpoint(curr_pos + amt);
   }
 
+  /**
+   * Periodic method for the arm
+   */
   @Override
   public void periodic() {
     if (auto) {
       double val = arm_pid.calculate(m_encoder.getPosition());
-      // System.out.println(Math.min(Math.max(val, -0.6), 0.6));
       m_motor.set(val);
     }
 

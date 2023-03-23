@@ -74,11 +74,8 @@ public class JoystickProfile implements IDriveProfile{
      */
     @Override
     public double getRot() {
-        // return j2.getX();
         return j2.getRawAxis(0);
     }
-
-
 
     @Override
     public boolean getRawButtonPressed(int button) {
@@ -87,33 +84,10 @@ public class JoystickProfile implements IDriveProfile{
 
     @Override
     public void shuffleboardInit() {
-        /*
-        controlBoard = Shuffleboard.getTab("Control Board");
-        throttleEntry = controlBoard.add("Throttle", 0)
-            .withPosition(0, 0)
-            .withSize(3,3)
-            .getEntry();
-        //rightEntry = controlBoard.add("Right", 0).getEntry();
-        //rotEntry = controlBoard.add("Rot", 0).getEntry();
-        throttlEntryFiltered = controlBoard.add("Throttle Filtered", 0)
-            .withPosition(3, 0)
-            .withSize(3,3)
-            .getEntry();
-        //rightEntryFiltered = controlBoard.add("Right Filtered", 0).getEntry();
-        //rotEntryFiltered = controlBoard.add("Rot Filtered", 0).getEntry();
-        */
     }
 
     @Override
     public void shuffleboardUpdate() {
-        /*
-        throttleEntry.setDouble(j1.getRawAxis(1) * (-1));
-        //rightEntry.setDouble(getRight());
-        //rotEntry.setDouble(getRot());
-        throttlEntryFiltered.setDouble(filter.calculate(j1.getRawAxis(1) * (-1)));
-        //rightEntryFiltered.setDouble(filter.calculate(getRight()));
-        //rotEntryFiltered.setDouble(filter.calculate(getRot()));
-        */
     }
 
     @Override

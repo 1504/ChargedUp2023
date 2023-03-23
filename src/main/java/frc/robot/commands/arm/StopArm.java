@@ -1,13 +1,13 @@
-package frc.robot.commands.gripper;
+package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
 
-public class ToggleAuto extends CommandBase {
+public class StopArm extends CommandBase {
     private final Arm arm = Arm.getInstance();
 
-    public ToggleAuto() {
+    public StopArm() {
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.arm);
@@ -18,7 +18,8 @@ public class ToggleAuto extends CommandBase {
      */
     @Override
     public void initialize() {
-        arm.toggleAuto();
+        arm.setAuto(false);
+        arm.stopMotor();
     }
 
     /**

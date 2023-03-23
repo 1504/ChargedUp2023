@@ -21,13 +21,13 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.SETPOINTS;
-import frc.robot.commands.arm.RawExtend;
-import frc.robot.commands.arm.RawRetract;
-import frc.robot.commands.resets.ResetArmPosition;
+import frc.robot.commands.arm.*;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.commands.drive.GoToAprilTag;
-import frc.robot.commands.gripper.*;
+import frc.robot.commands.gripper.Close;
+import frc.robot.commands.gripper.Open;
+import frc.robot.commands.resets.ResetArmPosition;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
@@ -55,11 +55,8 @@ public class RobotContainer {
   public final RGBLights m_rgbLights = RGBLights.getInstance();
   public final ShuffleboardManager m_shuffleboardManager = ShuffleboardManager.getInstance();
   private final Limelight m_Limelight = Limelight.getInstance();
-
   private final XboxController m_xbox = new XboxController(2);
-
   private MecanumAutoBuilder autoBuilder;
-
   // Autonomous
   private final SendableChooser<CommandBase> m_autoChooser = new SendableChooser<>();
   private final List<List<PathPlannerTrajectory>> m_testPaths = new ArrayList<>();
@@ -90,7 +87,6 @@ public class RobotContainer {
    * once
    */
   private void initAuton() {
-    // m_drivetrain.resetOdometry(new Pose2d()); TODO: Verify if initialization is needed
     m_eventMap.put("SetPoint High", new SetArmPosition(SETPOINTS.HIGH));
     m_eventMap.put("SetPoint Mid", new SetArmPosition(SETPOINTS.MID));
     m_eventMap.put("SetPoint Zero", new SetArmPosition(SETPOINTS.ZERO));
@@ -140,10 +136,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // whileTrue stops command when button is released
     new JoystickButton(m_xbox, XboxController.Button.kRightStick.value).whileTrue(new RawExtend());
     new JoystickButton(m_xbox, XboxController.Button.kLeftStick.value).whileTrue(new RawRetract());
-    new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
     new JoystickButton(m_xbox, XboxController.Button.kRightBumper.value).onTrue(new Open().withTimeout(1).andThen(new AddToSetpoint(15)));
     new JoystickButton(m_xbox, XboxController.Button.kLeftBumper.value).whileTrue(new Close());
     new JoystickButton(m_xbox, XboxController.Button.kY.value).whileTrue(new SetArmPosition(SETPOINTS.HIGH));
@@ -151,8 +145,10 @@ public class RobotContainer {
     new JoystickButton(m_xbox, XboxController.Button.kA.value).whileTrue(new SetArmPosition(SETPOINTS.ZERO));
     new JoystickButton(m_xbox, XboxController.Button.kB.value).whileTrue(new SetArmPosition(SETPOINTS.PICKUP));
     new JoystickButton(m_xbox, XboxController.Button.kStart.value).whileTrue(new ToggleAuto());
-    new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
     new JoystickButton(m_xbox, XboxController.Button.kBack.value).onTrue(new ResetArmPosition());
+    new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
+    new JoystickButton(m_controlBoard.getLeftController(), 1).onTrue(new StopArm());
+    new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
   }
 
   /**
@@ -162,6 +158,9 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(new Cartesian(m_controlBoard::getThrottle, m_controlBoard::getRight, m_controlBoard::getRot));
   }
 
+  /**
+   * Initializes the motors
+   */
   private void initMotors() {
     m_drivetrain.resetEncoders();
   }
