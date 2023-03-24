@@ -41,7 +41,7 @@ public class GoToAprilTag extends CommandBase {
 
         Translation2d targetTranslation = targetPose.getTranslation();
         Rotation2d targetRotation = targetPose.getRotation();
-        PathPlannerTrajectory traj1 = PathPlanner.generatePath(new PathConstraints(1, 1), new PathPoint(targetTranslation, targetRotation), // position, heading
+        PathPlannerTrajectory traj1 = PathPlanner.generatePath(new PathConstraints(0.5, 0.5), new PathPoint(targetTranslation, targetRotation), // position, heading
                 new PathPoint(new Translation2d(0, 0), new Rotation2d(0)) // position, heading // TODO: Change offset relative to target
         );
         // follow the path

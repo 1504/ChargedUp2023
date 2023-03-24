@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -36,6 +38,7 @@ public class Arm extends SubsystemBase {
   private Arm() {
     arm_pid = new PIDController(ArmConstants.kP, 0, 0);
     m_motor.setInverted(true);
+    m_motor.setIdleMode(IdleMode.kBrake);
     // SmartDashboard.putData("Arm PID", arm_pid);
   }
 

@@ -9,6 +9,8 @@ import com.pathplanner.lib.commands.PPMecanumControllerCommand;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -64,6 +66,8 @@ public class Drivetrain extends SubsystemBase {
   private final RelativeEncoder _back_right_encoder;
   private final RelativeEncoder _back_left_encoder;
 
+  private boolean isCoasting = true;
+
   private final MecanumDrive _drive;
 
   private final Field2d field = new Field2d();
@@ -90,6 +94,11 @@ public class Drivetrain extends SubsystemBase {
     _back_right_motor = new CANSparkMax(DriveConstants.BACK_RIGHT, MotorType.kBrushless);
     _back_left_motor = new CANSparkMax(DriveConstants.BACK_LEFT, MotorType.kBrushless);
 
+    _front_left_motor.setIdleMode(IdleMode.kCoast);
+    _front_right_motor.setIdleMode(IdleMode.kCoast);
+    _back_right_motor.setIdleMode(IdleMode.kCoast);
+    _back_left_motor.setIdleMode(IdleMode.kCoast);
+
     // put the data
 
     _front_left_motor.setInverted(false);
@@ -108,10 +117,12 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    _front_left_pid = new PIDController(-1.85, 0, 0);
-    _front_right_pid = new PIDController(-1.85, 0, 0);
-    _back_right_pid = new PIDController(-1.85, 0, 0);
-    _back_left_pid = new PIDController(-1.85, 0, 0);
+    double p = -1.85;
+
+    _front_left_pid = new PIDController(p, 0, 0);
+    _front_right_pid = new PIDController(p, 0, 0);
+    _back_right_pid = new PIDController(p, 0, 0);
+    _back_left_pid = new PIDController(p, 0, 0);
 
     Pose2d m_pose;
     if (limelight.hasValidTarget()) {
@@ -136,7 +147,7 @@ public class Drivetrain extends SubsystemBase {
    * @param zRotation The robot rotation speed values from -1 to 1
    */
   public void cartesianDrive(double xSpeed, double ySpeed, double zRotation) {
-    zRotation *= -1;
+    xSpeed *= -1;
     // deadband the inputs
     double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : Math.pow(zRotation, 3);
     double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(ySpeed, 3);
@@ -152,9 +163,9 @@ public class Drivetrain extends SubsystemBase {
   @Deprecated
   public void drivePID() {
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
-    _back_right_motor.setVoltage(_back_left_pid.calculate(getBackRightVelocity()));
-    _front_left_motor.setVoltage(_back_left_pid.calculate(getFrontLeftVelocity()));
-    _front_right_motor.setVoltage(_back_left_pid.calculate(getFrontRightVelocity()));
+    _back_right_motor.setVoltage(_back_right_pid.calculate(getBackRightVelocity()));
+    _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
+    _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
   }
 
   /**
@@ -360,10 +371,10 @@ public class Drivetrain extends SubsystemBase {
    * @param backRight  Back right wheel speed
    */
   private void setWheelSpeeds(double frontLeft, double frontRight, double backLeft, double backRight) {
-    _front_left_pid.setSetpoint(frontLeft);
-    _front_right_pid.setSetpoint(frontRight);
-    _back_left_pid.setSetpoint(backLeft);
-    _back_right_pid.setSetpoint(backRight);
+    _front_left_pid.setSetpoint(-frontLeft);
+    _front_right_pid.setSetpoint(-frontRight);
+    _back_left_pid.setSetpoint(-backLeft);
+    _back_right_pid.setSetpoint(-backRight);
     _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
     _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
@@ -417,6 +428,25 @@ public class Drivetrain extends SubsystemBase {
     double starting_y = gyro.getDisplacementY();
   }
 
+  public void toggleCoast() {
+    if (isCoasting) {
+      _front_left_motor.setIdleMode(IdleMode.kBrake);
+      _front_right_motor.setIdleMode(IdleMode.kBrake);
+      _back_right_motor.setIdleMode(IdleMode.kBrake);
+      _back_left_motor.setIdleMode(IdleMode.kBrake);
+    }  else {
+      _front_left_motor.setIdleMode(IdleMode.kCoast);
+      _front_right_motor.setIdleMode(IdleMode.kCoast);
+      _back_right_motor.setIdleMode(IdleMode.kCoast);
+      _back_left_motor.setIdleMode(IdleMode.kCoast);
+    }
+    isCoasting = !isCoasting;
+  }
+
+  public boolean getCoasting() {
+    return isCoasting;
+  }
+
   /**
    * Periodic method for the drivetrain
    */
@@ -431,5 +461,6 @@ public class Drivetrain extends SubsystemBase {
       pose = updateOdometryWithVision();
     }
     field.setRobotPose(pose);
+    //drivePID();
   }
 }
