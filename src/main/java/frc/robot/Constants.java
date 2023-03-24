@@ -29,7 +29,7 @@ public final class Constants {
 
   public static class DriveConstants {
 
-    public static final boolean invertGyro = false;
+    public static final boolean invertGyro = true;
 
     // Motor Controller IDs
     public static final int FRONT_LEFT = 11;
@@ -161,7 +161,11 @@ public final class Constants {
   public static class AutoConstants {
 
     // AUTON CONSTANTS
-    public static final String [] PATHS = {"Straight", "StraightBack", "ComplexPath"};
+    public static final String [] PATHS = { "HighHigh", "Straight", "StraightBack", "ComplexPath",
+                                           "LowLow", "LowMid", "LowHigh",
+                                           "MidLow", "MidMid", "MidHigh",
+                                           "HighLow", "HighMid"
+                                          };
 
     public static final boolean USE_VISION_ASSIST = false;
 

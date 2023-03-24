@@ -25,6 +25,7 @@ import frc.robot.commands.arm.*;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.commands.drive.GoToAprilTag;
+import frc.robot.commands.drive.ToggleCoast;
 import frc.robot.commands.gripper.Close;
 import frc.robot.commands.gripper.Open;
 import frc.robot.commands.resets.ResetArmPosition;
@@ -100,10 +101,11 @@ public class RobotContainer {
             m_drivetrain::resetOdometry,
             BuildConstants._KINEMATICS,
             new com.pathplanner.lib.auto.PIDConstants(0, 0, 0),
-            new com.pathplanner.lib.auto.PIDConstants(9, 0, 0),
+            new com.pathplanner.lib.auto.PIDConstants(0, 0, 0),
             PIDConstants.kMaxVelocity,
             m_drivetrain::setOutputWheelSpeeds,
             m_eventMap,
+            true,
             m_drivetrain
     );
 
@@ -149,6 +151,7 @@ public class RobotContainer {
     new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
     new JoystickButton(m_controlBoard.getLeftController(), 1).onTrue(new StopArm());
     new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
+    new JoystickButton(m_controlBoard.getRightController(), 3).whileTrue(new ToggleCoast());
   }
 
   /**
@@ -176,9 +179,9 @@ public class RobotContainer {
       return new PrintCommand("No Auton Selected");
     }
     if (AutoConstants.USE_AUTO_BALANCE) {
-      return m_autoChooser.getSelected().andThen(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
+      return m_autoChooser.getSelected().andThen(new ToggleCoast()).andThen(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
     } else {
-      return m_autoChooser.getSelected();
+      return m_autoChooser.getSelected().andThen(new ToggleCoast());
     }
   }
 }

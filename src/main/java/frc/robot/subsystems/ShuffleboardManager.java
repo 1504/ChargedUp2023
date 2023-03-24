@@ -80,6 +80,7 @@ public class ShuffleboardManager extends SubsystemBase {
                         new ResetEncoders().schedule();
                         new ResetOdometry().schedule();
                 }));
+                SmartDashboard.putBoolean("Coast", _drive.getCoasting());
         }
 
 
@@ -130,6 +131,7 @@ public class ShuffleboardManager extends SubsystemBase {
                 SmartDashboard.putNumber("Voltage", m_pdp.getVoltage());
                 SmartDashboard.putNumber("Total Current", m_pdp.getTotalCurrent());
                 SmartDashboard.putBoolean("Auto Status", _arm.getAutoStatus()); // get auto status
+                SmartDashboard.putBoolean("Coast", _drive.getCoasting());
         }
 
         @Override
