@@ -75,10 +75,46 @@ public class RobotContainer {
    * Constructor for RobotContainer, called once when the robot is turned on.
    */
   public RobotContainer() {
+    m_eventMap.put("SetPoint High", new SetArmPosition(SETPOINTS.HIGH));
+    m_eventMap.put("SetPoint Mid", new SetArmPosition(SETPOINTS.MID));
+    m_eventMap.put("SetPoint Zero", new SetArmPosition(SETPOINTS.ZERO));
+    m_eventMap.put("SetPoint Pickup", new SetArmPosition(SETPOINTS.PICKUP));
+    m_eventMap.put("Open", new Open());
+    m_eventMap.put("Close", new Close());
+
+    // TODO: verify the following constructor
+    MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(
+            m_drivetrain::getPose,
+            m_drivetrain::resetOdometry,
+            BuildConstants._KINEMATICS,
+            new com.pathplanner.lib.auto.PIDConstants(0, 0, 0),
+            new com.pathplanner.lib.auto.PIDConstants(0, 0, 0),
+            PIDConstants.kMaxVelocity,
+            m_drivetrain::setOutputWheelSpeeds,
+            m_eventMap,
+            true,
+            m_drivetrain
+    );
+
+
+    for (int i = 0; i < m_testPaths.size(); i++) {
+      if (i == 0) {
+        m_autoChooser.setDefaultOption(AutoConstants.PATHS[i], autoBuilder.fullAuto(m_testPaths.get(i)));
+      } else {
+        m_autoChooser.addOption(AutoConstants.PATHS[i], autoBuilder.fullAuto(m_testPaths.get(i)));
+      }
+    }
+
+    Shuffleboard.getTab("Pregame").add("Auton Path", m_autoChooser)
+        .withPosition(0, 1)
+        .withSize(3, 1);
+
+        
     configureBindings();
-    initAuton();
+    //initAuton();
     initDefaultCommand();
     initMotors();
+    
   }
 
   /**

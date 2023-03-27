@@ -10,8 +10,11 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.DIOPins;
+import frc.robot.utils.Glide;
 
 /**
  * Arm subsystem.
@@ -28,9 +31,13 @@ public class Arm extends SubsystemBase {
   private double curr_pos = 0;
 
   private boolean auto = false;
+  private boolean zero = false;
 
   private static Arm _instance = null;
   PIDController arm_pid;
+  private static Glide _glide = new Glide(.03, .7);
+
+  private DigitalInput limit;
 
   /**
    * Private constructor to prevent other classes from instantiating it.
@@ -39,6 +46,7 @@ public class Arm extends SubsystemBase {
     arm_pid = new PIDController(ArmConstants.kP, 0, 0);
     m_motor.setInverted(true);
     m_motor.setIdleMode(IdleMode.kBrake);
+    limit = new DigitalInput(6);
     // SmartDashboard.putData("Arm PID", arm_pid);
   }
 
@@ -63,6 +71,11 @@ public class Arm extends SubsystemBase {
     return arm_pid;
   }
 
+  private void out(double out) {
+    //m_motor.set(out);
+    m_motor.set(_glide.gain_adjust(out));
+  }
+
   /**
    * Drives the arm using PID
    *
@@ -71,7 +84,8 @@ public class Arm extends SubsystemBase {
    */
   @Deprecated
   public void PIDDrive(double setpoint) {
-    m_motor.set(arm_pid.calculate(m_encoder.getPosition(), setpoint));
+    //m_motor.set(arm_pid.calculate(m_encoder.getPosition(), setpoint));
+    out(arm_pid.calculate(m_encoder.getPosition(), setpoint));
   }
 
   public double getArmDistance() {
@@ -81,9 +95,7 @@ public class Arm extends SubsystemBase {
   /**
    * Resets the arm encoder position to 0
    *
-   * @deprecated Since 03/17/2023
    */
-  @Deprecated
   public void resetArmEncoderPosition() {
     m_encoder.setPosition(0);
     System.out.println("Warning: Arm encoder position reset");
@@ -104,7 +116,8 @@ public class Arm extends SubsystemBase {
    */
   public void rawExtend() {
     if (!auto) {
-      m_motor.set(MAXSPEED);
+      //m_motor.set(MAXSPEED);
+      out(MAXSPEED);
     }
   }
 
@@ -112,8 +125,9 @@ public class Arm extends SubsystemBase {
    * Retracts the arm without using PID
    */
   public void rawRetract() {
-    if (!auto) {
-      m_motor.set(-MAXSPEED);
+    if (!auto && !zero) {
+      //m_motor.set(-MAXSPEED);
+      out(-MAXSPEED);
     }
   }
 
@@ -121,7 +135,8 @@ public class Arm extends SubsystemBase {
    * Stops the motor
    */
   public void stopMotor() {
-    m_motor.set(0);
+    //m_motor.set(0);
+    out(0);
   }
 
   /**
@@ -167,6 +182,14 @@ public class Arm extends SubsystemBase {
     if (auto) {
       double val = arm_pid.calculate(m_encoder.getPosition());
       m_motor.set(val);
+    }
+
+    if (!limit.get()) {
+      resetArmEncoderPosition();  
+      zero = true;
+    } 
+    if (limit.get()) {
+      zero = false;
     }
 
   }
