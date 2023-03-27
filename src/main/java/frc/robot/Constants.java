@@ -161,20 +161,20 @@ public final class Constants {
   public static class AutoConstants {
 
     // AUTON CONSTANTS
-    public static final String [] PATHS = { "HighHigh", "Straight", "StraightBack", "ComplexPath",
+    public static final String [] PATHS = { "HighExp", "Low", "Mid", "High",
                                            "LowLow", "LowMid", "LowHigh",
                                            "MidLow", "MidMid", "MidHigh",
-                                           "HighLow", "HighMid"
+                                           "HighLow", "HighMid", "HighHigh"
                                           };
 
     public static final boolean USE_VISION_ASSIST = false;
 
     public static final boolean USE_AUTO_BALANCE = false;
-    public static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 1.0;
+    public static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 4;
     public static final double AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 3.0;
 
     public static final double kAutoDriveDistanceInches = 0;
-    public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
   }
 
@@ -193,9 +193,9 @@ public final class Constants {
   public static class SETPOINTS {
       //SETPOINTS
       public static final double ZERO = 0;
-      public static final double MID = 65;
+      public static final double MID = 41;
       public static final double HIGH = 100;
-      public static final double PICKUP = 55;
+      public static final double PICKUP = 46;
   }
 
 }
