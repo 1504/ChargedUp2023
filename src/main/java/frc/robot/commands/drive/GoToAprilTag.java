@@ -4,6 +4,8 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.auto.MecanumAutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,10 +20,10 @@ public class GoToAprilTag extends CommandBase {
     private boolean ValidTarget = false;
     private boolean finished = false;
     private Pose2d targetPose;
+    private MecanumAutoBuilder autoBuilder;
 
-    public GoToAprilTag() {
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
+    public GoToAprilTag(MecanumAutoBuilder a) {
+        autoBuilder = a;
         addRequirements(this.drivetrain, this.limelight);
     }
 
@@ -44,11 +46,18 @@ public class GoToAprilTag extends CommandBase {
         PathPlannerTrajectory traj1 = PathPlanner.generatePath(new PathConstraints(0.5, 0.5), new PathPoint(targetTranslation, targetRotation), // position, heading
                 new PathPoint(new Translation2d(0, 0), new Rotation2d(0)) // position, heading // TODO: Change offset relative to target
         );
+        //autoBuilder.fullAuto(traj1); //IDK if this is right but we ball
+        //autobuilder commented out so that we can verify that april tag positions are right
+        System.out.println("X:" + targetTranslation.getX() + "\nY: " + targetTranslation.getY() + "\nRot: " + targetRotation.getDegrees() + "\n");
+
         // follow the path
+        /* 
         drivetrain.followTrajectoryCommand(traj1, false).andThen(() -> {
             finished = true;
             drivetrain.stop();
-        }).schedule();
+        });
+        */
+        
     }
 
     /**

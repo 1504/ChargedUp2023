@@ -64,6 +64,8 @@ public class ShuffleboardManager extends SubsystemBase {
         private GenericEntry gyroRoll;
         private GenericEntry armPosition;
         private GenericEntry RobotPosition;
+        private GenericEntry xPos;
+        private GenericEntry yPos;
 
         private ShuffleboardManager() {
                 shuffleboardInit();
@@ -98,6 +100,16 @@ public class ShuffleboardManager extends SubsystemBase {
                         gyroRoll = telemetry.add("Gyro Roll", _gyro.getRoll()).withWidget(BuiltInWidgets.kNumberBar).getEntry();
                         telemetry.add("Reset Gyro", new ResetGyro()).withPosition(7, 0).withSize(1, 1);
                         RobotPosition = telemetry.add("Robot Position", "Null").withWidget(BuiltInWidgets.kTextView).getEntry();
+                        xPos = telemetry.add("X Position", 0)
+                                .withPosition(4, 1)
+                                .withSize(3, 1)
+                                .withWidget(BuiltInWidgets.kTextView)
+                                .getEntry();
+                        yPos = telemetry.add("Y Position", 0)
+                                .withPosition(4, 2)
+                                .withSize(3, 1)
+                                .withWidget(BuiltInWidgets.kTextView)
+                                .getEntry();
                         // PID drive stuff
 
                         PID_Drive = Shuffleboard.getTab("PID Drive Tuning");
@@ -128,6 +140,8 @@ public class ShuffleboardManager extends SubsystemBase {
                 gyroYaw.setDouble(_gyro.getYaw());
                 gyroRoll.setDouble(_gyro.getRoll());
                 armPosition.setDouble(_arm.getArmDistance()); // get arm position
+                xPos.setDouble(_drive.getPose().getX());
+                yPos.setDouble(_drive.getPose().getY());
                 SmartDashboard.putNumber("Voltage", m_pdp.getVoltage());
                 SmartDashboard.putNumber("Total Current", m_pdp.getTotalCurrent());
                 SmartDashboard.putBoolean("Auto Status", _arm.getAutoStatus()); // get auto status
