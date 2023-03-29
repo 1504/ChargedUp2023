@@ -264,7 +264,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     MecanumDriveWheelPositions positions = getWheelPositions();
-    if (Constants.AutoConstants.USE_VISION_ASSIST) {
+    if (!Constants.AutoConstants.USE_VISION_ASSIST) {
       _poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
     } else {
       _odometry.resetPosition(new Rotation2d(gyro.getYaw()), positions, pose);
@@ -277,7 +277,12 @@ public class Drivetrain extends SubsystemBase {
    * @return The current wheel positions
    */
   private MecanumDriveWheelPositions getWheelPositions() {
-    return new MecanumDriveWheelPositions(getFrontLeftDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS, getFrontRightDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS, getBackLeftDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS, getBackRightDistance() / BuildConstants.GEAR_RATIO * BuildConstants.WHEEL_CIRCUMFERENCE * BuildConstants.INCHES_TO_METERS);
+    return new MecanumDriveWheelPositions(
+      getFrontLeftDistance(),
+      getFrontRightDistance(),
+      getBackLeftDistance(),
+      getBackRightDistance()
+    );
   }
 
   /**
@@ -464,7 +469,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
 
     //Pose2d pose;
-    if (Constants.AutoConstants.USE_VISION_ASSIST) {
+    if (!Constants.AutoConstants.USE_VISION_ASSIST) {
       // use _odometry object
       m_pose = _odometry.update(gyro.getRotation2d(), getWheelPositions());
     } else {

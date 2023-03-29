@@ -98,7 +98,7 @@ public class Arm extends SubsystemBase {
    */
   public void resetArmEncoderPosition() {
     m_encoder.setPosition(0);
-    System.out.println("Warning: Arm encoder position reset");
+    //System.out.println("Warning: Arm encoder position reset");
   }
 
 
