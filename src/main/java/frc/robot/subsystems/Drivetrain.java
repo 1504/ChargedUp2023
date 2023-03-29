@@ -119,7 +119,7 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    double p = -1.85;
+    double p = -2.02275;
 
     _front_left_pid = new PIDController(p, 0, 0);
     _front_right_pid = new PIDController(p, 0, 0);

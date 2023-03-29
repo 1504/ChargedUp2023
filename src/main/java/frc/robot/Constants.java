@@ -164,7 +164,8 @@ public final class Constants {
     public static final String [] PATHS = { "HighExp", "Low", "Mid", "High",
                                            "LowLow", "LowMid", "LowHigh",
                                            "MidLow", "MidMid", "MidHigh",
-                                           "HighLow", "HighMid", "HighHigh"
+                                           "HighLow", "HighMid", "HighHigh",
+                                           "meterBackward", "meterRight"
                                           };
 
     public static final boolean USE_VISION_ASSIST = false;

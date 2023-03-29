@@ -87,14 +87,19 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
+        /*
+      if(hasValidTarget()) {
+        System.out.println(getBotTargetPose());
+      }
+      */
     }
 
     public Pose2d getBotTargetPose() {
         double[] targetSpaceRobotPose = table
-                .getEntry("targetpose")
+                .getEntry("botpose_targetspace")
                 .getDoubleArray(new double[6]);
         Translation2d targetTranslation = new Translation2d(targetSpaceRobotPose[0], targetSpaceRobotPose[1]);
-        Rotation2d targetRotation = new Rotation2d(targetSpaceRobotPose[5]);
+        Rotation2d targetRotation = new Rotation2d(Math.toRadians(targetSpaceRobotPose[5]));
         return new Pose2d(targetTranslation, targetRotation);
     }
 

@@ -38,7 +38,7 @@ public class GoToAprilTag extends CommandBase {
             return;
         } else {
             targetPose = limelight.getBotTargetPose();
-            System.out.println("Target Pose: " + targetPose);
+            //System.out.println("Target Pose: " + targetPose);
         }
 
         Translation2d targetTranslation = targetPose.getTranslation();
@@ -101,8 +101,8 @@ public class GoToAprilTag extends CommandBase {
         if (interrupted) {
             System.err.println("GO TO APRIL TAG COMMAND: INTERRUPTED");
         }
-
-        drivetrain.stop();
+        System.out.println("Endedd");
+        //drivetrain.stop();
 
     }
 }
