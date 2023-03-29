@@ -72,6 +72,7 @@ public class Drivetrain extends SubsystemBase {
   private final MecanumDrive _drive;
 
   private final Field2d field = new Field2d();
+  private Pose2d m_pose;
 
   private final MecanumDrivePoseEstimator _poseEstimator;
   private final MecanumDriveOdometry _odometry;
@@ -431,17 +432,25 @@ public class Drivetrain extends SubsystemBase {
 
   public void toggleCoast() {
     if (isCoasting) {
-      _front_left_motor.setIdleMode(IdleMode.kBrake);
-      _front_right_motor.setIdleMode(IdleMode.kBrake);
-      _back_right_motor.setIdleMode(IdleMode.kBrake);
-      _back_left_motor.setIdleMode(IdleMode.kBrake);
+      disableCoast();
     }  else {
-      _front_left_motor.setIdleMode(IdleMode.kCoast);
-      _front_right_motor.setIdleMode(IdleMode.kCoast);
-      _back_right_motor.setIdleMode(IdleMode.kCoast);
-      _back_left_motor.setIdleMode(IdleMode.kCoast);
+      enableCoast();
     }
     isCoasting = !isCoasting;
+  }
+
+  public void enableCoast() {
+    _front_left_motor.setIdleMode(IdleMode.kCoast);
+    _front_right_motor.setIdleMode(IdleMode.kCoast);
+    _back_right_motor.setIdleMode(IdleMode.kCoast);
+    _back_left_motor.setIdleMode(IdleMode.kCoast);
+  }
+
+  public void disableCoast() {
+    _front_left_motor.setIdleMode(IdleMode.kBrake);
+    _front_right_motor.setIdleMode(IdleMode.kBrake);
+    _back_right_motor.setIdleMode(IdleMode.kBrake);
+    _back_left_motor.setIdleMode(IdleMode.kBrake);
   }
 
   public boolean getCoasting() {
@@ -454,14 +463,14 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
 
-    Pose2d pose;
+    //Pose2d pose;
     if (Constants.AutoConstants.USE_VISION_ASSIST) {
       // use _odometry object
-      pose = _odometry.update(gyro.getRotation2d(), getWheelPositions());
+      m_pose = _odometry.update(gyro.getRotation2d(), getWheelPositions());
     } else {
-      pose = updateOdometryWithVision();
+      m_pose = updateOdometryWithVision();
     }
-    field.setRobotPose(pose);
+    field.setRobotPose(m_pose);
     //drivePID();
   }
 }

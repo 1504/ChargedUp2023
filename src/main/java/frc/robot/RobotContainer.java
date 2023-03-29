@@ -184,7 +184,7 @@ public class RobotContainer {
     new JoystickButton(m_xbox, XboxController.Button.kB.value).whileTrue(new SetArmPosition(SETPOINTS.PICKUP));
     new JoystickButton(m_xbox, XboxController.Button.kStart.value).whileTrue(new ToggleAuto());
     new JoystickButton(m_xbox, XboxController.Button.kBack.value).onTrue(new ResetArmPosition());
-    new JoystickButton(m_controlBoard.getRightController(), 1).whileTrue(new GoToAprilTag());
+    new JoystickButton(m_controlBoard.getRightController(), 1).onTrue(new GoToAprilTag(autoBuilder));
     new JoystickButton(m_controlBoard.getLeftController(), 1).onTrue(new StopArm());
     new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
     new JoystickButton(m_controlBoard.getRightController(), 3).whileTrue(new ToggleCoast());
