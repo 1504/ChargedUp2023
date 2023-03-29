@@ -24,6 +24,7 @@ import frc.robot.Constants.SETPOINTS;
 import frc.robot.commands.arm.*;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
+import frc.robot.commands.drive.GoToAngle;
 import frc.robot.commands.drive.GoToAprilTag;
 import frc.robot.commands.drive.ToggleCoast;
 import frc.robot.commands.gripper.Close;
@@ -188,6 +189,8 @@ public class RobotContainer {
     new JoystickButton(m_controlBoard.getLeftController(), 1).onTrue(new StopArm());
     new JoystickButton(m_controlBoard.getLeftController(), 3).whileTrue(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
     new JoystickButton(m_controlBoard.getRightController(), 3).whileTrue(new ToggleCoast());
+    new JoystickButton(m_controlBoard.getLeftController(), 7).whileTrue(new GoToAngle(90));
+  
   }
 
   /**

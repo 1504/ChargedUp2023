@@ -38,25 +38,41 @@ public class GoToAprilTag extends CommandBase {
             return;
         } else {
             targetPose = limelight.getBotTargetPose();
-            //System.out.println("Target Pose: " + targetPose);
+            System.out.println("Target Pose: " + targetPose);
+            System.out.println();
         }
 
         Translation2d targetTranslation = targetPose.getTranslation();
         Rotation2d targetRotation = targetPose.getRotation();
-        PathPlannerTrajectory traj1 = PathPlanner.generatePath(new PathConstraints(0.5, 0.5), new PathPoint(targetTranslation, targetRotation), // position, heading
-                new PathPoint(new Translation2d(0, 0), new Rotation2d(0)) // position, heading // TODO: Change offset relative to target
+        PathPlannerTrajectory traj1 = PathPlanner.generatePath(
+            new PathConstraints(1.5, 0.5), 
+             // position, heading
+            new PathPoint(
+                new Translation2d(0, 0), 
+                new Rotation2d(0)),
+            new PathPoint(targetTranslation, new Rotation2d(0)) // position, heading // TODO: Change offset relative to target
         );
-        //autoBuilder.fullAuto(traj1); //IDK if this is right but we ball
+        PathPlannerTrajectory traj2 = PathPlanner.generatePath(
+            new PathConstraints(
+                0.5,
+             0.5
+             ), 
+             new PathPoint(new Translation2d(0, 0), 
+             new Rotation2d(0)), // position, heading
+                new PathPoint(new Translation2d(2, 4), 
+                new Rotation2d(0)) // position, heading // TODO: Change offset relative to target
+        );
+        //autoBuilder.fullAuto(traj2).schedule(); //IDK if this is right but we ball
         //autobuilder commented out so that we can verify that april tag positions are right
         System.out.println("X:" + targetTranslation.getX() + "\nY: " + targetTranslation.getY() + "\nRot: " + targetRotation.getDegrees() + "\n");
 
         // follow the path
-        /* 
-        drivetrain.followTrajectoryCommand(traj1, false).andThen(() -> {
+        
+        drivetrain.followTrajectoryCommand(traj1, true).andThen(() -> {
             finished = true;
             drivetrain.stop();
-        });
-        */
+        }).schedule();
+        
         
     }
 

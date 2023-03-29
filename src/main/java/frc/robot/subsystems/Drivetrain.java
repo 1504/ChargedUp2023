@@ -68,6 +68,7 @@ public class Drivetrain extends SubsystemBase {
   private final RelativeEncoder _back_left_encoder;
 
   private boolean isCoasting = true;
+  private boolean rotating = false;
 
   private final MecanumDrive _drive;
 
@@ -81,6 +82,7 @@ public class Drivetrain extends SubsystemBase {
   private final PIDController _front_right_pid;
   private final PIDController _back_right_pid;
   private final PIDController _back_left_pid;
+  private final PIDController _theta_pid;
   private final Gyroscope gyro = Gyroscope.getInstance();
   private final Limelight limelight = Limelight.getInstance();
 
@@ -119,12 +121,13 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    double p = -2.02275;
+    double p = -1.8074;
 
     _front_left_pid = new PIDController(p, 0, 0);
     _front_right_pid = new PIDController(p, 0, 0);
     _back_right_pid = new PIDController(p, 0, 0);
     _back_left_pid = new PIDController(p, 0, 0);
+    _theta_pid = new PIDController(0.01, 0, 0);
 
     Pose2d m_pose;
     if (limelight.hasValidTarget()) {
@@ -154,7 +157,16 @@ public class Drivetrain extends SubsystemBase {
     double zRot = Math.abs(zRotation) < DriveConstants.DEADBAND ? 0 : Math.pow(zRotation, 3);
     double ySpd = Math.abs(ySpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(ySpeed, 3);
     double xSpd = Math.abs(xSpeed) < DriveConstants.DEADBAND ? 0 : Math.pow(xSpeed, 3);
-    _drive.driveCartesian(xSpd, ySpd, zRot);
+    if (!rotating) {
+      _drive.driveCartesian(xSpd, ySpd, zRot);
+    }
+  }
+
+  public void rotatePID() {
+    _back_left_motor.setVoltage(-_theta_pid.calculate(gyro.getYaw()));
+    _back_right_motor.setVoltage(_theta_pid.calculate(gyro.getYaw()));
+    _front_left_motor.setVoltage(-_theta_pid.calculate(gyro.getYaw()));
+    _front_right_motor.setVoltage(_theta_pid.calculate(gyro.getYaw()));
   }
 
   /**
@@ -399,13 +411,13 @@ public class Drivetrain extends SubsystemBase {
     return new SequentialCommandGroup(new InstantCommand(() -> {
       // Reset odometry for the first path you run during auto
       if (isFirstPath) {
-        this.resetOdometry(traj.getInitialHolonomicPose());
+        this.resetOdometry(new Pose2d());
       }
     }), new PPMecanumControllerCommand(traj, this::getPose, // Pose supplier
             BuildConstants._KINEMATICS, // Kinematics object
-            new PIDController(0.01, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-            new PIDController(0.01, 0, 0), // Y controller (usually the same values as X controller)
-            new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(-0.00, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(-0.00, 0, 0), // Y controller (usually the same values as X controller)
+            new PIDController(-0.00, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
             Constants.AutoConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,  // Max wheel velocity meters per second
             this::setOutputWheelSpeeds, // MecanumDriveWheelSpeeds consumer
             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
@@ -462,6 +474,22 @@ public class Drivetrain extends SubsystemBase {
     return isCoasting;
   }
 
+  public void enableRotate() {
+    rotating = true;
+  }
+
+  public void disableRotate() {
+    rotating = false;
+  }
+
+  public boolean isAngled(double targetAngle) {
+    return (Math.abs(gyro.getYaw() - targetAngle) < 0.5);
+  }
+
+  public PIDController getAnglePID() {
+    return _theta_pid;
+  }
+
   /**
    * Periodic method for the drivetrain
    */
@@ -475,6 +503,10 @@ public class Drivetrain extends SubsystemBase {
     } else {
       m_pose = updateOdometryWithVision();
     }
+
+    if(rotating) {
+      rotatePID();
+    } 
     field.setRobotPose(m_pose);
     //drivePID();
   }

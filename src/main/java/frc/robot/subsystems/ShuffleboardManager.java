@@ -83,6 +83,7 @@ public class ShuffleboardManager extends SubsystemBase {
                         new ResetOdometry().schedule();
                 }));
                 SmartDashboard.putBoolean("Coast", _drive.getCoasting());
+                SmartDashboard.putData("Angle PID", _drive.getAnglePID());
         }
 
 
@@ -117,6 +118,7 @@ public class ShuffleboardManager extends SubsystemBase {
                         PID_Drive.add("front right pid", _drive.getFrontRightPid()).withPosition(1, 0);
                         PID_Drive.add("back left pid", _drive.getBackLeftPid()).withPosition(0, 2);
                         PID_Drive.add("back right pid", _drive.getBackRightPid()).withPosition(1, 2);
+                        PID_Drive.add("Theta PID", _drive.getAnglePID());
 
                         // Arm stuff
                         PID_Arm = Shuffleboard.getTab("Arm PID tuning");
@@ -131,10 +133,10 @@ public class ShuffleboardManager extends SubsystemBase {
         }
 
         public void shuffleboardUpdate() {
-                frontLeftEncoder.setDouble(_drive.getFrontLeftDistance());
-                frontRightEncoder.setDouble(_drive.getFrontRightDistance());
-                backRightEncoder.setDouble(_drive.getBackRightDistance());
-                backLeftEncoder.setDouble(_drive.getBackLeftDistance());
+                frontLeftEncoder.setDouble(_drive.getFrontLeftVelocity());
+                frontRightEncoder.setDouble(_drive.getFrontRightVelocity());
+                backRightEncoder.setDouble(_drive.getBackRightVelocity());
+                backLeftEncoder.setDouble(_drive.getBackLeftVelocity());
                 RobotPosition.setString(_drive.getPoseEstimate().toString());
                 gyroPitch.setDouble(_gyro.getPitch());
                 gyroYaw.setDouble(_gyro.getYaw());

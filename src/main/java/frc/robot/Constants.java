@@ -165,13 +165,13 @@ public final class Constants {
                                            "LowLow", "LowMid", "LowHigh",
                                            "MidLow", "MidMid", "MidHigh",
                                            "HighLow", "HighMid", "HighHigh",
-                                           "meterBackward", "meterRight"
+                                           "meterBackward", "meterRight", "Rotate"
                                           };
 
     public static final boolean USE_VISION_ASSIST = false;
 
     public static final boolean USE_AUTO_BALANCE = false;
-    public static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 4;
+    public static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 1;
     public static final double AUTO_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 3.0;
 
     public static final double kAutoDriveDistanceInches = 0;
