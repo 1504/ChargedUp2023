@@ -504,9 +504,6 @@ public class Drivetrain extends SubsystemBase {
       m_pose = updateOdometryWithVision();
     }
 
-    if(rotating) {
-      rotatePID();
-    } 
     field.setRobotPose(m_pose);
     //drivePID();
   }

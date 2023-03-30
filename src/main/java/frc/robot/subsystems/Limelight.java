@@ -87,11 +87,6 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
-        /*
-      if(hasValidTarget()) {
-        System.out.println(getBotTargetPose());
-      }
-      */
     }
 
     public Pose2d getBotTargetPose() {
