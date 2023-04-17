@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,16 +23,19 @@ import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.SETPOINTS;
 import frc.robot.commands.arm.*;
+import frc.robot.commands.auton.AutonExtend;
 import frc.robot.commands.balance.AutoBalance;
 import frc.robot.commands.drive.Cartesian;
 import frc.robot.commands.drive.GoToAngle;
 import frc.robot.commands.drive.GoToAprilTag;
 import frc.robot.commands.drive.ToggleCoast;
+import frc.robot.commands.gripper.AutoGrip;
 import frc.robot.commands.gripper.Close;
 import frc.robot.commands.gripper.Open;
 import frc.robot.commands.resets.ResetArmPosition;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.RGBLights;
 import frc.robot.subsystems.ShuffleboardManager;
@@ -58,6 +62,7 @@ public class RobotContainer {
   public final ShuffleboardManager m_shuffleboardManager = ShuffleboardManager.getInstance();
   private final Limelight m_Limelight = Limelight.getInstance();
   private final XboxController m_xbox = new XboxController(2);
+  private final Gripper m_gripper = Gripper.getInstance();
   private MecanumAutoBuilder autoBuilder;
   // Autonomous
   private final SendableChooser<CommandBase> m_autoChooser = new SendableChooser<>();
@@ -198,6 +203,8 @@ public class RobotContainer {
    */
   public void initDefaultCommand() {
     m_drivetrain.setDefaultCommand(new Cartesian(m_controlBoard::getThrottle, m_controlBoard::getRight, m_controlBoard::getRot));
+    m_gripper.setDefaultCommand(new AutoGrip(m_xbox.getRawAxis(3)));
+  
   }
 
   /**
@@ -220,7 +227,8 @@ public class RobotContainer {
     if (AutoConstants.USE_AUTO_BALANCE) {
       return m_autoChooser.getSelected().andThen(new ToggleCoast()).andThen(new AutoBalance().withTimeout(15).andThen(new PrintCommand("AutoBalance Stopped")));
     } else {
-      return m_autoChooser.getSelected().andThen(new ToggleCoast());
+      return new SetArmPosition(90).andThen(new WaitCommand(1.75)).andThen(new SetArmPosition(0)).andThen(m_autoChooser.getSelected().andThen(new ToggleCoast()));
     }
+   
   }
 }

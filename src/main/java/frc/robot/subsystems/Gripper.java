@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Gripper extends SubsystemBase {
 
   private static Solenoid m_solenoid;
+  private boolean autoGrip = false;
 
   /** Creates a new Gripper. */
   private Gripper() {
@@ -51,6 +52,18 @@ public class Gripper extends SubsystemBase {
    */
   public void close() {
     m_solenoid.set(false);
+  }
+
+  public boolean getAutoGrip() {
+    return autoGrip;
+  }
+
+  public void enableAutoGrip() {
+    autoGrip = true;
+  }
+
+  public void disableAutoGrip() {
+    autoGrip = false;
   }
 
   @Override

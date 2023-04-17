@@ -68,7 +68,7 @@ public class GoToAprilTag extends CommandBase {
 
         // follow the path
         
-        drivetrain.followTrajectoryCommand(traj1, true).andThen(() -> {
+        drivetrain.followTrajectoryCommand(traj2, true).andThen(() -> {
             finished = true;
             drivetrain.stop();
         }).schedule();

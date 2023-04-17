@@ -195,7 +195,7 @@ public final class Constants {
       //SETPOINTS
       public static final double ZERO = 0;
       public static final double MID = 46;
-      public static final double HIGH = 100;
+      public static final double HIGH = 105;
       public static final double PICKUP = 50;
   }
 

@@ -390,10 +390,10 @@ public class Drivetrain extends SubsystemBase {
    * @param backRight  Back right wheel speed
    */
   private void setWheelSpeeds(double frontLeft, double frontRight, double backLeft, double backRight) {
-    _front_left_pid.setSetpoint(-frontLeft);
-    _front_right_pid.setSetpoint(-frontRight);
-    _back_left_pid.setSetpoint(-backLeft);
-    _back_right_pid.setSetpoint(-backRight);
+    _front_left_pid.setSetpoint(frontLeft);
+    _front_right_pid.setSetpoint(frontRight);
+    _back_left_pid.setSetpoint(backLeft);
+    _back_right_pid.setSetpoint(backRight);
     _front_left_motor.setVoltage(_front_left_pid.calculate(getFrontLeftVelocity()));
     _front_right_motor.setVoltage(_front_right_pid.calculate(getFrontRightVelocity()));
     _back_left_motor.setVoltage(_back_left_pid.calculate(getBackLeftVelocity()));
@@ -415,9 +415,9 @@ public class Drivetrain extends SubsystemBase {
       }
     }), new PPMecanumControllerCommand(traj, this::getPose, // Pose supplier
             BuildConstants._KINEMATICS, // Kinematics object
-            new PIDController(-0.00, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-            new PIDController(-0.00, 0, 0), // Y controller (usually the same values as X controller)
-            new PIDController(-0.00, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(0.00, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(0.00, 0, 0), // Y controller (usually the same values as X controller)
+            new PIDController(0.00, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
             Constants.AutoConstants.AUTO_MAX_SPEED_METERS_PER_SECOND,  // Max wheel velocity meters per second
             this::setOutputWheelSpeeds, // MecanumDriveWheelSpeeds consumer
             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true

@@ -6,37 +6,45 @@ package frc.robot.commands.gripper;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.Lidar;
+import frc.robot.subsystems.Lidar.Action;
 
-public class Close extends CommandBase {
+public class AutoGrip extends CommandBase {
+  
+  private Gripper m_grip = Gripper.getInstance();
+  private Lidar m_lidar = Lidar.getInstance();
+  private double input;
 
-  private static final Gripper m_gripper = Gripper.getInstance();
-
-  public Close() {
-
+  public AutoGrip(double in) {
+    input = in;
+    addRequirements(m_grip);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_gripper.close();
+    System.out.println(input);
+    if(input > 0.1) {
+      System.out.println("hi");
+      if (m_lidar.getAction() == Action.GRIP) {
+        new Open().schedule();
+      }
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() { 
-    m_gripper.close();
-    System.out.println("me when I close");
+  public void execute() {
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    //m_gripper.close();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

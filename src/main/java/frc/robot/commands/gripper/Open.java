@@ -18,6 +18,7 @@ public class Open extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_gripper.open();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,7 +34,7 @@ public class Open extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //m_gripper.close();
+    m_gripper.open();
   }
 
   // Returns true when the command should end.
